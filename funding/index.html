@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a10" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="How AfterCare is actually funded — coming soon."
+    />
+    <title>Funding — AfterCare</title>
+    <link
+      rel="icon"
+      href="../visual-assets/aftercare-logo.svg"
+      type="image/svg+xml"
+    />
+    <link rel="alternate icon" href="../visual-assets/logo-no-text.png" />
+    <link rel="apple-touch-icon" href="../visual-assets/logo-no-text.png" />
+    <style>
+      :root {
+        --bg: #0a0a10;
+        --purple-light: #60a5fa;
+        --teal: #2dd4bf;
+        --white: #f4f4f6;
+        --gray: #9ca3af;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        background: var(--bg);
+        color: var(--white);
+        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+      }
+      a {
+        color: var(--teal);
+        -webkit-tap-highlight-color: transparent;
+      }
+      :focus-visible {
+        outline: 2px solid var(--purple-light);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      .wrap {
+        max-width: 520px;
+        margin: auto;
+        padding: 40px 20px calc(40px + env(safe-area-inset-bottom));
+        text-align: center;
+      }
+      .logo-badge {
+        width: 44px;
+        height: 44px;
+        margin: 0 auto 24px;
+      }
+      .logo-badge img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.3));
+      }
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.9rem);
+        line-height: 1.2;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 0 0 14px;
+      }
+      p {
+        color: var(--gray);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 42ch;
+        margin: 0 auto 14px;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--gray);
+        text-decoration: none;
+      }
+      .back:hover,
+      .back:focus-visible {
+        color: var(--white);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo-badge">
+        <img src="../visual-assets/aftercare-logo.svg" alt="" />
+      </div>
+      <span class="eyebrow">Coming soon</span>
+      <h1>An open breakdown of where the money goes</h1>
+      <p>
+        We're putting together a plain accounting of what AfterCare
+        actually costs to run and how contributions are spent — the same
+        transparency we apply to the code, applied to the finances.
+      </p>
+      <p>
+        Want to help fund it in the meantime?
+        <a href="../#support">Chip in from the home page</a> — donations
+        already work today, this page is just the transparency report
+        that isn't built yet.
+      </p>
+      <a class="back" href="../">← Back to AfterCare</a>
+    </div>
+  </body>
+</html>

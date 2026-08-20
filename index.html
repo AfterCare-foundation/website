@@ -1,0 +1,2472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a10" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="AfterCare lets you connect anonymously with someone you've met — so if either of you tests positive later, the other finds out without needing a name or number."
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="AfterCare" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AfterCare" />
+    <meta property="og:title" content="AfterCare — Coming Soon" />
+    <meta
+      property="og:description"
+      content="Tear a card in half with someone. If either of you tests positive later, AfterCare lets the other know — anonymously, no name or identifying info required."
+    />
+    <meta property="og:image" content="visual-assets/logo-no-text.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="AfterCare — Coming Soon" />
+    <meta
+      name="twitter:description"
+      content="Tear a card in half with someone. If either of you tests positive later, AfterCare lets the other know — anonymously, no name or identifying info required."
+    />
+    <meta name="twitter:image" content="visual-assets/logo-no-text.png" />
+    <title>AfterCare — Coming Soon</title>
+    <link
+      rel="icon"
+      href="visual-assets/aftercare-logo.svg"
+      type="image/svg+xml"
+    />
+    <link rel="alternate icon" href="visual-assets/logo-no-text.png" />
+    <link rel="apple-touch-icon" href="visual-assets/logo-no-text.png" />
+    <style>
+      :root {
+        --bg: #0a0a10;
+        --bg2: #0f0f17;
+        --purple: #1d4ed8;
+        --purple-light: #60a5fa;
+        --teal: #2dd4bf;
+        --white: #f4f4f6;
+        --gray: #9ca3af;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        html {
+          scroll-behavior: smooth;
+        }
+      }
+      body {
+        background: var(--bg);
+        color: var(--white);
+        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        overflow-x: hidden;
+      }
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      :focus-visible {
+        outline: 2px solid var(--purple-light);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      /* ---- scroll progress bar ---- */
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        background: linear-gradient(90deg, var(--purple-light), var(--teal));
+        z-index: 100;
+        transition: width 0.1s linear;
+      }
+      /* ---- ambient mesh background ---- */
+      .mesh {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.55;
+        mix-blend-mode: screen;
+        will-change: transform;
+      }
+      .blob-a {
+        width: 60vmax;
+        height: 60vmax;
+        left: -15vmax;
+        top: -20vmax;
+        background: radial-gradient(
+          circle at 30% 30%,
+          var(--purple-light),
+          var(--purple) 60%,
+          transparent 72%
+        );
+        animation: drift-a 34s ease-in-out infinite alternate;
+      }
+      .blob-b {
+        width: 50vmax;
+        height: 50vmax;
+        right: -15vmax;
+        bottom: -15vmax;
+        background: radial-gradient(
+          circle at 60% 40%,
+          var(--teal),
+          transparent 72%
+        );
+        animation: drift-b 40s ease-in-out infinite alternate;
+      }
+      .blob-c {
+        width: 40vmax;
+        height: 40vmax;
+        left: 30vw;
+        top: 38vh;
+        opacity: 0.25;
+        background: radial-gradient(
+          circle,
+          var(--purple-light),
+          transparent 70%
+        );
+        animation: drift-c 26s ease-in-out infinite alternate;
+      }
+      @keyframes drift-a {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(8vmax, 6vmax) scale(1.08);
+        }
+      }
+      @keyframes drift-b {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(-6vmax, -8vmax) scale(1.05);
+        }
+      }
+      @keyframes drift-c {
+        from {
+          transform: translate(-4vmax, -2vmax) scale(0.9);
+        }
+        to {
+          transform: translate(4vmax, 3vmax) scale(1.1);
+        }
+      }
+
+      /* ---- cursor-reactive glow ---- */
+      .cursor-glow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 480px;
+        height: 480px;
+        margin-left: -240px;
+        margin-top: -240px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(96, 165, 250, 0.18),
+          rgba(45, 212, 191, 0.08) 45%,
+          transparent 70%
+        );
+        transform: translate3d(var(--mx, 50vw), var(--my, 50vh), 0);
+        pointer-events: none;
+        z-index: 1;
+        mix-blend-mode: screen;
+        will-change: transform;
+      }
+
+      /* ---- hero content ---- */
+      .hero {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: clamp(32px, 8vh, 80px) max(20px, env(safe-area-inset-right))
+          clamp(24px, 6vh, 56px) max(20px, env(safe-area-inset-left));
+      }
+      .kicker {
+        font-size: 13px;
+        font-style: italic;
+        letter-spacing: 0.01em;
+        color: rgba(244, 244, 246, 0.55);
+        margin: 0 0 22px;
+      }
+      .logo-badge {
+        width: 56px;
+        height: 56px;
+        margin-bottom: 28px;
+        flex-shrink: 0;
+      }
+      .logo-badge img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 24px rgba(96, 165, 250, 0.35));
+      }
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin-bottom: 24px;
+      }
+      h1 {
+        font-size: clamp(2rem, 1rem + 4vw, 3.4rem);
+        line-height: 1.1;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        max-width: 720px;
+        margin: 0 0 18px;
+      }
+      h1 span {
+        background: linear-gradient(120deg, var(--purple-light), var(--teal));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .sub {
+        color: var(--gray);
+        font-size: clamp(1rem, 0.85rem + 0.6vw, 1.15rem);
+        line-height: 1.55;
+        max-width: 520px;
+        margin: 0 0 40px;
+      }
+
+      .mockup {
+        margin-top: 8px;
+      }
+      .mockup img {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: min(300px, 68vw);
+        max-height: 48vh;
+        filter: drop-shadow(0 24px 60px rgba(96, 165, 250, 0.25))
+          drop-shadow(0 0 40px rgba(45, 212, 191, 0.15));
+        animation: float 7s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
+
+      .microcopy {
+        font-size: 13px;
+        color: rgba(244, 244, 246, 0.55);
+        margin: 28px 0 0;
+      }
+
+      .scrollcue-wrap {
+        display: block;
+        margin: 24px auto 0;
+        padding: 8px;
+        transition: transform 0.15s ease;
+      }
+      .scrollcue-wrap:active {
+        transform: scale(0.88);
+      }
+      .scrollcue {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: bob 1.8s ease-in-out infinite;
+      }
+      @keyframes bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+
+      /* ---- how it works ---- */
+      .how {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: clamp(320px, 92vw, 640px);
+        transition: max-width 0.2s ease;
+        margin: 0 auto;
+        padding: 0 20px 8px;
+        text-align: left;
+      }
+      .how-title {
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin: 28px 0 20px;
+      }
+      /* ---- info-tip: a small "what does this mean?" popover, CSS-only for
+         the hover/focus reveal itself. Touch devices have no :hover, and
+         iOS Safari doesn't reliably move real focus to a tapped <button>
+         without an explicit JS .focus() call — the script block below
+         handles exactly that, plus flipping the popover above the trigger
+         and nudging it back on-screen when it would run off a narrow
+         viewport near the trust bullets further down the page. */
+      .info-tip {
+        position: relative;
+        display: inline-flex;
+        vertical-align: middle;
+        margin-left: 0.3em;
+      }
+      .info-tip:hover,
+      .info-tip:focus-within {
+        z-index: 20;
+      }
+      .info-tip-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 17px;
+        height: 17px;
+        padding: 0;
+        border: none;
+        border-radius: 999px;
+        background: none;
+        color: var(--gray);
+        cursor: help;
+        opacity: 0.85;
+        transition:
+          color 0.2s ease,
+          opacity 0.2s ease;
+      }
+      .info-tip-btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 44px;
+        height: 44px;
+        transform: translate(-50%, -50%);
+      }
+      .info-tip:hover .info-tip-btn,
+      .info-tip:focus-visible .info-tip-btn {
+        color: var(--teal);
+        opacity: 1;
+      }
+      .info-tip-pop {
+        --tip-ty: 2px;
+        --tip-oy: top;
+        --tip-shift-x: 0px;
+        position: absolute;
+        left: 50%;
+        top: calc(100% + 9px);
+        z-index: 20;
+        width: 224px;
+        max-width: calc(100vw - 32px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: var(--bg2);
+        color: var(--white);
+        padding: 10px 13px;
+        font-size: 12.5px;
+        font-weight: 400;
+        line-height: 1.5;
+        text-align: left;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        translate: var(--tip-shift-x) 0;
+        transform: translateX(-50%) translateY(var(--tip-ty)) scale(0.97);
+        transform-origin: var(--tip-oy) center;
+        transition:
+          opacity 0.15s ease,
+          transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+          translate 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 0s linear 0.25s;
+      }
+      .info-tip:hover .info-tip-pop,
+      .info-tip:focus-within .info-tip-pop {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0) scale(1);
+        transition:
+          opacity 0.15s ease,
+          transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+          translate 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+          visibility 0s;
+      }
+      .info-tip[data-flip="up"] .info-tip-pop {
+        --tip-ty: -2px;
+        --tip-oy: bottom;
+        top: auto;
+        bottom: calc(100% + 9px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .info-tip-pop {
+          transition:
+            opacity 0.15s ease,
+            visibility 0s linear 0.15s;
+        }
+        .info-tip:hover .info-tip-pop,
+        .info-tip:focus-within .info-tip-pop {
+          transform: translateX(-50%) translateY(0) scale(1);
+          transition:
+            opacity 0.15s ease,
+            visibility 0s;
+        }
+      }
+
+      /* ---- torn card visual (mobile-first, fluid via clamp/aspect-ratio) ---- */
+      .torn-card {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        cursor: pointer;
+        filter: drop-shadow(0 10px 28px rgba(29, 78, 216, 0.35));
+        perspective: 800px;
+        transform-style: preserve-3d;
+        transition: filter 0.15s ease;
+        /* torn-edge silhouettes: flat (intact) and perforated-tear clip
+           paths for each half, referenced by the tear keyframes below. Real
+           perforation tears leave a fine, closely-spaced scallop, not a
+           ragged hand-torn rip, so amplitude stays small (max ~3% of the
+           half's width). The left/right paths are exact x-mirrors of each
+           other so the two edges would still interlock if pushed back
+           together. */
+        --tc-edge-flat-l: polygon(
+          0% 0%,
+          100% 0%,
+          100% 6%,
+          100% 13%,
+          100% 19%,
+          100% 25%,
+          100% 31%,
+          100% 38%,
+          100% 44%,
+          100% 50%,
+          100% 56%,
+          100% 63%,
+          100% 69%,
+          100% 75%,
+          100% 81%,
+          100% 88%,
+          100% 94%,
+          100% 100%,
+          0% 100%
+        );
+        --tc-edge-torn-l: polygon(
+          0% 0%,
+          99% 0%,
+          97% 6%,
+          98.5% 13%,
+          97% 19%,
+          99% 25%,
+          97.5% 31%,
+          98.5% 38%,
+          97% 44%,
+          99% 50%,
+          97.5% 56%,
+          98.5% 63%,
+          97% 69%,
+          99% 75%,
+          98% 81%,
+          98.5% 88%,
+          97% 94%,
+          99% 100%,
+          0% 100%
+        );
+        --tc-edge-flat-r: polygon(
+          100% 0%,
+          0% 0%,
+          0% 6%,
+          0% 13%,
+          0% 19%,
+          0% 25%,
+          0% 31%,
+          0% 38%,
+          0% 44%,
+          0% 50%,
+          0% 56%,
+          0% 63%,
+          0% 69%,
+          0% 75%,
+          0% 81%,
+          0% 88%,
+          0% 94%,
+          0% 100%,
+          100% 100%
+        );
+        --tc-edge-torn-r: polygon(
+          100% 0%,
+          1% 0%,
+          3% 6%,
+          1.5% 13%,
+          3% 19%,
+          1% 25%,
+          2.5% 31%,
+          1.5% 38%,
+          3% 44%,
+          1% 50%,
+          2.5% 56%,
+          1.5% 63%,
+          3% 69%,
+          1% 75%,
+          2% 81%,
+          1.5% 88%,
+          3% 94%,
+          1% 100%,
+          100% 100%
+        );
+      }
+      .torn-card:not(.tearing):active {
+        filter: drop-shadow(0 10px 28px rgba(29, 78, 216, 0.35)) brightness(0.9);
+      }
+      .torn-card.large {
+        display: flex;
+        width: fit-content;
+        margin: 40px auto 32px;
+      }
+      /* Each ghost is sized/positioned to match its half's own resting spot
+         (not measured — just the same width/radius rules as .tc-half
+         itself), and taken out of flow so it doesn't disturb the flex
+         layout. Two independent outlines, not one spanning both: "theirs"
+         (left) departs first and its outline appears right after; "yours"
+         (right) settles, then later continues on its own — see the
+         tear-right-descend animation below — and only then does its
+         outline appear too. */
+      .tc-ghost {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: clamp(120px, 32vw, 168px);
+        border: 1.5px dashed rgba(255, 255, 255, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+      .tc-ghost-l {
+        left: 0;
+        border-radius: 12% 0 0 12%;
+        border-right: none;
+        transform: translateX(-22%) rotate(-3deg);
+      }
+      .tc-ghost-r {
+        right: 0;
+        border-radius: 0 12% 12% 0;
+        border-left: none;
+        transform: translateX(22%) rotate(3deg);
+      }
+      .torn-card.large.tearing .tc-ghost-l {
+        opacity: 1;
+        transition-delay: 1.5s;
+      }
+      .torn-card.large.tearing .tc-ghost-r {
+        opacity: 1;
+        transition-delay: 2.05s;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .torn-card.large.tearing .tc-ghost-l,
+        .torn-card.large.tearing .tc-ghost-r {
+          transition-delay: 0s;
+        }
+      }
+      .tc-half {
+        width: clamp(112px, 29vw, 150px);
+        aspect-ratio: 150 / 230;
+        background: var(--bg2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10%;
+        padding: 10%;
+        backface-visibility: hidden;
+        will-change: transform;
+      }
+      .torn-card.large .tc-half {
+        width: clamp(120px, 32vw, 168px);
+      }
+      .tc-half.tc-left {
+        border-radius: 12% 0 0 12%;
+        border-right: none;
+      }
+      .tc-half.tc-right {
+        border-radius: 0 12% 12% 0;
+        border-left: none;
+      }
+      /* Hidden until .tearing arrives (matching card-arrive's own 0% state)
+         so only the dashed outline shows beforehand — without this, the
+         full card would flash into view at rest for the moment between
+         first paint and the tear-trigger JS actually running. */
+      .tc-half.solo {
+        border-radius: 0 12% 12% 0;
+        border-left: none;
+        clip-path: var(--tc-edge-torn-r);
+        opacity: 0;
+        transform: translateY(-55%) rotate(-4deg) scale(0.92);
+      }
+      /* Visible from the start (unlike .tc-ghost, which fades in later) —
+         this one's covered by the opaque card once it arrives, not
+         revealed after. Self-contained rather than sharing .tc-ghost:
+         that class's own fixed width would fight this inset:0 sizing. */
+      .tc-ghost-solo {
+        position: absolute;
+        inset: 0;
+        border-radius: 0 12% 12% 0;
+        border: 1.5px dashed rgba(255, 255, 255, 0.22);
+        border-left: none;
+        opacity: 1;
+        pointer-events: none;
+      }
+      .tc-perf {
+        width: 6px;
+        align-self: stretch;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .tc-perf::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        left: 50%;
+        border-left: 2px dashed rgba(255, 255, 255, 0.3);
+        transform: translateX(-50%);
+        opacity: 0;
+      }
+      /* ---- tear-apart: a couple of test-pulls, then one clean release ----
+         Triggered by JS adding .tearing on scroll-into-view or tap, whichever
+         comes first. A short anticipation phase (0-45%, ease-in-out) carries
+         two small back-and-forth pulls — like checking the perforation
+         before committing — then a single back-eased release (45-100%)
+         swings past the resting position and settles, one bounce, not a
+         flutter. The right half trails the left by 40ms so the motion reads
+         as one continuous action, not a mirrored split. Depth stays subtle —
+         the left half hinges very slightly forward from its base
+         (transform-origin below), the right recedes a touch. Each half's
+         inner edge is clipped flat until the release, then morphs into the
+         fine perforated scallop right as it lets go. */
+      .tc-half.tc-left,
+      .tc-half.tc-right {
+        transform: translateX(0) rotate(0deg) translateZ(0) scale(1);
+      }
+      .tc-half.tc-left {
+        transform-origin: 50% 100%;
+      }
+      .torn-card.tearing .tc-half.tc-left {
+        animation:
+          tear-left 0.85s both,
+          tear-left-edge 0.85s ease-out both;
+      }
+      .torn-card.tearing .tc-half.tc-right {
+        animation:
+          tear-right 0.85s both,
+          tear-right-edge 0.85s ease-out both;
+        animation-delay: 40ms;
+      }
+      .torn-card.tearing .tc-perf::after {
+        animation: perf-strain 0.85s ease-out both;
+      }
+      @keyframes tear-left {
+        0%,
+        45% {
+          transform: translateX(0) rotate(0deg) rotateX(0deg) translateZ(0)
+            scale(1);
+          animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        15% {
+          transform: translateX(-1px) rotate(-0.5deg) rotateX(-0.6deg)
+            translateZ(1px) scale(0.995);
+        }
+        30% {
+          transform: translateX(0.75px) rotate(0.35deg) rotateX(0.4deg)
+            translateZ(1.5px) scale(1.003);
+        }
+        45% {
+          animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        70% {
+          transform: translateX(-25%) rotate(-3.6deg) rotateX(-5deg)
+            translateZ(6px) scale(1.008);
+        }
+        100% {
+          transform: translateX(-22%) rotate(-3deg) rotateX(-4deg)
+            translateZ(5px) scale(1);
+        }
+      }
+      @keyframes tear-right {
+        0%,
+        45% {
+          transform: translateX(0) rotate(0deg) rotateY(0deg) translateZ(0)
+            scale(1);
+          animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        15% {
+          transform: translateX(1px) rotate(0.5deg) rotateY(0.6deg)
+            translateZ(1.2px) scale(1.004);
+        }
+        30% {
+          transform: translateX(-0.75px) rotate(-0.35deg) rotateY(-0.4deg)
+            translateZ(1.8px) scale(0.997);
+        }
+        45% {
+          animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        70% {
+          transform: translateX(25%) rotate(3.6deg) rotateY(5deg)
+            translateZ(-7px) scale(1.008);
+        }
+        100% {
+          transform: translateX(22%) rotate(3deg) rotateY(4deg) translateZ(-6px)
+            scale(1);
+        }
+      }
+      @keyframes tear-left-edge {
+        0%,
+        45% {
+          clip-path: var(--tc-edge-flat-l);
+        }
+        62%,
+        100% {
+          clip-path: var(--tc-edge-torn-l);
+        }
+      }
+      @keyframes tear-right-edge {
+        0%,
+        45% {
+          clip-path: var(--tc-edge-flat-r);
+        }
+        62%,
+        100% {
+          clip-path: var(--tc-edge-torn-r);
+        }
+      }
+      @keyframes perf-strain {
+        0% {
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.7;
+        }
+        45% {
+          opacity: 1;
+        }
+        68% {
+          opacity: 0.2;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      /* ---- step 1 -> step 2 continuity: "theirs" carries on past the
+         normal release and drifts off-canvas; "yours" (the solo card in
+         step 2) gets its own independent slide-down-and-settle entrance
+         when scrolled into view. The two are deliberately not one shared
+         element — each is triggered by its own step's scroll position, so
+         there's nothing to keep in sync across a section that might not
+         both be on screen at once (anchor jumps, fast scrolling, resize). */
+      @keyframes tear-left-flyoff {
+        0% {
+          transform: translateX(-22%) rotate(-3deg) rotateX(-4deg)
+            translateZ(5px) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(-140%) rotate(-14deg) rotateX(-10deg)
+            translateZ(-30px) scale(0.88);
+          opacity: 0;
+        }
+      }
+      .torn-card.large.tearing .tc-half.tc-left {
+        animation:
+          tear-left 0.85s both,
+          tear-left-edge 0.85s ease-out both,
+          tear-left-flyoff 0.6s ease-in both;
+        animation-delay: 0ms, 0ms, 950ms;
+      }
+      /* "Yours" settles normally first, then — after a beat, once "theirs"
+         has already gone — continues on its own down and off, standing in
+         for it heading on to become step 2's card (a separate, independent
+         entrance there — see card-arrive below). */
+      @keyframes tear-right-descend {
+        0% {
+          transform: translateX(22%) rotate(3deg) rotateY(4deg) translateZ(-6px)
+            scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(22%) translateY(180%) rotate(2deg) rotateY(2deg)
+            translateZ(-10px) scale(0.85);
+          opacity: 0;
+        }
+      }
+      .torn-card.large.tearing .tc-half.tc-right {
+        animation:
+          tear-right 0.85s both,
+          tear-right-edge 0.85s ease-out both,
+          tear-right-descend 0.7s ease-in both;
+        animation-delay: 40ms, 40ms, 1400ms;
+      }
+      @keyframes card-arrive {
+        0% {
+          transform: translateY(-55%) rotate(-4deg) scale(0.92);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0) rotate(0deg) scale(1);
+          opacity: 1;
+        }
+      }
+      .torn-card.tearing .tc-half.solo {
+        animation: card-arrive 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .torn-card.tearing .tc-half.tc-left,
+        .torn-card.tearing .tc-half.tc-right {
+          animation: none;
+        }
+        .torn-card.tearing .tc-half.tc-left {
+          transform: translateX(-22%) rotate(-3deg) rotateX(-4deg)
+            translateZ(5px);
+          clip-path: var(--tc-edge-torn-l);
+        }
+        .torn-card.tearing .tc-half.tc-right {
+          transform: translateX(22%) rotate(3deg) rotateY(4deg) translateZ(-6px);
+          clip-path: var(--tc-edge-torn-r);
+        }
+        .torn-card.large.tearing .tc-half.tc-left,
+        .torn-card.large.tearing .tc-half.tc-right {
+          opacity: 0;
+        }
+        .torn-card.tearing .tc-half.solo {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        .torn-card.tearing .tc-perf::after {
+          animation: none;
+        }
+      }
+      /* Sized against the viewport, not the half's own width — .tc-half
+         itself is a different width in the large paired card (step 1) vs.
+         the solo card (step 2), so a parent-relative % here would scale
+         the logo along with it and the two cards would stop matching. A
+         fixed-feeling size keeps the logo identical everywhere it appears. */
+      .tc-logo {
+        width: clamp(44px, 12vw, 58px);
+        height: auto;
+      }
+      .tc-qr {
+        width: 66%;
+        height: auto;
+        border-radius: 8%;
+        display: block;
+      }
+      .tc-tag {
+        font-size: clamp(9px, 2.4vw, 10.5px);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
+
+      /* ---- mini phone visual (mobile-first, fluid) ---- */
+      .mini-phone {
+        position: relative;
+        width: clamp(128px, 34vw, 168px);
+        aspect-ratio: 140 / 250;
+        flex-shrink: 0;
+        background: var(--bg2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16% / 9%;
+        overflow: hidden;
+        filter: drop-shadow(0 10px 24px rgba(45, 212, 191, 0.2));
+      }
+      /* the status bar floats over the screen instead of sitting beside it
+         as a flex sibling — as a sibling it ate 11% off the top, which
+         pulled .mp-screen's own centered content down off the phone's true
+         visual midpoint (centered within the remaining 89% ≠ centered on
+         the whole phone) */
+      .mp-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 11%;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .mp-island {
+        width: 32%;
+        height: 24%;
+        background: #000;
+        border-radius: 40%;
+      }
+      .mp-screen {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 7%;
+        padding: 9%;
+        text-align: center;
+      }
+      .mp-label {
+        font-size: clamp(11px, 3vw, 13px);
+        font-weight: 600;
+        color: var(--white);
+      }
+      .mp-sub {
+        font-size: clamp(9px, 2.4vw, 10.5px);
+        color: var(--gray);
+        line-height: 1.35;
+      }
+      .mp-btn {
+        background: linear-gradient(135deg, var(--purple-light), var(--teal));
+        color: #05070d;
+        border-radius: 999px;
+        padding: 6% 12%;
+        font-size: clamp(9.5px, 2.6vw, 11px);
+        font-weight: 600;
+      }
+      .mp-check {
+        width: 24%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 1.5px solid var(--teal);
+        color: var(--teal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(13px, 3.5vw, 16px);
+      }
+      .mp-heart {
+        font-size: clamp(20px, 5vw, 26px);
+      }
+      .mp-notif {
+        display: flex;
+        align-items: flex-start;
+        gap: 8%;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16%;
+        padding: 9%;
+        text-align: left;
+      }
+      .mp-notif-icon {
+        flex-shrink: 0;
+        width: 26%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          rgba(96, 165, 250, 0.32),
+          rgba(29, 78, 216, 0.32)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mp-notif-icon svg {
+        width: 55%;
+        height: 55%;
+      }
+      .mp-notif-text {
+        display: flex;
+        flex-direction: column;
+        gap: 5%;
+        text-align: left;
+        min-width: 0;
+      }
+      .mp-frame {
+        position: relative;
+        width: 56%;
+        aspect-ratio: 1;
+        margin: 3% 0;
+      }
+      .mp-corner {
+        position: absolute;
+        background: var(--teal);
+        border-radius: 2px;
+      }
+      .mp-corner.h {
+        width: 32%;
+        height: 9%;
+      }
+      .mp-corner.v {
+        width: 9%;
+        height: 32%;
+      }
+      .mp-corner.tl {
+        top: 0;
+        left: 0;
+      }
+      .mp-corner.tr {
+        top: 0;
+        right: 0;
+      }
+      .mp-corner.bl {
+        bottom: 0;
+        left: 0;
+      }
+      .mp-corner.br {
+        bottom: 0;
+        right: 0;
+      }
+
+      /* ---- steps: centered stack mobile-first, left-rail beside text once there's room ---- */
+      .steps {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        padding-bottom: 52px;
+        position: relative;
+      }
+      /* Reels/TikTok-style scroll snap, mobile-only (the stacked
+         single-column layout below 560px) — each step comes to rest once
+         it's roughly centered instead of stopping mid-step. `proximity`,
+         not `mandatory`: this list sits inside a normal scrolling page
+         with plenty of non-step content above and below it, and mandatory
+         snapping there would fight the user's scroll on every boundary,
+         not just settle gently near one. */
+      @media (max-width: 559px) {
+        html {
+          scroll-snap-type: y proximity;
+        }
+        #how .step {
+          scroll-snap-align: center;
+          scroll-margin-top: 24px;
+        }
+      }
+      .step:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 26px;
+        bottom: 0;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateX(-50%);
+      }
+      .step-num {
+        flex-shrink: 0;
+        width: 29px;
+        height: 29px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .step-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .step-label {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .step-desc {
+        font-size: 13px;
+        color: var(--gray);
+        line-height: 1.45;
+        max-width: 30ch;
+      }
+      .info-tip-pop a {
+        color: var(--teal);
+        text-decoration: underline;
+        text-decoration-color: rgba(45, 212, 191, 0.4);
+        text-underline-offset: 2px;
+      }
+      .info-tip-pop a:hover,
+      .info-tip-pop a:focus-visible {
+        text-decoration-color: currentColor;
+      }
+      .step-visual {
+        margin-top: 18px;
+      }
+      /* enhancement once there's room: back to a left rail, visual beside the text */
+      @media (min-width: 560px) {
+        .step {
+          display: grid;
+          grid-template-columns: 29px 1fr auto;
+          column-gap: 16px;
+          row-gap: 14px;
+          text-align: left;
+          align-items: normal;
+        }
+        .step:not(:last-child)::before {
+          left: 14.5px;
+          top: 31px;
+          transform: none;
+        }
+        .step-num {
+          grid-column: 1;
+          grid-row: 1;
+        }
+        .step-body {
+          grid-column: 2;
+          grid-row: 1;
+          align-items: flex-start;
+          padding-top: 2px;
+        }
+        .step-desc {
+          max-width: none;
+        }
+        .step-visual {
+          grid-column: 3;
+          grid-row: 1 / span 2;
+          justify-self: end;
+          align-self: center;
+          margin-top: 0;
+        }
+        /* step 1's torn-card visual is too large to sit beside the text, so
+           it drops to a centered row below — but the number stays on the
+           same rail as every other step, so the connector line runs
+           straight through without jumping sideways */
+        .step.step-featured {
+          grid-template-columns: 29px 1fr;
+        }
+        .step.step-featured .step-visual {
+          grid-column: 1 / -1;
+          grid-row: 2;
+          justify-self: center;
+          align-self: start;
+          margin-top: 24px;
+        }
+      }
+      /* ---- trust bullets: card grid ---- */
+      .trust {
+        list-style: none;
+        margin: 8px auto 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+      }
+      .trust li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 9px;
+        padding: 20px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+      }
+      .trust-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+      .trust-title {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--white);
+      }
+      .trust-desc {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.4;
+      }
+
+      /* enhancement for wide desktop: the section was capped at 640px at
+         every viewport, which reads as a narrow, sparse column adrift in a
+         lot of empty space on a wide monitor. Give it more room to breathe
+         and scale the rail/visuals/type up to match, instead of just
+         stretching the same small components across a wider gutter. */
+      @media (min-width: 1024px) {
+        .how {
+          max-width: 900px;
+        }
+        .how-title {
+          font-size: 13px;
+          margin-bottom: 28px;
+        }
+        .step {
+          grid-template-columns: 34px 1fr auto;
+          column-gap: 24px;
+          row-gap: 16px;
+          padding-bottom: 44px;
+        }
+        .step:not(:last-child)::before {
+          left: 17px;
+          top: 37px;
+        }
+        .step-num {
+          width: 34px;
+          height: 34px;
+          font-size: 13px;
+        }
+        .step-label {
+          font-size: 16px;
+        }
+        .step-desc {
+          font-size: 14.5px;
+        }
+        .step.step-featured {
+          grid-template-columns: 34px 1fr;
+        }
+        .step.step-featured .step-visual {
+          margin-top: 28px;
+        }
+        .torn-card.large .tc-half {
+          width: 196px;
+        }
+        .tc-half {
+          width: 172px;
+        }
+        .mini-phone {
+          width: 190px;
+        }
+        .trust {
+          gap: 16px;
+        }
+        .trust li {
+          padding: 24px 16px;
+        }
+        .trust-icon {
+          width: 27px;
+          height: 27px;
+        }
+        .trust-title {
+          font-size: 14.5px;
+        }
+        .trust-desc {
+          font-size: 12.5px;
+        }
+      }
+
+      /* ---- support / donate tiers ---- */
+      .support {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: clamp(320px, 92vw, 640px);
+        margin: 0 auto;
+        padding: 48px 20px 8px;
+      }
+      .support-copy {
+        text-align: center;
+        color: var(--gray);
+        font-size: 13.5px;
+        line-height: 1.6;
+        max-width: 46ch;
+        margin: 14px auto 38px;
+      }
+      .support-toggle-wrap {
+        text-align: center;
+        margin-top: 22px;
+      }
+      .support-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 22px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--purple-light), var(--teal));
+        color: #05070d;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.2s ease;
+      }
+      .support-toggle:hover {
+        box-shadow: 0 8px 24px -8px rgba(96, 165, 250, 0.5);
+      }
+      .support-soon {
+        margin: 10px 0 0;
+        font-size: 11.5px;
+        color: rgba(244, 244, 246, 0.4);
+      }
+      .support-toggle:active {
+        transform: scale(0.96);
+      }
+      .support-toggle-icon {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .support-toggle[aria-expanded="true"] .support-toggle-icon {
+        transform: rotate(180deg);
+      }
+      /* Height/opacity reveal via the grid-rows trick (0fr -> 1fr) — no
+         JS measurement needed, works regardless of content height. The
+         inner wrapper's overflow:hidden is what actually clips the
+         content while the row is collapsed. */
+      .tiers-wrap {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tiers-wrap.is-open {
+        grid-template-rows: 1fr;
+      }
+      .tiers-inner {
+        overflow: hidden;
+        min-height: 0;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition:
+          opacity 0.3s ease,
+          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tiers-wrap.is-open .tiers-inner {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tiers-wrap,
+        .tiers-inner,
+        .support-toggle-icon {
+          transition: none;
+        }
+      }
+      .tiers {
+        list-style: none;
+        margin: 28px auto 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .tier {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 6px;
+        padding: 20px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        position: relative;
+      }
+      .tier-founding {
+        grid-column: 1 / -1;
+        background: linear-gradient(
+          135deg,
+          rgba(96, 165, 250, 0.1),
+          rgba(45, 212, 191, 0.08)
+        );
+        border: 1px solid rgba(96, 165, 250, 0.3);
+      }
+      .tier-badge {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #05070d;
+        background: linear-gradient(135deg, var(--purple-light), var(--teal));
+        padding: 3px 10px;
+        border-radius: 999px;
+      }
+      .tier-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--white);
+        margin-top: 6px;
+      }
+      .tier-amount {
+        font-size: 20px;
+        font-weight: 700;
+        background: linear-gradient(120deg, var(--purple-light), var(--teal));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .tier-desc {
+        font-size: 12px;
+        color: var(--gray);
+        line-height: 1.4;
+      }
+      .tier-btn {
+        margin-top: 8px;
+        display: inline-block;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--gray);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        padding: 8px 18px;
+        text-decoration: none;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          transform 0.15s ease;
+      }
+      .tier-btn:hover,
+      .tier-btn:focus-visible {
+        color: var(--white);
+      }
+      .tier-btn:hover,
+      .tier-btn:focus-visible {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .tier-btn:active {
+        transform: scale(0.96);
+      }
+      .tier-founding .tier-btn {
+        background: linear-gradient(135deg, var(--purple-light), var(--teal));
+        color: #05070d;
+        border: none;
+      }
+      .support-note {
+        text-align: center;
+        font-size: 12px;
+        color: var(--gray);
+        margin: 20px 0 0;
+      }
+      .support-note a {
+        color: var(--teal);
+        text-decoration: underline;
+        text-decoration-color: rgba(45, 212, 191, 0.4);
+        text-underline-offset: 2px;
+      }
+      .support-note a:hover,
+      .support-note a:focus-visible {
+        text-decoration-color: currentColor;
+      }
+      @media (min-width: 1024px) {
+        .support {
+          max-width: 900px;
+        }
+        .tiers {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+        .tier-founding {
+          grid-column: auto;
+        }
+        .tier {
+          padding: 24px 16px;
+        }
+      }
+
+      footer {
+        position: relative;
+        z-index: 2;
+        flex: 0 0 auto;
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        color: rgba(244, 244, 246, 0.4);
+        padding: 56px 18px calc(24px + env(safe-area-inset-bottom));
+      }
+      footer p {
+        margin: 0;
+      }
+      .footer-origin {
+        margin-top: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11.5px;
+        color: rgba(244, 244, 246, 0.32);
+      }
+      .footer-eu-icon {
+        flex-shrink: 0;
+        color: var(--purple);
+      }
+      .footer-origin-link {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(96, 165, 250, 0.5);
+        transition:
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .footer-origin-link:hover,
+      .footer-origin-link:focus-visible {
+        color: var(--purple-light);
+        border-color: var(--purple-light);
+      }
+
+      /* ---- hero entrance stagger (page load) ---- */
+      .reveal {
+        opacity: 0;
+        animation: revealIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation-delay: calc(150ms + var(--d) * 110ms);
+      }
+      @keyframes revealIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+          filter: blur(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+          filter: blur(0);
+        }
+      }
+
+      /* ---- below-the-fold scroll reveal ---- */
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(var(--sd, 0) * 90ms);
+      }
+      .scroll-reveal.in-view {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ---- mobile: lighter blur for weaker GPUs ---- */
+      @media (max-width: 480px) {
+        .blob {
+          filter: blur(60px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal,
+        .scroll-reveal {
+          animation: none;
+          transition: none;
+          opacity: 1;
+          transform: none;
+          filter: none;
+        }
+        .blob {
+          animation: none;
+        }
+        .cursor-glow {
+          display: none;
+        }
+        .mockup img {
+          animation: none;
+        }
+        .scrollcue {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mesh" aria-hidden="true">
+      <div class="blob blob-a"></div>
+      <div class="blob blob-b"></div>
+      <div class="blob blob-c"></div>
+    </div>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div id="progress" aria-hidden="true"></div>
+
+    <main class="hero">
+      <p class="kicker reveal" style="--d: 0">You found the card.</p>
+      <div class="logo-badge reveal" style="--d: 1">
+        <img
+          src="visual-assets/aftercare-logo.svg"
+          alt="AfterCare"
+          width="56"
+          height="56"
+          decoding="async"
+        />
+      </div>
+      <div class="eyebrow reveal" style="--d: 2">In development</div>
+      <h1 class="reveal" style="--d: 3">
+        The hardest conversation,<br />
+        <span>made unnecessary.</span>
+      </h1>
+      <p class="sub reveal" style="--d: 4">
+        Tear a card in half with someone. Keep your side. If either of you tests
+        positive later, AfterCare lets the other know — anonymously, no name or
+        identifying info required.
+      </p>
+
+      <div class="mockup reveal" style="--d: 5">
+        <img
+          src="visual-assets/mockup-cutout.webp"
+          alt="AfterCare app showing an anonymous exposure notification"
+          width="96"
+          height="185"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+
+      <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
+
+      <a
+        class="scrollcue-wrap reveal"
+        href="#how"
+        style="--d: 7"
+        aria-label="See how it works"
+      >
+        <span class="scrollcue">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="3.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </a>
+    </main>
+
+    <section class="how" id="how">
+      <div class="how-title scroll-reveal">How it works</div>
+
+      <ol class="steps">
+        <li class="step step-featured scroll-reveal" style="--sd: 0">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <span class="step-label">Tear</span>
+            <span class="step-desc">Split a card in half — one side each.</span>
+          </div>
+          <div class="step-visual">
+            <div class="torn-card large" aria-hidden="true">
+              <div class="tc-ghost tc-ghost-l"></div>
+              <div class="tc-ghost tc-ghost-r"></div>
+              <div class="tc-half tc-left">
+                <img
+                  class="tc-logo"
+                  src="visual-assets/aftercare-logo.svg"
+                  alt=""
+                  width="120"
+                  height="124"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <img
+                  class="tc-qr"
+                  src="qr-placeholder.png"
+                  alt=""
+                  width="280"
+                  height="280"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="tc-tag">Theirs</span>
+              </div>
+              <div class="tc-perf"></div>
+              <div class="tc-half tc-right">
+                <img
+                  class="tc-logo"
+                  src="visual-assets/aftercare-logo.svg"
+                  alt=""
+                  width="120"
+                  height="124"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <img
+                  class="tc-qr"
+                  src="qr-placeholder.png"
+                  alt=""
+                  width="280"
+                  height="280"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="tc-tag">Yours</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 1">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <span class="step-label">Keep</span>
+            <span class="step-desc">Hang onto your half.</span>
+          </div>
+          <div class="step-visual">
+            <div class="torn-card" aria-hidden="true">
+              <div class="tc-ghost-solo"></div>
+              <div class="tc-half solo">
+                <img
+                  class="tc-logo"
+                  src="visual-assets/aftercare-logo.svg"
+                  alt=""
+                  width="120"
+                  height="124"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <img
+                  class="tc-qr"
+                  src="qr-placeholder.png"
+                  alt=""
+                  width="280"
+                  height="280"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span class="tc-tag">Yours</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 2">
+          <span class="step-num">3</span>
+          <div class="step-body">
+            <span class="step-label">Scan</span>
+            <span class="step-desc"
+              >Scan it in the app, whenever you're ready.</span
+            >
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <span class="mp-label">Scan your card</span>
+                <div class="mp-frame">
+                  <span class="mp-corner h tl"></span
+                  ><span class="mp-corner v tl"></span>
+                  <span class="mp-corner h tr"></span
+                  ><span class="mp-corner v tr"></span>
+                  <span class="mp-corner h bl"></span
+                  ><span class="mp-corner v bl"></span>
+                  <span class="mp-corner h br"></span
+                  ><span class="mp-corner v br"></span>
+                </div>
+                <span class="mp-sub">Align the QR within the frame</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 3">
+          <span class="step-num">4</span>
+          <div class="step-body">
+            <span class="step-label">Claim</span>
+            <span class="step-desc"
+              >Make it yours — no name or identifying info required.</span
+            >
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <span class="mp-check">&#10003;</span>
+                <span class="mp-label">Card found</span>
+                <span class="mp-sub">Make this card yours?</span>
+                <span class="mp-btn">Claim Card</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 4">
+          <span class="step-num">5</span>
+          <div class="step-body">
+            <span class="step-label"
+              >Connected
+              <span class="info-tip">
+                <button
+                  type="button"
+                  class="info-tip-btn"
+                  aria-label="What does Connected mean?"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="13"
+                    height="13"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                  </svg>
+                </button>
+                <span class="info-tip-pop" role="tooltip"
+                  >Connecting shares nothing on its own — only a later positive
+                  test ever triggers a notification.</span
+                >
+              </span>
+            </span>
+            <span class="step-desc"
+              >Linked, anonymously, once you both claim.</span
+            >
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <span class="mp-label">It's a match!</span>
+                <span class="mp-heart">&#128156;</span>
+                <span class="mp-sub">You're now connected.</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 5">
+          <span class="step-num">6</span>
+          <div class="step-body">
+            <span class="step-label">Notified</span>
+            <span class="step-desc"
+              >If either of you tests positive later, the other finds out —
+              anonymously, no name or identifying info exchanged.</span
+            >
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <div class="mp-notif">
+                  <span class="mp-notif-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                    </svg>
+                  </span>
+                  <span class="mp-notif-text">
+                    <span class="mp-label">Possible exposure</span>
+                    <span class="mp-sub">No names. Just the alert.</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 6">
+          <span class="step-num">7</span>
+          <div class="step-body">
+            <span class="step-label"
+              >Treated
+              <span class="info-tip">
+                <button
+                  type="button"
+                  class="info-tip-btn"
+                  aria-label="Source for the record-high STI rates"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="13"
+                    height="13"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                  </svg>
+                </button>
+                <span class="info-tip-pop" role="tooltip"
+                  >Gonorrhoea and syphilis notifications in Europe hit their
+                  highest levels in over a decade in 2024, and syphilis cases
+                  have more than doubled since 2015.
+                  <a
+                    href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Source: ECDC</a
+                  >.</span
+                >
+              </span>
+            </span>
+            <span class="step-desc"
+              >Get tested & treated sooner, and help the community push back
+              bacterial STIs — which just hit
+              <a
+                class="footer-origin-link"
+                href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
+                target="_blank"
+                rel="noopener noreferrer"
+                >record highs across Europe</a
+              >.</span
+            >
+          </div>
+        </li>
+      </ol>
+
+      <ul class="trust scroll-reveal" style="--sd: 7">
+        <li>
+          <svg
+            class="trust-icon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+            />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <span class="trust-title">Privacy first</span>
+          <span class="trust-desc">No traceable data</span>
+        </li>
+        <li>
+          <svg
+            class="trust-icon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 11c-1.5 0-2.5.5-3 2" />
+            <path
+              d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z"
+            />
+            <path d="M6 11c1.5 0 2.5.5 3 2" />
+          </svg>
+          <span class="trust-title">Anonymous</span>
+          <span class="trust-desc">No names, emails, or identifying info</span>
+        </li>
+        <li>
+          <svg
+            class="trust-icon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+            />
+            <path d="M13 5v2" />
+            <path d="M13 17v2" />
+            <path d="M13 11v2" />
+          </svg>
+          <span class="trust-title">Free</span>
+          <span class="trust-desc">Pick up a card pair at the venue</span>
+        </li>
+        <li>
+          <svg
+            class="trust-icon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m16 18 6-6-6-6" />
+            <path d="m8 6-6 6 6 6" />
+          </svg>
+          <span class="trust-title">Open source</span>
+          <span class="trust-desc">Anyone can read the code</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="how stretch-goals" id="stretch-goals">
+      <div class="how-title scroll-reveal" style="--sd: 8">What's next</div>
+      <p class="support-copy scroll-reveal" style="--sd: 8">
+        Ideas we're considering once AfterCare is past testing. Community voting
+        on what we build next is coming soon.
+      </p>
+      <ol class="steps">
+        <li class="step scroll-reveal" style="--sd: 8">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <span class="step-label">Discrete mode</span>
+            <span class="step-desc"
+              >A low-profile app icon and discrete mode to avoid prying
+              eyes</span
+            >
+          </div>
+        </li>
+        <li class="step scroll-reveal" style="--sd: 9">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <span class="step-label">Collectible cards</span>
+            <span class="step-desc"
+              >Special-edition card designs for events and venues.</span
+            >
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="support" id="support">
+      <div class="how-title scroll-reveal" style="--sd: 10">
+        Support the project
+      </div>
+      <p class="support-copy scroll-reveal" style="--sd: 10">
+        AfterCare is free and volunteer-run — no investors yet, and no ad
+        revenue, <b>ever</b>. Made by the community, for the community. Still,
+        developing, hosting a server, printing, and distributing cards costs
+        real money. If this is worth something to you, a small contribution
+        helps keep it going.
+      </p>
+      <div class="support-toggle-wrap scroll-reveal" style="--sd: 10">
+        <button
+          type="button"
+          class="support-toggle"
+          id="supportToggle"
+          aria-expanded="false"
+          aria-controls="donate-tiers"
+        >
+          <span>I want to donate</span>
+          <svg
+            class="support-toggle-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <p class="support-soon">One-click donations coming soon.</p>
+      </div>
+      <div class="tiers-wrap" id="donate-tiers" inert>
+        <div class="tiers-inner">
+          <ul class="tiers">
+            <li class="tier">
+              <span class="tier-name">Tip Jar</span>
+              <span class="tier-amount">€5</span>
+              <span class="tier-desc">Buy the team a coffee.</span>
+              <a
+                class="tier-btn"
+                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Tip%20Jar"
+                >Chip in</a
+              >
+            </li>
+            <li class="tier">
+              <span class="tier-name">Supporter</span>
+              <span class="tier-amount">€25</span>
+              <span class="tier-desc">Help cover a month of hosting.</span>
+              <a
+                class="tier-btn"
+                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Supporter"
+                >Chip in</a
+              >
+            </li>
+            <li class="tier tier-founding">
+              <span class="tier-badge">Most impact</span>
+              <span class="tier-name">Founding Supporter</span>
+              <span class="tier-amount">€100+</span>
+              <span class="tier-desc"
+                >Be one of the people who got this off the ground.</span
+              >
+              <a
+                class="tier-btn"
+                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Founding%20Supporter"
+                >Chip in</a
+              >
+            </li>
+          </ul>
+          <p class="support-note">
+            Representing an organization?
+            <a href="mailto:contact.aftercare@protonmail.com">Get in touch</a>
+            about sponsorship.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="reveal" style="--d: 8">
+      <p class="footer-tagline">
+        AfterCare ·
+        <a class="footer-origin-link" href="privacy/">privacy-first</a>, always
+      </p>
+      <p class="footer-origin">
+        <svg
+          class="footer-eu-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="4" r="1.3" />
+          <circle cx="16" cy="5.07" r="1.3" />
+          <circle cx="18.93" cy="8" r="1.3" />
+          <circle cx="20" cy="12" r="1.3" />
+          <circle cx="18.93" cy="16" r="1.3" />
+          <circle cx="16" cy="18.93" r="1.3" />
+          <circle cx="12" cy="20" r="1.3" />
+          <circle cx="8" cy="18.93" r="1.3" />
+          <circle cx="5.07" cy="16" r="1.3" />
+          <circle cx="4" cy="12" r="1.3" />
+          <circle cx="5.07" cy="8" r="1.3" />
+          <circle cx="8" cy="5.07" r="1.3" />
+        </svg>
+        Made with love in
+        <a
+          href="https://digital-strategy.ec.europa.eu/en/policies/eu-tech-sovereignty"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-origin-link"
+          >Europe</a
+        >.
+      </p>
+    </footer>
+
+    <script>
+      (function () {
+        var reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        var glow = document.getElementById("cursorGlow");
+        if (glow) {
+          if (reduceMotion) {
+            glow.style.display = "none";
+          } else {
+            var raf = null,
+              tx = 0,
+              ty = 0;
+            window.addEventListener(
+              "mousemove",
+              function (e) {
+                tx = e.clientX;
+                ty = e.clientY;
+                if (!raf) {
+                  raf = requestAnimationFrame(function () {
+                    glow.style.setProperty("--mx", tx + "px");
+                    glow.style.setProperty("--my", ty + "px");
+                    raf = null;
+                  });
+                }
+              },
+              { passive: true },
+            );
+          }
+        }
+
+        var revealEls = document.querySelectorAll(".scroll-reveal");
+        if ("IntersectionObserver" in window && !reduceMotion) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("in-view");
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.15 },
+          );
+          revealEls.forEach(function (el) {
+            io.observe(el);
+          });
+        } else {
+          revealEls.forEach(function (el) {
+            el.classList.add("in-view");
+          });
+        }
+
+        var tornCards = document.querySelectorAll(".torn-card");
+        var largeCard = document.querySelector(".torn-card.large");
+        var soloCard = document.querySelector(".torn-card:not(.large)");
+        // Step 1's full departure ("theirs" flies off, then "yours" settles
+        // and descends) finishes around 2.1s in — see tear-left-flyoff's
+        // 950ms delay + 600ms duration, and tear-right-descend's 1400ms
+        // delay + 700ms duration. Step 2's card only reads as a
+        // continuation of the same card if it doesn't start arriving until
+        // that's actually done, so its own scroll-triggered reveal is held
+        // back by whatever's left of that window rather than firing purely
+        // on its own scroll position.
+        var STEP1_SEQUENCE_MS = 2150;
+        var step1StartedAt = null;
+        if (reduceMotion) {
+          tornCards.forEach(function (card) {
+            card.classList.add("tearing");
+          });
+        } else {
+          tornCards.forEach(function (card) {
+            // Not { once: true } — a moderator demoing this card across many
+            // research sessions needs to replay the tear on click each time,
+            // not just once per pageload.
+            card.addEventListener("click", function () {
+              if (card === largeCard) {
+                step1StartedAt = performance.now();
+              }
+              card.classList.remove("tearing");
+              void card.offsetWidth; // force reflow so the animation restarts
+              card.classList.add("tearing");
+            });
+          });
+          // Deferred until the page has fully loaded (images decoded, layout
+          // settled) so the 0.4 threshold reflects genuine scroll position —
+          // starting the observer earlier can catch a card mid-reflow (e.g.
+          // while the hero mockup image is still loading and shifting page
+          // height) and fire a "scrolled into view" tear that never happened.
+          var tearLargeCard = function () {
+            if (!largeCard || largeCard.classList.contains("tearing")) {
+              return;
+            }
+            step1StartedAt = performance.now();
+            largeCard.classList.add("tearing");
+          };
+          var largeCardHandledBySnap = false;
+          var startTearObservers = function () {
+            // A visibility threshold, even a high one, fires off how much
+            // of the card overlaps the viewport — not off whether the
+            // snap scroll itself has actually finished settling, so it
+            // can still land mid-glide. scrollend fires once scrolling
+            // (snap glide included) has genuinely stopped, so on mobile —
+            // where step 1 sits inside the #how .step snap list,
+            // scroll-snap-align: center — that's what step 1's own
+            // trigger waits for, checking whether the step has actually
+            // come to rest centered rather than just "mostly visible."
+            // Falls back to the ordinary IntersectionObserver trigger
+            // below on browsers without scrollend (Safari < 17.4) — an
+            // approximation there, same as before, just no longer the
+            // only path. Deferred to the same window-load point as
+            // everything else here, not run eagerly — checking
+            // getBoundingClientRect() before layout has actually settled
+            // (e.g. while the hero mockup image is still loading and
+            // shifting page height) is exactly the stale-geometry bug
+            // this whole deferral already exists to avoid.
+            var isMobileSnap = window.matchMedia("(max-width: 559px)").matches;
+            var supportsScrollEnd = "onscrollend" in window;
+            var isStepCentered = function (stepEl) {
+              var rect = stepEl.getBoundingClientRect();
+              var elCenter = rect.top + rect.height / 2;
+              var viewportCenter = window.innerHeight / 2;
+              return Math.abs(elCenter - viewportCenter) < rect.height * 0.3;
+            };
+            if (isMobileSnap && supportsScrollEnd && largeCard) {
+              var largeStep = largeCard.closest(".step");
+              if (largeStep) {
+                largeCardHandledBySnap = true;
+                if (isStepCentered(largeStep)) {
+                  tearLargeCard();
+                } else {
+                  var onScrollEnd = function () {
+                    if (isStepCentered(largeStep)) {
+                      tearLargeCard();
+                      window.removeEventListener("scrollend", onScrollEnd);
+                    }
+                  };
+                  window.addEventListener("scrollend", onScrollEnd);
+                }
+              }
+            }
+            if (!("IntersectionObserver" in window)) {
+              tornCards.forEach(function (card) {
+                card.classList.add("tearing");
+              });
+              return;
+            }
+            tornCards.forEach(function (card) {
+              if (card === largeCard && largeCardHandledBySnap) {
+                return;
+              }
+              var tearIo = new IntersectionObserver(
+                function (entries) {
+                  entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                      tearIo.unobserve(entry.target);
+                      if (card === largeCard) {
+                        tearLargeCard();
+                      } else if (card === soloCard) {
+                        var wait =
+                          step1StartedAt === null
+                            ? 0
+                            : Math.max(
+                                0,
+                                STEP1_SEQUENCE_MS -
+                                  (performance.now() - step1StartedAt),
+                              );
+                        setTimeout(function () {
+                          card.classList.add("tearing");
+                        }, wait);
+                      } else {
+                        card.classList.add("tearing");
+                      }
+                    }
+                  });
+                },
+                { threshold: 0.4 },
+              );
+              tearIo.observe(card);
+            });
+          };
+          if (document.readyState === "complete") {
+            startTearObservers();
+          } else {
+            window.addEventListener("load", startTearObservers, {
+              once: true,
+            });
+          }
+        }
+
+        var infoTips = document.querySelectorAll(".info-tip");
+        if (infoTips.length) {
+          var EDGE_MARGIN = 16;
+          infoTips.forEach(function (tip) {
+            var btn = tip.querySelector(".info-tip-btn");
+            var pop = tip.querySelector(".info-tip-pop");
+            if (!btn || !pop) return;
+            // iOS Safari doesn't reliably move real focus to a tapped
+            // <button> on its own — an explicit .focus() call does, which
+            // makes the CSS :focus-within reveal above work on touch too.
+            btn.addEventListener("click", function (e) {
+              e.stopPropagation();
+              btn.focus();
+            });
+            var updatePosition = function () {
+              var triggerRect = tip.getBoundingClientRect();
+              var spaceBelow = window.innerHeight - triggerRect.bottom;
+              var spaceAbove = triggerRect.top;
+              var fitsBelow = spaceBelow >= pop.offsetHeight + EDGE_MARGIN;
+              if (!fitsBelow && spaceAbove > spaceBelow) {
+                tip.setAttribute("data-flip", "up");
+              } else {
+                tip.removeAttribute("data-flip");
+              }
+              pop.style.setProperty("--tip-shift-x", "0px");
+              var popRect = pop.getBoundingClientRect();
+              var shift = 0;
+              if (popRect.left < EDGE_MARGIN) {
+                shift = EDGE_MARGIN - popRect.left;
+              } else if (popRect.right > window.innerWidth - EDGE_MARGIN) {
+                shift = window.innerWidth - EDGE_MARGIN - popRect.right;
+              }
+              pop.style.setProperty("--tip-shift-x", shift + "px");
+            };
+            tip.addEventListener("mouseenter", updatePosition);
+            tip.addEventListener("focusin", updatePosition);
+          });
+          // Dismiss an open (touch-focused) tip on any tap elsewhere. The
+          // button's own handler above stops its opening tap from
+          // immediately triggering this and closing it again.
+          document.addEventListener("click", function () {
+            if (
+              document.activeElement &&
+              typeof document.activeElement.blur === "function"
+            ) {
+              document.activeElement.blur();
+            }
+          });
+        }
+
+        var supportToggle = document.getElementById("supportToggle");
+        var tiersWrap = document.getElementById("donate-tiers");
+        if (supportToggle && tiersWrap) {
+          supportToggle.addEventListener("click", function () {
+            var isOpen = supportToggle.getAttribute("aria-expanded") === "true";
+            var next = !isOpen;
+            supportToggle.setAttribute("aria-expanded", String(next));
+            tiersWrap.classList.toggle("is-open", next);
+            if (next) {
+              tiersWrap.removeAttribute("inert");
+            } else {
+              tiersWrap.setAttribute("inert", "");
+            }
+          });
+        }
+
+        var progressEl = document.getElementById("progress");
+        if (progressEl) {
+          var updateProgress = function () {
+            var h = document.documentElement;
+            var scrollable = h.scrollHeight - h.clientHeight;
+            var pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+            progressEl.style.width = pct + "%";
+          };
+          window.addEventListener("scroll", updateProgress, { passive: true });
+          window.addEventListener("resize", updateProgress);
+          updateProgress();
+        }
+      })();
+    </script>
+  </body>
+</html>
