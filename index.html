@@ -696,13 +696,13 @@
       }
       .torn-card.tearing .tc-half.tc-left {
         animation:
-          tear-left 0.85s both,
-          tear-left-edge 0.85s ease-out both;
+          tear-left 1.1s both,
+          tear-left-edge 1.1s ease-out both;
       }
       .torn-card.tearing .tc-half.tc-right {
         animation:
-          tear-right 0.85s both,
-          tear-right-edge 0.85s ease-out both;
+          tear-right 1.1s both,
+          tear-right-edge 1.1s ease-out both;
         animation-delay: 40ms;
       }
       .torn-card.tearing .tc-perf::after {
@@ -762,22 +762,28 @@
             scale(1);
         }
       }
+      /* Morphs to the jagged edge early — during the anticipation wiggle
+         (0-45%), well before the big swing-out release (45-70%) — rather
+         than finishing right as that fast motion is happening, where it's
+         hard to actually see it change. Physically closer to how a real
+         perforation works too: the edge goes ragged as force is first
+         applied, not only once the halves visibly swing apart. */
       @keyframes tear-left-edge {
         0%,
-        45% {
+        12% {
           clip-path: var(--tc-edge-flat-l);
         }
-        62%,
+        32%,
         100% {
           clip-path: var(--tc-edge-torn-l);
         }
       }
       @keyframes tear-right-edge {
         0%,
-        45% {
+        12% {
           clip-path: var(--tc-edge-flat-r);
         }
-        62%,
+        32%,
         100% {
           clip-path: var(--tc-edge-torn-r);
         }
@@ -818,17 +824,35 @@
           opacity: 0;
         }
       }
+      /* tear-left-flyoff deliberately isn't chained into the .tearing
+         animation list above, even via animation-delay — a later-listed
+         animation in the same list is "in effect" (via its own
+         backwards fill from both) for its entire delay period, not just
+         once it actually starts, and silently wins over an earlier one
+         targeting the same property (transform) the whole time. With
+         flyoff's 0% pose equal to tear-left's own 100% end pose, that
+         masked the real wiggle-and-release motion outright — tc-left
+         would just snap straight to its settled pose from frame one.
+         Splitting it into its own class, added by JS only once tear-left
+         has actually finished, is what tc-right's own departing split
+         already fixed the same bug for. */
       .torn-card.large.tearing .tc-half.tc-left {
         animation:
-          tear-left 0.85s both,
-          tear-left-edge 0.85s ease-out both,
-          tear-left-flyoff 0.6s ease-in both;
-        animation-delay: 0ms, 0ms, 950ms;
+          tear-left 1.1s both,
+          tear-left-edge 1.1s ease-out both;
       }
-      /* "Yours" settles normally first, then — after a beat, once "theirs"
-         has already gone — continues on its own down and off, standing in
-         for it heading on to become step 2's card (a separate, independent
-         entrance there — see card-arrive below). */
+      .torn-card.large.tearing.theirs-leaving .tc-half.tc-left {
+        animation: tear-left-flyoff 0.6s ease-in both;
+      }
+      /* "Yours" settles and just stays there, unhurried — it only
+         continues on down and off (standing in for it heading on to
+         become step 2's card — a separate, independent entrance there,
+         see card-arrive below) once the user actually scrolls on. Not a
+         fixed delay after "theirs" leaves: that finished on a timer
+         whether or not anyone was even still looking, which is the
+         opposite of "wait for the scroll." The JS below adds .departing
+         once the user has genuinely scrolled step 1 mostly out of view
+         (or, as a fallback, once step 2 arrives regardless). */
       @keyframes tear-right-descend {
         0% {
           transform: translateX(22%) rotate(3deg) rotateY(4deg) translateZ(-6px)
@@ -843,10 +867,12 @@
       }
       .torn-card.large.tearing .tc-half.tc-right {
         animation:
-          tear-right 0.85s both,
-          tear-right-edge 0.85s ease-out both,
-          tear-right-descend 0.7s ease-in both;
-        animation-delay: 40ms, 40ms, 1400ms;
+          tear-right 1.1s both,
+          tear-right-edge 1.1s ease-out both;
+        animation-delay: 40ms;
+      }
+      .torn-card.large.tearing.departing .tc-half.tc-right {
+        animation: tear-right-descend 0.7s ease-in both;
       }
       @keyframes card-arrive {
         0% {
@@ -2254,16 +2280,34 @@
         var tornCards = document.querySelectorAll(".torn-card");
         var largeCard = document.querySelector(".torn-card.large");
         var soloCard = document.querySelector(".torn-card:not(.large)");
-        // Step 1's full departure ("theirs" flies off, then "yours" settles
-        // and descends) finishes around 2.1s in — see tear-left-flyoff's
-        // 950ms delay + 600ms duration, and tear-right-descend's 1400ms
-        // delay + 700ms duration. Step 2's card only reads as a
-        // continuation of the same card if it doesn't start arriving until
-        // that's actually done, so its own scroll-triggered reveal is held
-        // back by whatever's left of that window rather than firing purely
-        // on its own scroll position.
-        var STEP1_SEQUENCE_MS = 2150;
         var step1StartedAt = null;
+        // "Yours" (tc-right) settles and just stays there once torn — it
+        // only continues on down into .departing (which is what step 2's
+        // own arrival waits on) once the user has actually scrolled step 1
+        // mostly out of view, not on a fixed timer regardless of whether
+        // anyone's still looking. yoursDepartureDoneAt is an absolute
+        // performance.now() timestamp for when that departure animation
+        // will finish, set the moment departure is triggered — step 2's
+        // observer callback (below) reads it to know how much longer, if
+        // any, it still needs to wait.
+        var yoursDepartureDoneAt = null;
+        var triggerYoursDeparture = function () {
+          if (!largeCard || largeCard.classList.contains("departing")) {
+            return;
+          }
+          largeCard.classList.add("departing");
+          yoursDepartureDoneAt = performance.now() + 700; // tear-right-descend's own duration
+        };
+        // "Theirs" (tc-left) leaves on its own short fixed beat, unlike
+        // "yours" — it isn't waiting on the user to scroll anywhere, just
+        // a pause after it settles so the release and the exit read as
+        // two distinct moments rather than one continuous blur.
+        var triggerTheirsLeaving = function () {
+          if (!largeCard || largeCard.classList.contains("theirs-leaving")) {
+            return;
+          }
+          largeCard.classList.add("theirs-leaving");
+        };
         if (reduceMotion) {
           tornCards.forEach(function (card) {
             card.classList.add("tearing");
@@ -2272,10 +2316,22 @@
           tornCards.forEach(function (card) {
             // Not { once: true } — a moderator demoing this card across many
             // research sessions needs to replay the tear on click each time,
-            // not just once per pageload.
+            // not just once per pageload. The large card's click replays the
+            // *whole* step 1 → step 2 sequence on a short fixed pace of its
+            // own, rather than also waiting on a real scroll gesture — a
+            // moderator tapping it wants one clean, predictable replay, not
+            // a tap that then still requires scrolling to actually finish.
             card.addEventListener("click", function () {
               if (card === largeCard) {
                 step1StartedAt = performance.now();
+                largeCard.classList.remove("departing", "theirs-leaving");
+                yoursDepartureDoneAt = null;
+                largeCard.classList.remove("tearing");
+                void largeCard.offsetWidth; // force reflow so the animation restarts
+                largeCard.classList.add("tearing");
+                setTimeout(triggerTheirsLeaving, 1500);
+                setTimeout(triggerYoursDeparture, 1540);
+                return;
               }
               card.classList.remove("tearing");
               void card.offsetWidth; // force reflow so the animation restarts
@@ -2287,12 +2343,28 @@
           // starting the observer earlier can catch a card mid-reflow (e.g.
           // while the hero mockup image is still loading and shifting page
           // height) and fire a "scrolled into view" tear that never happened.
+          // A beat before the tear starts — arriving at step 1 and the
+          // tear beginning instantly, with no pause, read as one abrupt
+          // event rather than "you've arrived, now watch this happen."
+          // Click-to-replay (above) skips this on purpose: a direct tap
+          // should feel immediate, this pause is only for the automatic
+          // scroll-triggered reveal.
+          var TEAR_START_PAUSE_MS = 500;
           var tearLargeCard = function () {
-            if (!largeCard || largeCard.classList.contains("tearing")) {
+            if (
+              !largeCard ||
+              largeCard.classList.contains("tearing") ||
+              largeCard.dataset.tearPending
+            ) {
               return;
             }
-            step1StartedAt = performance.now();
-            largeCard.classList.add("tearing");
+            largeCard.dataset.tearPending = "1";
+            setTimeout(function () {
+              delete largeCard.dataset.tearPending;
+              step1StartedAt = performance.now();
+              largeCard.classList.add("tearing");
+              setTimeout(triggerTheirsLeaving, 1500);
+            }, TEAR_START_PAUSE_MS);
           };
           var largeCardHandledBySnap = false;
           var startTearObservers = function () {
@@ -2343,7 +2415,38 @@
               tornCards.forEach(function (card) {
                 card.classList.add("tearing");
               });
+              // No way to watch for scroll-past here either — just let
+              // "yours" depart immediately too, rather than sit stranded.
+              triggerYoursDeparture();
               return;
+            }
+            // The organic trigger for "yours" departing: watches step 1
+            // itself, and fires once it's been substantially visible and
+            // then drops back below that — i.e. the user has actually
+            // scrolled on past it, not merely that it's off-screen because
+            // the page hasn't scrolled there yet. threshold: [0, 0.6] gets
+            // a callback at both crossings, so hasBeenVisible only flips
+            // true on the way past 60%, and a later drop below it is what
+            // reads as "left."
+            if (largeCard) {
+              var largeStep = largeCard.closest(".step");
+              if (largeStep) {
+                var hasBeenVisible = false;
+                var leaveIo = new IntersectionObserver(
+                  function (entries) {
+                    entries.forEach(function (entry) {
+                      if (entry.intersectionRatio >= 0.6) {
+                        hasBeenVisible = true;
+                      } else if (hasBeenVisible) {
+                        triggerYoursDeparture();
+                        leaveIo.unobserve(entry.target);
+                      }
+                    });
+                  },
+                  { threshold: [0, 0.6] },
+                );
+                leaveIo.observe(largeStep);
+              }
             }
             tornCards.forEach(function (card) {
               if (card === largeCard && largeCardHandledBySnap) {
@@ -2357,13 +2460,20 @@
                       if (card === largeCard) {
                         tearLargeCard();
                       } else if (card === soloCard) {
+                        // Fallback for a fast scroll that reaches step 2
+                        // before step 1 has genuinely been scrolled past
+                        // (the leave-watcher above hasn't fired yet) —
+                        // this call is a no-op if departure is already
+                        // under way, and otherwise starts it right now so
+                        // step 2 isn't left waiting on an event that may
+                        // never come.
+                        triggerYoursDeparture();
                         var wait =
-                          step1StartedAt === null
+                          yoursDepartureDoneAt === null
                             ? 0
                             : Math.max(
                                 0,
-                                STEP1_SEQUENCE_MS -
-                                  (performance.now() - step1StartedAt),
+                                yoursDepartureDoneAt - performance.now(),
                               );
                         setTimeout(function () {
                           card.classList.add("tearing");
