@@ -10,17 +10,21 @@ feature.
 
 ## 1. Stretch-goal voting (votes backend)
 
-**Status: roadmap content shipped (static, no voting yet); backend
-decided but paused — not yet built.**
+**Status: the static roadmap content that was shipped has since been cut
+back out for the MVP (full markup/CSS preserved in
+[mvp-archive.md](mvp-archive.md), section 2); backend still decided but
+paused — not yet built.**
 
-The "What's next" section now lives in `index.html` between the trust-bullet
+The "What's next" section lived in `index.html` between the trust-bullet
 cards and the support/donate section — a continuation of the "How it
 works" numbered steps (items 8 and 9, same `.step`/`.step-num` styling,
 own mini connector line), listing the two ideas below with a line noting
 "Community voting on what we build next is coming soon." No vote buttons,
 no counts — purely the static roadmap half of the original idea, shippable
-with zero backend. The interactive half (the actual voting/tallying) is
-still the paused, not-yet-built piece described below.
+with zero backend. It's cut from the live site now, not deleted — bring it
+back from the archive doc whenever the roadmap is worth surfacing again.
+The interactive half (the actual voting/tallying) is still the paused,
+not-yet-built piece described below.
 
 ### The idea
 
@@ -102,8 +106,13 @@ proxy / same-origin trick available once it's a separate service).
 
 ## 2. Donate / crowdfunding section
 
-**Status: built.** Lives in `index.html` between the trust-bullet cards and
-the footer (`.support` section).
+**Status: was built, cut back out for the MVP.** Full markup/CSS/JS
+preserved in [mvp-archive.md](mvp-archive.md), section 3, in case it comes
+back before real payment processing is ready to replace it. It used to live
+in `index.html` between the trust-bullet cards and the footer (`.support`
+section) — that section, and its `../#support` link from `funding/index.html`
+("Chip in from the home page — donations already work today"), are both
+gone from the live site now.
 
 Kickstarter/tip-jar-style tiers, styled to match the trust-card grid:
 
@@ -151,3 +160,34 @@ backend) stating:
 Open items: where it lives in the site structure (e.g. `/sponsors/`), exact
 page copy beyond the core facts above, and whether it's linked from the
 main page (footer link, nav) or left unlinked/only shared directly.
+
+---
+
+## 4. Donor recognition — supporters wall / profile photos
+
+**Status: idea floated, deliberately not building yet.**
+
+Proposed: small round profile photos of donors displayed by tier, plus
+copy like "Founding Supporter: be one of the people who got this off the
+ground — have your name memorialized on our founder's wall." The
+aspirational copy half of this is already live (the Founding Supporter
+tier's own description); the wall/photos half is what's on hold.
+
+**Why paused, not just "later":** a public wall tying real names and faces
+to "financially supports an anonymous STI-notification app" sits in real
+tension with the product's own core promise — no tracking, no profiling,
+nothing traceable, anonymous by design. Donating isn't shameful, but some
+supporters (family, people with public-facing jobs, anyone private about
+sexual-health advocacy) may not want their face publicly tied to this
+specific cause, even as a supporter rather than a user. It's also a
+materially bigger build than it looks: needs accounts or an upload flow,
+photo moderation, an explicit consent flow, and GDPR-compliant deletion
+handling — none of which exists today, and none of which is a small
+addition once real payment processing (see §2) is also in the picture.
+
+**If recognition is still wanted, the lighter option**: an opt-in,
+name-or-handle-only list (no photos), shown only for donors who explicitly
+choose to be listed at the point of donating — meaningfully lower privacy
+exposure and a much smaller build than a photo wall, though it still needs
+the same real payment/donor-data infrastructure §2 is waiting on before
+there's any "donor" to list in the first place.

@@ -566,6 +566,21 @@
         display: flex;
         width: fit-content;
         margin: 40px auto 32px;
+        /* Referenced by the tear/leaving/departing animation durations
+           below. .fast (added by JS when the user scrolls to step 2
+           faster than the normal pace can finish) shortens all three at
+           once by overriding just these — the animation-name/easing/
+           fill-mode stay exactly the same, so it genuinely speeds the
+           real motion up rather than swapping in a different effect or
+           cutting straight to the end state. */
+        --tear-dur: 1.1s;
+        --leave-dur: 0.6s;
+        --descend-dur: 0.7s;
+      }
+      .torn-card.large.fast {
+        --tear-dur: 0.45s;
+        --leave-dur: 0.3s;
+        --descend-dur: 0.3s;
       }
       /* Each ghost is sized/positioned to match its half's own resting spot
          (not measured — just the same width/radius rules as .tc-half
@@ -838,11 +853,11 @@
          already fixed the same bug for. */
       .torn-card.large.tearing .tc-half.tc-left {
         animation:
-          tear-left 1.1s both,
-          tear-left-edge 1.1s ease-out both;
+          tear-left var(--tear-dur) both,
+          tear-left-edge var(--tear-dur) ease-out both;
       }
       .torn-card.large.tearing.theirs-leaving .tc-half.tc-left {
-        animation: tear-left-flyoff 0.6s ease-in both;
+        animation: tear-left-flyoff var(--leave-dur) ease-in both;
       }
       /* "Yours" settles and just stays there, unhurried — it only
          continues on down and off (standing in for it heading on to
@@ -867,16 +882,22 @@
       }
       .torn-card.large.tearing .tc-half.tc-right {
         animation:
-          tear-right 1.1s both,
-          tear-right-edge 1.1s ease-out both;
+          tear-right var(--tear-dur) both,
+          tear-right-edge var(--tear-dur) ease-out both;
         animation-delay: 40ms;
       }
       .torn-card.large.tearing.departing .tc-half.tc-right {
-        animation: tear-right-descend 0.7s ease-in both;
+        animation: tear-right-descend var(--descend-dur) ease-in both;
       }
+      /* Starting pose deliberately echoes tear-right-descend's own ending
+         pose (rotate(2deg), scale ~0.85) instead of an unrelated tilt/
+         scale — with the two animations now overlapping in time (see
+         DEPARTURE_OVERLAP_MS in the JS below), matching rotation/scale
+         direction is what makes the handoff read as one continuous
+         motion rather than two coincidentally-adjacent ones. */
       @keyframes card-arrive {
         0% {
-          transform: translateY(-55%) rotate(-4deg) scale(0.92);
+          transform: translateY(-50%) rotate(2deg) scale(0.88);
           opacity: 0;
         }
         100% {
@@ -992,72 +1013,218 @@
         color: var(--gray);
         line-height: 1.35;
       }
-      .mp-btn {
-        background: linear-gradient(135deg, var(--purple-light), var(--teal));
-        color: #05070d;
-        border-radius: 999px;
-        padding: 6% 12%;
-        font-size: clamp(9.5px, 2.6vw, 11px);
-        font-weight: 600;
-      }
-      .mp-check {
-        width: 24%;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        border: 1.5px solid var(--teal);
-        color: var(--teal);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: clamp(13px, 3.5vw, 16px);
+      @media (prefers-reduced-motion: reduce) {
+        .mp-connected .mp-label,
+        .mp-connected .mp-heart,
+        .mp-connected .mp-sub {
+          opacity: 1;
+          transform: none;
+        }
+        .mp-notif {
+          opacity: 1;
+          transform: none;
+
+        }
+        .mp-notif-icon {
+          animation: none;
+        }
       }
       .mp-heart {
         font-size: clamp(20px, 5vw, 26px);
+      }
+      /* ---- step 4 "Connected": a short celebratory entrance once the
+         user arrives here. Reuses the same .step.content-active trigger
+         every other mini-phone already uses, scoped under .mp-connected
+         so the shared .mp-label/.mp-sub classes other steps' phones use
+         aren't affected. */
+      .mp-connected .mp-label,
+      .mp-connected .mp-heart,
+      .mp-connected .mp-sub {
+        opacity: 0;
+      }
+      @keyframes mp-match-label-in {
+        0%,
+        15% {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.08);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes mp-match-heart-in {
+        0%,
+        30% {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+        55% {
+          opacity: 1;
+          transform: scale(1.35);
+        }
+        72% {
+          transform: scale(0.92);
+        }
+        86% {
+          transform: scale(1.12);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes mp-match-sub-in {
+        0%,
+        62% {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .step.content-active .mp-connected .mp-label {
+        animation: mp-match-label-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .step.content-active .mp-connected .mp-heart {
+        animation: mp-match-heart-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .step.content-active .mp-connected .mp-sub {
+        animation: mp-match-sub-in 1.1s ease both;
+      }
+      /* A scoped modifier, not a change to the shared .mp-screen rule —
+         every other mini-phone step relies on that one centering its
+         single child. This one pulls its content up off dead-center,
+         since a real notification banner lands well above the screen's
+         vertical midpoint, just not glued to the very top edge either. */
+      .mp-screen-notif {
+        justify-content: center;
       }
       .mp-notif {
         display: flex;
         align-items: flex-start;
         gap: 8%;
         width: 100%;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 16%;
-        padding: 9%;
+        background: rgba(40, 40, 46, 0.78);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 20%;
+        padding: 8% 9%;
         text-align: left;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transform: translateY(-80%) scale(0.92);
       }
+      /* A solid rounded-square, not a translucent circle — real
+         notification icons are opaque app icons, not soft glass badges. */
       .mp-notif-icon {
         flex-shrink: 0;
-        width: 26%;
+        width: 22%;
         aspect-ratio: 1;
-        border-radius: 50%;
-        background: linear-gradient(
-          135deg,
-          rgba(96, 165, 250, 0.32),
-          rgba(29, 78, 216, 0.32)
-        );
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        border-radius: 26%;
+        background: linear-gradient(135deg, var(--purple-light), var(--purple));
         display: flex;
         align-items: center;
         justify-content: center;
       }
       .mp-notif-icon svg {
-        width: 55%;
-        height: 55%;
+        width: 58%;
+        height: 58%;
       }
       .mp-notif-text {
         display: flex;
         flex-direction: column;
-        gap: 5%;
+        gap: 4%;
         text-align: left;
         min-width: 0;
+      }
+      .mp-notif-meta {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: clamp(7.5px, 2vw, 8.5px);
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--gray);
+      }
+      /* Smaller and more muted than the app name it sits beside — a real
+         notification timestamp is a quiet aside, not a second label. */
+      .mp-notif-time {
+        font-size: clamp(6px, 1.5vw, 6.5px);
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        opacity: 0.6;
+      }
+      /* ---- step 6 "Notified": an iOS-style notification banner drop —
+         the whole card falls in as one rigid unit (real lock-screen
+         banners don't stagger their internal text, they arrive as a
+         single sheet) with a spring overshoot, then a small pulse on the
+         icon reads as the alert "landing." Same .step.content-active
+         trigger every other mini-phone already uses. */
+      @keyframes mp-notif-drop-in {
+        0% {
+          opacity: 0;
+          transform: translateY(-80%) scale(0.92);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @keyframes mp-notif-icon-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(96, 165, 250, 0);
+        }
+        50% {
+          transform: scale(1.14);
+          box-shadow: 0 0 0 6px rgba(96, 165, 250, 0.16);
+        }
+      }
+      .step.content-active .mp-notif {
+        animation: mp-notif-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      .step.content-active .mp-notif-icon {
+        animation: mp-notif-icon-pulse 0.5s ease-out 0.6s both;
       }
       .mp-frame {
         position: relative;
         width: 56%;
         aspect-ratio: 1;
         margin: 3% 0;
+        overflow: hidden;
+      }
+      /* Inset from the corner brackets, not flush with the frame — sits
+         behind them and the scanline (first in DOM, so both paint over
+         it) the way a real card would sit inside a camera viewfinder.
+         top/left/width/height, not inset: 15% — this is an <img> (a
+         replaced element) with HTML width/height attributes (280x280)
+         as sizing hints; an absolutely positioned replaced element with
+         width left auto falls back to that intrinsic size instead of
+         solving the inset percentages, so the image rendered near its
+         full natural size and just got clipped by .mp-frame's
+         overflow: hidden instead of actually shrinking to fit. Explicit
+         width/height bypass that fallback entirely — same fix as
+         .mp-checkmark's own inset bug elsewhere on this page, different
+         cause. */
+      .mp-frame-qr {
+        position: absolute;
+        top: 15%;
+        left: 15%;
+        width: 70%;
+        height: 70%;
+        border-radius: 6%;
+        object-fit: cover;
+        display: block;
       }
       .mp-corner {
         position: absolute;
@@ -1087,6 +1254,94 @@
       .mp-corner.br {
         bottom: 0;
         right: 0;
+      }
+      /* Camera-viewfinder cue: a beam sweeps the frame once while the
+         corners breathe (the same shorthand every native QR scanner
+         uses), then locks — corners flash and steady, beam fades out —
+         reading as "found it" without needing an actual camera feed to
+         simulate. Self-contained within step 3's own .content-active
+         timeline, same trigger every other mini-phone already uses. */
+      .mp-scanline {
+        position: absolute;
+        left: 2%;
+        right: 2%;
+        height: 2px;
+        border-radius: 999px;
+        background: linear-gradient(
+          90deg,
+          rgba(45, 212, 191, 0) 0%,
+          rgba(45, 212, 191, 0.95) 50%,
+          rgba(45, 212, 191, 0) 100%
+        );
+        box-shadow: 0 0 6px 1px rgba(45, 212, 191, 0.65);
+        top: 6%;
+        opacity: 0;
+      }
+      @keyframes mp-scan-sweep {
+        0% {
+          top: 6%;
+          opacity: 0;
+        }
+        4% {
+          opacity: 1;
+        }
+        55% {
+          top: 88%;
+          opacity: 1;
+        }
+        62%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes mp-corner-scan {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow: 0 0 0 rgba(45, 212, 191, 0);
+        }
+        15% {
+          opacity: 0.5;
+        }
+        30% {
+          opacity: 1;
+        }
+        45% {
+          opacity: 0.5;
+        }
+        60% {
+          opacity: 1;
+        }
+        68% {
+          opacity: 0.6;
+        }
+        80% {
+          opacity: 1;
+          transform: scale(1.15);
+          box-shadow: 0 0 6px 1px rgba(45, 212, 191, 0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow: 0 0 0 rgba(45, 212, 191, 0);
+        }
+      }
+      .step.content-active .mp-scanline {
+        animation: mp-scan-sweep 2.2s ease-in-out both;
+      }
+      .step.content-active .mp-corner {
+        animation: mp-corner-scan 2.2s ease both;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mp-scanline {
+          opacity: 0;
+        }
+        .mp-corner {
+          opacity: 1;
+          transform: none;
+          box-shadow: none;
+        }
       }
 
       /* ---- steps: centered stack mobile-first, left-rail beside text once there's room ---- */
@@ -1329,187 +1584,6 @@
         }
       }
 
-      /* ---- support / donate tiers ---- */
-      .support {
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        max-width: clamp(320px, 92vw, 640px);
-        margin: 0 auto;
-        padding: 48px 20px 8px;
-      }
-      .support-copy {
-        text-align: center;
-        color: var(--gray);
-        font-size: 13.5px;
-        line-height: 1.6;
-        max-width: 46ch;
-        margin: 14px auto 38px;
-      }
-      .support-toggle-wrap {
-        text-align: center;
-        margin-top: 22px;
-      }
-      .support-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 22px;
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, var(--purple-light), var(--teal));
-        color: #05070d;
-        font-family: inherit;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.2s ease;
-      }
-      .support-toggle:hover {
-        box-shadow: 0 8px 24px -8px rgba(96, 165, 250, 0.5);
-      }
-      .support-soon {
-        margin: 10px 0 0;
-        font-size: 11.5px;
-        color: rgba(244, 244, 246, 0.4);
-      }
-      .support-toggle:active {
-        transform: scale(0.96);
-      }
-      .support-toggle-icon {
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .support-toggle[aria-expanded="true"] .support-toggle-icon {
-        transform: rotate(180deg);
-      }
-      /* Height/opacity reveal via the grid-rows trick (0fr -> 1fr) — no
-         JS measurement needed, works regardless of content height. The
-         inner wrapper's overflow:hidden is what actually clips the
-         content while the row is collapsed. */
-      .tiers-wrap {
-        display: grid;
-        grid-template-rows: 0fr;
-        transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .tiers-wrap.is-open {
-        grid-template-rows: 1fr;
-      }
-      .tiers-inner {
-        overflow: hidden;
-        min-height: 0;
-        opacity: 0;
-        transform: translateY(-8px);
-        transition:
-          opacity 0.3s ease,
-          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .tiers-wrap.is-open .tiers-inner {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .tiers-wrap,
-        .tiers-inner,
-        .support-toggle-icon {
-          transition: none;
-        }
-      }
-      .tiers {
-        list-style: none;
-        margin: 28px auto 0;
-        padding: 0;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      .tier {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 6px;
-        padding: 20px 14px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        position: relative;
-      }
-      .tier-founding {
-        grid-column: 1 / -1;
-        background: linear-gradient(
-          135deg,
-          rgba(96, 165, 250, 0.1),
-          rgba(45, 212, 191, 0.08)
-        );
-        border: 1px solid rgba(96, 165, 250, 0.3);
-      }
-      .tier-badge {
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #05070d;
-        background: linear-gradient(135deg, var(--purple-light), var(--teal));
-        padding: 3px 10px;
-        border-radius: 999px;
-      }
-      .tier-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--white);
-        margin-top: 6px;
-      }
-      .tier-amount {
-        font-size: 20px;
-        font-weight: 700;
-        background: linear-gradient(120deg, var(--purple-light), var(--teal));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-      .tier-desc {
-        font-size: 12px;
-        color: var(--gray);
-        line-height: 1.4;
-      }
-      .tier-btn {
-        margin-top: 8px;
-        display: inline-block;
-        font-size: 12.5px;
-        font-weight: 600;
-        color: var(--gray);
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 999px;
-        padding: 8px 18px;
-        text-decoration: none;
-        transition:
-          background 0.2s ease,
-          color 0.2s ease,
-          transform 0.15s ease;
-      }
-      .tier-btn:hover,
-      .tier-btn:focus-visible {
-        color: var(--white);
-      }
-      .tier-btn:hover,
-      .tier-btn:focus-visible {
-        background: rgba(255, 255, 255, 0.14);
-      }
-      .tier-btn:active {
-        transform: scale(0.96);
-      }
-      .tier-founding .tier-btn {
-        background: linear-gradient(135deg, var(--purple-light), var(--teal));
-        color: #05070d;
-        border: none;
-      }
       .support-note {
         text-align: center;
         font-size: 12px;
@@ -1526,22 +1600,65 @@
       .support-note a:focus-visible {
         text-decoration-color: currentColor;
       }
-      @media (min-width: 1024px) {
-        .support {
-          max-width: 900px;
-        }
-        .tiers {
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-        }
-        .tier-founding {
-          grid-column: auto;
-        }
-        .tier {
-          padding: 24px 16px;
-        }
+      .share-wrap {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin: 12px 0 0;
       }
-
+      .share-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--gray);
+        font-family: inherit;
+        font-size: 13.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          transform 0.15s ease;
+      }
+      .share-btn:hover,
+      .share-btn:focus-visible {
+        color: var(--white);
+        border-color: rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .share-btn:active {
+        transform: scale(0.96);
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: calc(24px + env(safe-area-inset-bottom));
+        transform: translateX(-50%) translateY(12px);
+        max-width: calc(100vw - 40px);
+        background: var(--bg2);
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-size: 12.5px;
+        text-align: center;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 50;
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+      }
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
       footer {
         position: relative;
         z-index: 2;
@@ -1819,6 +1936,15 @@
               <div class="mp-screen">
                 <span class="mp-label">Scan your card</span>
                 <div class="mp-frame">
+                  <img
+                    class="mp-frame-qr"
+                    src="qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <span class="mp-corner h tl"></span
                   ><span class="mp-corner v tl"></span>
                   <span class="mp-corner h tr"></span
@@ -1827,6 +1953,7 @@
                   ><span class="mp-corner v bl"></span>
                   <span class="mp-corner h br"></span
                   ><span class="mp-corner v br"></span>
+                  <span class="mp-scanline"></span>
                 </div>
                 <span class="mp-sub">Align the QR within the frame</span>
               </div>
@@ -1835,26 +1962,6 @@
         </li>
         <li class="step scroll-reveal" style="--sd: 3">
           <span class="step-num">4</span>
-          <div class="step-body">
-            <span class="step-label">Claim</span>
-            <span class="step-desc"
-              >Make it yours — no name or identifying info required.</span
-            >
-          </div>
-          <div class="step-visual">
-            <div class="mini-phone" aria-hidden="true">
-              <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen">
-                <span class="mp-check">&#10003;</span>
-                <span class="mp-label">Card found</span>
-                <span class="mp-sub">Make this card yours?</span>
-                <span class="mp-btn">Claim Card</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" style="--sd: 4">
-          <span class="step-num">5</span>
           <div class="step-body">
             <span class="step-label"
               >Connected
@@ -1891,7 +1998,7 @@
             >
           </div>
           <div class="step-visual">
-            <div class="mini-phone" aria-hidden="true">
+            <div class="mini-phone mp-connected" aria-hidden="true">
               <div class="mp-bar"><span class="mp-island"></span></div>
               <div class="mp-screen">
                 <span class="mp-label">It's a match!</span>
@@ -1901,8 +2008,8 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 5">
-          <span class="step-num">6</span>
+        <li class="step scroll-reveal" style="--sd: 4">
+          <span class="step-num">5</span>
           <div class="step-body">
             <span class="step-label">Notified</span>
             <span class="step-desc"
@@ -1913,7 +2020,7 @@
           <div class="step-visual">
             <div class="mini-phone" aria-hidden="true">
               <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen">
+              <div class="mp-screen mp-screen-notif">
                 <div class="mp-notif">
                   <span class="mp-notif-icon">
                     <svg
@@ -1929,6 +2036,10 @@
                     </svg>
                   </span>
                   <span class="mp-notif-text">
+                    <span class="mp-notif-meta">
+                      <span class="mp-notif-app">AfterCare</span>
+                      <span class="mp-notif-time">now</span>
+                    </span>
                     <span class="mp-label">Possible exposure</span>
                     <span class="mp-sub">No names. Just the alert.</span>
                   </span>
@@ -1937,8 +2048,8 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 6">
-          <span class="step-num">7</span>
+        <li class="step scroll-reveal" style="--sd: 5">
+          <span class="step-num">6</span>
           <div class="step-body">
             <span class="step-label"
               >Treated
@@ -1978,21 +2089,21 @@
               </span>
             </span>
             <span class="step-desc"
-              >Get tested & treated sooner, and help the community push back
-              bacterial STIs — which just hit
+              >Get treated sooner, and help the community push back bacterial
+              STIs — which just hit
               <a
                 class="footer-origin-link"
                 href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
                 target="_blank"
                 rel="noopener noreferrer"
-                >record highs across Europe</a
+                >record highs across Europe!</a
               >.</span
             >
           </div>
         </li>
       </ol>
 
-      <ul class="trust scroll-reveal" style="--sd: 7">
+      <ul class="trust scroll-reveal" style="--sd: 6">
         <li>
           <svg
             class="trust-icon"
@@ -2073,117 +2184,40 @@
       </ul>
     </section>
 
-    <section class="how stretch-goals" id="stretch-goals">
-      <div class="how-title scroll-reveal" style="--sd: 8">What's next</div>
-      <p class="support-copy scroll-reveal" style="--sd: 8">
-        Ideas we're considering once AfterCare is past testing. Community voting
-        on what we build next is coming soon.
-      </p>
-      <ol class="steps">
-        <li class="step scroll-reveal" style="--sd: 8">
-          <span class="step-num">1</span>
-          <div class="step-body">
-            <span class="step-label">Discrete mode</span>
-            <span class="step-desc"
-              >A low-profile app icon and discrete mode to avoid prying
-              eyes</span
-            >
-          </div>
-        </li>
-        <li class="step scroll-reveal" style="--sd: 9">
-          <span class="step-num">2</span>
-          <div class="step-body">
-            <span class="step-label">Collectible cards</span>
-            <span class="step-desc"
-              >Special-edition card designs for events and venues.</span
-            >
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <section class="support" id="support">
-      <div class="how-title scroll-reveal" style="--sd: 10">
-        Support the project
-      </div>
-      <p class="support-copy scroll-reveal" style="--sd: 10">
-        AfterCare is free and volunteer-run — no investors yet, and no ad
-        revenue, <b>ever</b>. Made by the community, for the community. Still,
-        developing, hosting a server, printing, and distributing cards costs
-        real money. If this is worth something to you, a small contribution
-        helps keep it going.
-      </p>
-      <div class="support-toggle-wrap scroll-reveal" style="--sd: 10">
-        <button
-          type="button"
-          class="support-toggle"
-          id="supportToggle"
-          aria-expanded="false"
-          aria-controls="donate-tiers"
+    <div class="share-wrap reveal" style="--d: 9">
+      <button type="button" class="share-btn" id="shareBtn">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <span>I want to donate</span>
-          <svg
-            class="support-toggle-icon"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
-        <p class="support-soon">One-click donations coming soon.</p>
-      </div>
-      <div class="tiers-wrap" id="donate-tiers" inert>
-        <div class="tiers-inner">
-          <ul class="tiers">
-            <li class="tier">
-              <span class="tier-name">Tip Jar</span>
-              <span class="tier-amount">€5</span>
-              <span class="tier-desc">Buy the team a coffee.</span>
-              <a
-                class="tier-btn"
-                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Tip%20Jar"
-                >Chip in</a
-              >
-            </li>
-            <li class="tier">
-              <span class="tier-name">Supporter</span>
-              <span class="tier-amount">€25</span>
-              <span class="tier-desc">Help cover a month of hosting.</span>
-              <a
-                class="tier-btn"
-                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Supporter"
-                >Chip in</a
-              >
-            </li>
-            <li class="tier tier-founding">
-              <span class="tier-badge">Most impact</span>
-              <span class="tier-name">Founding Supporter</span>
-              <span class="tier-amount">€100+</span>
-              <span class="tier-desc"
-                >Be one of the people who got this off the ground.</span
-              >
-              <a
-                class="tier-btn"
-                href="mailto:contact.aftercare@protonmail.com?subject=AfterCare%20Founding%20Supporter"
-                >Chip in</a
-              >
-            </li>
-          </ul>
-          <p class="support-note">
-            Representing an organization?
-            <a href="mailto:contact.aftercare@protonmail.com">Get in touch</a>
-            about sponsorship.
-          </p>
-        </div>
-      </div>
-    </section>
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <path d="m8.6 13.5 6.8 3.9" />
+          <path d="m15.4 6.6-6.8 3.9" />
+        </svg>
+        <span>Share with a friend</span>
+      </button>
+      <p class="support-note">
+        <br />
+        A doctor or researcher? <br />
+        <a
+          href="mailto:contact.aftercare@protonmail.com?subject=Doctor%2FResearcher%20Partnership"
+          >Get in touch</a
+        >
+        to partner
+        <br />with the project.
+      </p>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <footer class="reveal" style="--d: 8">
       <p class="footer-tagline">
@@ -2281,6 +2315,7 @@
         var largeCard = document.querySelector(".torn-card.large");
         var soloCard = document.querySelector(".torn-card:not(.large)");
         var step1StartedAt = null;
+        var step1ArrivalScrollY = null;
         // "Yours" (tc-right) settles and just stays there once torn — it
         // only continues on down into .departing (which is what step 2's
         // own arrival waits on) once the user has actually scrolled step 1
@@ -2291,12 +2326,20 @@
         // observer callback (below) reads it to know how much longer, if
         // any, it still needs to wait.
         var yoursDepartureDoneAt = null;
+        // How much earlier step 2 starts arriving than "yours" actually
+        // finishes fading out in step 1 — a deliberate overlap so the
+        // handoff reads as one continuous flow-through (like a crossfade)
+        // instead of a hard cut with a gap where neither card is visible.
+        var DEPARTURE_OVERLAP_MS = 400;
         var triggerYoursDeparture = function () {
           if (!largeCard || largeCard.classList.contains("departing")) {
             return;
           }
+          // Matches --descend-dur — 300ms in .fast mode, 700ms otherwise.
+          var duration = largeCard.classList.contains("fast") ? 300 : 700;
           largeCard.classList.add("departing");
-          yoursDepartureDoneAt = performance.now() + 700; // tear-right-descend's own duration
+          yoursDepartureDoneAt =
+            performance.now() + Math.max(0, duration - DEPARTURE_OVERLAP_MS);
         };
         // "Theirs" (tc-left) leaves on its own short fixed beat, unlike
         // "yours" — it isn't waiting on the user to scroll anywhere, just
@@ -2307,6 +2350,39 @@
             return;
           }
           largeCard.classList.add("theirs-leaving");
+        };
+        // The "speed runner" path: the user scrolled to step 2 faster
+        // than step 1's normal pace can finish. Rather than either make
+        // them wait for it or cut straight to the end state (which reads
+        // as the animation just not having played at all), .fast
+        // shortens --tear-dur/--leave-dur/--descend-dur so the *same*
+        // real animations play, just compressed — including speeding up
+        // the tear if it's already mid-flight, since changing an
+        // animation's duration while it's running genuinely changes its
+        // playback rate rather than jumping it.
+        var fastForwardStep1 = function (onDone) {
+          if (!largeCard || largeCard.classList.contains("fast")) {
+            if (onDone) onDone();
+            return;
+          }
+          var alreadyTearing = largeCard.classList.contains("tearing");
+          largeCard.classList.add("fast");
+          if (!alreadyTearing) {
+            largeCard.classList.add("tearing");
+          }
+          // An approximation, not a frame-exact handoff: gives the (now
+          // sped-up) tear a short beat to actually be visible, whether it
+          // just started here or was already mid-flight at normal pace,
+          // then lets onDone (step 2's own entrance) know once the
+          // (also sped-up) departure has actually finished, rather than
+          // firing the instant fast-forwarding is merely requested.
+          setTimeout(function () {
+            triggerTheirsLeaving();
+            triggerYoursDeparture();
+            if (onDone) {
+              setTimeout(onDone, 300); // matches --descend-dur in fast mode
+            }
+          }, 350);
         };
         if (reduceMotion) {
           tornCards.forEach(function (card) {
@@ -2324,6 +2400,7 @@
             card.addEventListener("click", function () {
               if (card === largeCard) {
                 step1StartedAt = performance.now();
+                step1ArrivalScrollY = window.scrollY;
                 largeCard.classList.remove("departing", "theirs-leaving");
                 yoursDepartureDoneAt = null;
                 largeCard.classList.remove("tearing");
@@ -2349,7 +2426,7 @@
           // Click-to-replay (above) skips this on purpose: a direct tap
           // should feel immediate, this pause is only for the automatic
           // scroll-triggered reveal.
-          var TEAR_START_PAUSE_MS = 500;
+          var TEAR_START_PAUSE_MS = 200;
           var tearLargeCard = function () {
             if (
               !largeCard ||
@@ -2362,6 +2439,7 @@
             setTimeout(function () {
               delete largeCard.dataset.tearPending;
               step1StartedAt = performance.now();
+              step1ArrivalScrollY = window.scrollY;
               largeCard.classList.add("tearing");
               setTimeout(triggerTheirsLeaving, 1500);
             }, TEAR_START_PAUSE_MS);
@@ -2420,34 +2498,33 @@
               triggerYoursDeparture();
               return;
             }
-            // The organic trigger for "yours" departing: watches step 1
-            // itself, and fires once it's been substantially visible and
-            // then drops back below that — i.e. the user has actually
-            // scrolled on past it, not merely that it's off-screen because
-            // the page hasn't scrolled there yet. threshold: [0, 0.6] gets
-            // a callback at both crossings, so hasBeenVisible only flips
-            // true on the way past 60%, and a later drop below it is what
-            // reads as "left."
-            if (largeCard) {
-              var largeStep = largeCard.closest(".step");
-              if (largeStep) {
-                var hasBeenVisible = false;
-                var leaveIo = new IntersectionObserver(
-                  function (entries) {
-                    entries.forEach(function (entry) {
-                      if (entry.intersectionRatio >= 0.6) {
-                        hasBeenVisible = true;
-                      } else if (hasBeenVisible) {
-                        triggerYoursDeparture();
-                        leaveIo.unobserve(entry.target);
-                      }
-                    });
-                  },
-                  { threshold: [0, 0.6] },
-                );
-                leaveIo.observe(largeStep);
+            // The organic trigger for "yours" departing: watches actual
+            // scroll position relative to where the user was when they
+            // arrived at step 1 (step1ArrivalScrollY, recorded the moment
+            // tearing starts), rather than an IntersectionObserver
+            // visibility test. Two different ratio/rootMargin-based
+            // attempts at this both had real geometric edge cases baked
+            // in that made them misfire — comparing raw scroll offsets is
+            // simple enough to actually verify by inspection: scrolling
+            // forward by roughly half a screen since arrival is a direct,
+            // unambiguous "heading on toward step 2" signal, regardless
+            // of exactly how tall step 1's own content is.
+            var checkScrollDeparture = function () {
+              if (!largeCard || largeCard.classList.contains("departing")) {
+                window.removeEventListener("scroll", checkScrollDeparture);
+                return;
               }
-            }
+              if (
+                step1ArrivalScrollY !== null &&
+                window.scrollY - step1ArrivalScrollY > window.innerHeight * 0.5
+              ) {
+                triggerYoursDeparture();
+                window.removeEventListener("scroll", checkScrollDeparture);
+              }
+            };
+            window.addEventListener("scroll", checkScrollDeparture, {
+              passive: true,
+            });
             tornCards.forEach(function (card) {
               if (card === largeCard && largeCardHandledBySnap) {
                 return;
@@ -2460,24 +2537,35 @@
                       if (card === largeCard) {
                         tearLargeCard();
                       } else if (card === soloCard) {
-                        // Fallback for a fast scroll that reaches step 2
-                        // before step 1 has genuinely been scrolled past
-                        // (the leave-watcher above hasn't fired yet) —
-                        // this call is a no-op if departure is already
-                        // under way, and otherwise starts it right now so
-                        // step 2 isn't left waiting on an event that may
-                        // never come.
-                        triggerYoursDeparture();
-                        var wait =
-                          yoursDepartureDoneAt === null
-                            ? 0
-                            : Math.max(
-                                0,
-                                yoursDepartureDoneAt - performance.now(),
-                              );
-                        setTimeout(function () {
-                          card.classList.add("tearing");
-                        }, wait);
+                        if (
+                          largeCard &&
+                          largeCard.classList.contains("departing")
+                        ) {
+                          // The leave-watcher already caught this
+                          // naturally — let whatever's left of its own
+                          // pace finish rather than jump it for no reason.
+                          var wait =
+                            yoursDepartureDoneAt === null
+                              ? 0
+                              : Math.max(
+                                  0,
+                                  yoursDepartureDoneAt - performance.now(),
+                                );
+                          setTimeout(function () {
+                            card.classList.add("tearing");
+                          }, wait);
+                        } else {
+                          // The leave-watcher hasn't fired — the user
+                          // scrolled to step 2 faster than step 1's own
+                          // paced sequence could finish ("speed runner").
+                          // Speed the real animation up rather than
+                          // cutting to its end state, and only reveal
+                          // step 2 once that sped-up sequence is actually
+                          // done playing.
+                          fastForwardStep1(function () {
+                            card.classList.add("tearing");
+                          });
+                        }
                       } else {
                         card.classList.add("tearing");
                       }
@@ -2496,6 +2584,130 @@
               once: true,
             });
           }
+        }
+
+        var toastEl = document.getElementById("toast");
+        var toastTimer;
+        var showToast = function (message) {
+          if (!toastEl) return;
+          toastEl.textContent = message;
+          toastEl.classList.add("is-visible");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toastEl.classList.remove("is-visible");
+          }, 2600);
+        };
+
+        var shareBtn = document.getElementById("shareBtn");
+        if (shareBtn) {
+          shareBtn.addEventListener("click", function () {
+            var shareData = {
+              title: "AfterCare",
+              text: "Tear a card in half with someone. If either of you tests positive later, AfterCare lets the other know — anonymously, no name or identifying info required.",
+              url: window.location.origin + "/",
+            };
+            if (navigator.share) {
+              // The share sheet itself is the confirmation — no toast on
+              // top of it. Rejections here are routine (the user backing
+              // out of the sheet), not failures worth surfacing.
+              navigator.share(shareData).catch(function () {});
+            } else if (navigator.clipboard) {
+              navigator.clipboard
+                .writeText(shareData.url)
+                .then(function () {
+                  showToast("Link copied.");
+                })
+                .catch(function () {
+                  showToast(shareData.url);
+                });
+            } else {
+              showToast(shareData.url);
+            }
+          });
+        }
+
+        // Mini-phone content animations (steps 3-6) shouldn't start until
+        // the step has genuinely settled into view, for the same reason
+        // step 1's own tear trigger doesn't fire off a plain visibility
+        // threshold: on mobile, that can fire while a snap-scroll glide is
+        // still moving, so the animation visibly starts mid-scroll rather
+        // than once the step has actually arrived. Kept as its own small,
+        // self-contained block — with its own local copies of the mobile/
+        // scrollend checks — rather than sharing internals with the
+        // torn-card system above, since the two are otherwise unrelated
+        // and this avoids risking a regression in that already-tuned
+        // step 1/2 sequence.
+        var activateMiniPhoneSteps = function () {
+          var isMobileSnap = window.matchMedia("(max-width: 559px)").matches;
+          var supportsScrollEnd = "onscrollend" in window;
+          var isStepCentered = function (stepEl) {
+            var rect = stepEl.getBoundingClientRect();
+            var elCenter = rect.top + rect.height / 2;
+            var viewportCenter = window.innerHeight / 2;
+            return Math.abs(elCenter - viewportCenter) < rect.height * 0.3;
+          };
+          var activate = function (stepEl) {
+            stepEl.classList.add("content-active");
+          };
+          document.querySelectorAll(".step").forEach(function (stepEl) {
+            if (!stepEl.querySelector(".mini-phone")) {
+              return;
+            }
+            if (reduceMotion) {
+              activate(stepEl);
+              return;
+            }
+            // The "Notified" banner (step 5) is a single self-contained
+            // drop-in, not a multi-stage timed sequence like step 1's tear
+            // — there's nothing a mid-glide trigger could cut off or
+            // desync, so unlike the rest it doesn't need the scrollend
+            // settle-wait below (which exists to stop those *other*
+            // sequences firing before arrival). That wait was reading as a
+            // dead, empty screen here since the whole banner — not just an
+            // accent — stays hidden until it fires, so route it through
+            // the more responsive IntersectionObserver path instead, even
+            // on mobile snap.
+            var isNotifStep = !!stepEl.querySelector(".mp-notif");
+            if (isMobileSnap && supportsScrollEnd && !isNotifStep) {
+              if (isStepCentered(stepEl)) {
+                activate(stepEl);
+              } else {
+                var onScrollEnd = function () {
+                  if (isStepCentered(stepEl)) {
+                    activate(stepEl);
+                    window.removeEventListener("scrollend", onScrollEnd);
+                  }
+                };
+                window.addEventListener("scrollend", onScrollEnd);
+              }
+            } else if ("IntersectionObserver" in window) {
+              // Not the .scroll-reveal fade's own 15% threshold — that's
+              // tuned for "is this roughly on screen yet," not "has the
+              // user actually arrived here," which is what a staged
+              // content animation needs to avoid triggering too early.
+              var stepIo = new IntersectionObserver(
+                function (entries) {
+                  entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                      activate(stepEl);
+                      stepIo.unobserve(entry.target);
+                    }
+                  });
+                },
+                { threshold: 0.5 },
+              );
+              stepIo.observe(stepEl);
+            } else {
+              activate(stepEl);
+            }
+          });
+        };
+        if (document.readyState === "complete") {
+          activateMiniPhoneSteps();
+        } else {
+          window.addEventListener("load", activateMiniPhoneSteps, {
+            once: true,
+          });
         }
 
         var infoTips = document.querySelectorAll(".info-tip");
@@ -2544,22 +2756,6 @@
               typeof document.activeElement.blur === "function"
             ) {
               document.activeElement.blur();
-            }
-          });
-        }
-
-        var supportToggle = document.getElementById("supportToggle");
-        var tiersWrap = document.getElementById("donate-tiers");
-        if (supportToggle && tiersWrap) {
-          supportToggle.addEventListener("click", function () {
-            var isOpen = supportToggle.getAttribute("aria-expanded") === "true";
-            var next = !isOpen;
-            supportToggle.setAttribute("aria-expanded", String(next));
-            tiersWrap.classList.toggle("is-open", next);
-            if (next) {
-              tiersWrap.removeAttribute("inert");
-            } else {
-              tiersWrap.setAttribute("inert", "");
             }
           });
         }
