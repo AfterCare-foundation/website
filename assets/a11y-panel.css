@@ -1,0 +1,224 @@
+/* Shared accessibility widget — linked (not bundled) from index.html,
+   privacy/index.html, and funding/index.html. See CLAUDE.md's own
+   "assets/tokens.css" escape hatch: the color tokens themselves stay
+   hand-copied per page, but this widget is identical everywhere, so it's
+   linked once instead of tripled. Consumes each page's own --bg/--white/
+   --gray/--teal/--fg-rgb/--control-border-alpha tokens via var(), so it
+   re-themes automatically with no theme-specific rules of its own. */
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--white);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 2px solid var(--purple-light);
+  outline-offset: 3px;
+}
+
+.a11y-widget {
+  position: fixed;
+  top: 16px;
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 60;
+}
+
+.a11y-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  min-height: 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+  background: rgba(var(--fg-rgb), 0.06);
+  color: var(--gray);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.a11y-toggle:hover,
+.a11y-toggle[aria-expanded="true"] {
+  color: var(--white);
+  background: rgba(var(--fg-rgb), 0.12);
+}
+.a11y-toggle svg {
+  flex-shrink: 0;
+}
+.a11y-toggle-label {
+  display: none;
+}
+@media (min-width: 480px) {
+  .a11y-toggle-label {
+    display: inline;
+  }
+}
+
+.a11y-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 17rem;
+  max-width: calc(100vw - 32px);
+  background: var(--bg2);
+  border: 1px solid rgba(var(--fg-rgb), 0.14);
+  border-radius: 14px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: top right;
+  transition:
+    opacity 0.15s ease,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0.2s;
+}
+.a11y-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.15s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    visibility 0s;
+}
+
+.a11y-panel-heading {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.a11y-row,
+.a11y-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(var(--fg-rgb), 0.1);
+}
+.a11y-row:first-of-type,
+.a11y-toggle-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.a11y-row-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.a11y-stepper {
+  display: inline-flex;
+  border-radius: 8px;
+  border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+  overflow: hidden;
+}
+.a11y-stepper button {
+  min-width: 32px;
+  min-height: 28px;
+  padding: 4px 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gray);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.a11y-stepper button:not(:last-child) {
+  border-right: 1px solid rgba(var(--fg-rgb), 0.2);
+}
+.a11y-stepper button:hover:not(:disabled) {
+  color: var(--white);
+  background: rgba(var(--fg-rgb), 0.08);
+}
+.a11y-stepper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.a11y-toggle-row input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 42px;
+  height: 24px;
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+  background: rgba(var(--fg-rgb), 0.1);
+  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.a11y-toggle-row input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gray);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+.a11y-toggle-row input[type="checkbox"]:checked {
+  background: rgba(var(--fg-rgb), 0.08);
+  border-color: var(--teal);
+}
+.a11y-toggle-row input[type="checkbox"]:checked::after {
+  transform: translateX(18px);
+  background: var(--teal);
+}
+
+.a11y-reset {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 24px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+  background: transparent;
+  color: var(--gray);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.a11y-reset:hover {
+  color: var(--white);
+  border-color: var(--teal);
+}
