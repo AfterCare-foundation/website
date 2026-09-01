@@ -10,7 +10,7 @@
     <meta name="color-scheme" content="dark" />
     <meta
       name="description"
-      content="AfterCare lets you connect anonymously with someone you've met — so if either of you tests positive later, one tap tells the other, without needing a name or number."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
@@ -23,24 +23,24 @@
     <meta property="og:site_name" content="AfterCare" />
     <meta
       property="og:title"
-      content="AfterCare — tell them without telling them who you are"
+      content="AfterCare — anonymous STI notifications, no contact info needed"
     />
     <meta
       property="og:description"
-      content="Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
     <meta property="og:image" content="visual-assets/logo-no-text.png" />
     <meta name="twitter:card" content="summary" />
     <meta
       name="twitter:title"
-      content="AfterCare — tell them without telling them who you are"
+      content="AfterCare — anonymous STI notifications, no contact info needed"
     />
     <meta
       name="twitter:description"
-      content="Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
     <meta name="twitter:image" content="visual-assets/logo-no-text.png" />
-    <title>AfterCare — tell them without telling them who you are</title>
+    <title>AfterCare — anonymous STI notifications, no contact info needed</title>
     <link
       rel="icon"
       href="visual-assets/aftercare-logo.svg"
@@ -325,12 +325,47 @@
         background-clip: text;
         color: transparent;
       }
+      h1 .h1-teal {
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+        color: var(--teal);
+      }
       .sub {
         color: var(--gray);
         font-size: clamp(1rem, 0.85rem + 0.6vw, 1.15rem);
         line-height: 1.55;
         max-width: 520px;
-        margin: 0 0 40px;
+        margin: 0 0 24px;
+      }
+
+      /* ---- notification chain diagram ---- */
+      .chain {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 6px 4px;
+        max-width: 520px;
+        margin: 0 auto 56px;
+        padding: 0 24px;
+      }
+      .chain-node {
+        background: rgba(var(--fg-rgb), 0.06);
+        border: 1px solid rgba(var(--fg-rgb), calc(var(--control-border-alpha) * 0.35));
+        border-radius: 20px;
+        padding: 7px 18px;
+        font-size: 0.875rem;
+        color: var(--white);
+        white-space: nowrap;
+        letter-spacing: 0.01em;
+      }
+      .chain-arrow {
+        color: var(--teal);
+        font-size: 0.85rem;
+        line-height: 1;
+        flex-shrink: 0;
+        opacity: 0.75;
       }
 
       .mockup {
@@ -660,9 +695,9 @@
         --descend-dur: 0.7s;
       }
       .torn-card.large.fast {
-        --tear-dur: 0.45s;
-        --leave-dur: 0.3s;
-        --descend-dur: 0.3s;
+        --tear-dur: 0.75s;
+        --leave-dur: 0.5s;
+        --descend-dur: 0.5s;
       }
       /* Each ghost is sized/positioned to match its half's own resting spot
          (not measured — just the same width/radius rules as .tc-half
@@ -1258,7 +1293,7 @@
         background: rgba(40, 40, 46, 0.78);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        border-radius: 20%;
+        border-radius: 14px;
         padding: 8% 9%;
         text-align: left;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
@@ -2080,8 +2115,9 @@
       </div>
       <div class="eyebrow reveal" style="--d: 2">In development</div>
       <h1 class="reveal" style="--d: 3">
-        The hardest conversation,<br />
-        <span>made unnecessary.</span>
+        Stay informed.<br />
+        <span>No contact needed,</span><br />
+        <span class="h1-teal">no message to write.</span>
       </h1>
       <p class="sub reveal" style="--d: 4">
         Bacterial STIs are at
@@ -2091,10 +2127,20 @@
           target="_blank"
           rel="noopener noreferrer"
           >record highs across Europe</a
-        >. The conversation that would slow them down is the one nobody wants to
-        have — so AfterCare makes it one tap: anonymous, and soon enough to
-        treat it.
+        >. Let's fight them together: AfterCare closes the notification gap that anonymous encounters leave open.
       </p>
+
+      <div class="chain reveal" style="--d: 4" aria-label="How early notification helps">
+        <span class="chain-node">Every exposure covered</span>
+        <span class="chain-arrow" aria-hidden="true">→</span>
+        <span class="chain-node">Prompt notification</span>
+        <span class="chain-arrow" aria-hidden="true">→</span>
+        <span class="chain-node">Early detection &amp; treatment</span>
+        <span class="chain-arrow" aria-hidden="true">→</span>
+        <span class="chain-node">Less spread</span>
+        <span class="chain-arrow" aria-hidden="true">→</span>
+        <span class="chain-node">Fewer STI cases</span>
+      </div>
 
       <div class="mockup reveal" style="--d: 5">
         <img
@@ -2395,8 +2441,7 @@
               </span>
             </span>
             <span class="step-desc"
-              >Get treated sooner, and help push back against bacterial STIs
-              across the community.</span
+              >Get treated sooner. Early detection means less spread — and a healthier scene for everyone.</span
             >
           </div>
         </li>
@@ -2508,7 +2553,7 @@
         <br />
         A doctor or researcher? <br />
         <a
-          href="mailto:contact.aftercare@protonmail.com?subject=Doctor%2FResearcher%20Partnership"
+          href="mailto:contact@after-care.eu?subject=Doctor%2FResearcher%20Partnership"
           >Get in touch</a
         >
         to partner
@@ -2635,8 +2680,8 @@
           if (!largeCard || largeCard.classList.contains("departing")) {
             return;
           }
-          // Matches --descend-dur — 300ms in .fast mode, 700ms otherwise.
-          var duration = largeCard.classList.contains("fast") ? 300 : 700;
+          // Matches --descend-dur — 500ms in .fast mode, 700ms otherwise.
+          var duration = largeCard.classList.contains("fast") ? 500 : 700;
           largeCard.classList.add("departing");
           yoursDepartureDoneAt =
             performance.now() + Math.max(0, duration - DEPARTURE_OVERLAP_MS);
@@ -2680,9 +2725,9 @@
             triggerTheirsLeaving();
             triggerYoursDeparture();
             if (onDone) {
-              setTimeout(onDone, 300); // matches --descend-dur in fast mode
+              setTimeout(onDone, 500); // matches --descend-dur in fast mode
             }
-          }, 350);
+          }, 500);
         };
         if (reduceMotion) {
           tornCards.forEach(function (card) {
@@ -2903,7 +2948,7 @@
           shareBtn.addEventListener("click", function () {
             var shareData = {
               title: "AfterCare",
-              text: "Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required.",
+              text: "Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required.",
               url: window.location.origin + "/",
             };
             if (navigator.share) {

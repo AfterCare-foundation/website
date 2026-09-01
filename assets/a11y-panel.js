@@ -189,8 +189,9 @@
       clearTimeout(hoverCloseTimer);
       openPanel();
     });
-    widget.addEventListener("pointerleave", function () {
+    widget.addEventListener("pointerleave", function (event) {
       if (pinned) return;
+      if (event.pointerType === "touch") return;
       hoverCloseTimer = setTimeout(closePanel, 150);
     });
   }
