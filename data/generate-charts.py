@@ -151,7 +151,7 @@ chl_years = [y for y in YEARS if chl_msm.get(y) is not None]
 chl_vals  = [chl_msm[y] for y in chl_years]
 
 fig, ax = make_fig(
-    'Chlamydia and gonorrhoea are rising faster among MSM',
+    'Gonorrhoea leads STI cases among MSM and is rising faster',
     'Confirmed cases among men who have sex with men, EU/EEA, thousands',
 )
 ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',  **LW)
