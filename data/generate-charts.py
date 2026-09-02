@@ -81,7 +81,7 @@ def vals(d):
     return [d.get(y) for y in YEARS]
 
 
-def style_ax(ax):
+def style_ax(ax, ymax=None):
     ax.yaxis.grid(True, color=GRID, linewidth=0.8, zorder=0)
     ax.xaxis.grid(False)
     ax.set_axisbelow(True)
@@ -95,7 +95,7 @@ def style_ax(ax):
         lbl.set_fontproperties(POPPINS)
         lbl.set_color(GRAY)
     ax.set_xlim(2014.5, 2024.5)
-    ax.set_ylim(bottom=0)
+    ax.set_ylim(bottom=0, top=ymax)
     ax.set_ylabel('')
 
 
@@ -137,9 +137,8 @@ fig, ax = make_fig(
 )
 ax.plot(YEARS, vals(gon_gen), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS, vals(syp_gen), color=TEAL,  marker='o', label='Syphilis',   **LW)
-ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia',
-        linestyle='dashed', **LW)
-style_ax(ax)
+ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia', **LW)
+style_ax(ax, ymax=250)
 finish(fig, ax, 'chart-sti-general.png')
 
 
@@ -157,9 +156,8 @@ fig, ax = make_fig(
 )
 ax.plot(YEARS,     vals(gon_msm), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS,     vals(syp_msm), color=TEAL,  marker='o', label='Syphilis',   **LW)
-ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',
-        linestyle='dashed', **LW)
-style_ax(ax)
+ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia', **LW)
+style_ax(ax, ymax=35)
 ax.annotate('data from 2020',
             xy=(2020, chl_msm[2020]),
             xytext=(2017.8, 5),
