@@ -2008,8 +2008,27 @@
       .chart-overlay-charts {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 22px;
         margin-top: 4px;
+      }
+      .chart-card {
+        margin: 0;
+      }
+      .chart-card figcaption {
+        padding: 0 52px 8px 4px;
+      }
+      .chart-card-title {
+        margin: 0;
+        color: var(--white);
+        font-size: 1rem;
+        line-height: 1.3;
+        font-weight: 700;
+      }
+      .chart-card-subtitle {
+        margin: 3px 0 0;
+        color: var(--gray);
+        font-size: 0.8125rem;
+        line-height: 1.45;
       }
       .chart-overlay-charts img {
         width: 100%;
@@ -2019,10 +2038,20 @@
       }
       .chart-overlay-footer {
         margin-top: 14px;
-        text-align: right;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 14px;
+        color: var(--gray);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .chart-overlay-source {
+        margin: 0;
       }
       .chart-overlay-footer a {
-        font-size: 13px;
+        flex-shrink: 0;
+        font-size: inherit;
         color: var(--gray);
         text-decoration: none;
         border-bottom: 1px solid rgba(var(--fg-rgb), 0.25);
@@ -2046,7 +2075,7 @@
           flex-direction: column;
         }
         .chart-overlay-charts {
-          gap: 10px;
+          gap: 20px;
           overflow-y: auto;
           flex: 1 1 auto;
           min-height: 0;
@@ -2057,6 +2086,9 @@
           padding: 10px 0 max(16px, env(safe-area-inset-bottom));
           border-top: 1px solid rgba(var(--fg-rgb), 0.1);
           margin-top: 0;
+        }
+        .chart-card figcaption {
+          padding-left: 2px;
         }
       }
 
@@ -3272,22 +3304,35 @@
       <div class="chart-overlay-panel">
         <button class="chart-overlay-close" aria-label="Close charts">&#x2715;</button>
         <div class="chart-overlay-charts">
-          <img
-            src="visual-assets/chart-sti-general.png"
-            alt="Bacterial STIs at record highs in Europe — confirmed cases EU/EEA 2015–2024"
-            width="726" height="462"
-            loading="lazy"
-            decoding="async"
-          />
-          <img
-            src="visual-assets/chart-sti-msm.png"
-            alt="Gonorrhoea leads STI cases among MSM and is rising faster — confirmed cases EU/EEA 2015–2024"
-            width="726" height="462"
-            loading="lazy"
-            decoding="async"
-          />
+          <figure class="chart-card">
+            <figcaption>
+              <h2 class="chart-card-title">Bacterial STIs at record highs in Europe</h2>
+              <p class="chart-card-subtitle">Confirmed cases, EU/EEA, thousands</p>
+            </figcaption>
+            <img
+              src="visual-assets/chart-sti-general.png"
+              alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases in the EU/EEA from 2015 to 2024"
+              width="726" height="462"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <figure class="chart-card">
+            <figcaption>
+              <h2 class="chart-card-title">For MSM, gonorrhoea leads STI cases and is rising faster</h2>
+              <p class="chart-card-subtitle">Confirmed cases among men who have sex with men, EU/EEA, thousands</p>
+            </figcaption>
+            <img
+              src="visual-assets/chart-sti-msm.png"
+              alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases among men who have sex with men in the EU/EEA from 2015 to 2024"
+              width="726" height="462"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
         </div>
         <div class="chart-overlay-footer">
+          <p class="chart-overlay-source">Source: European Centre for Disease Prevention and Control</p>
           <a
             href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
             target="_blank"

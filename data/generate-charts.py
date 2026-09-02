@@ -12,12 +12,12 @@ Data source:
     Place them in DATA_DIR below.
 
 Fonts:
-    Poppins-Regular.ttf and Poppins-SemiBold.ttf must be present in FONT_DIR.
+    Poppins-Regular.ttf must be present in FONT_DIR.
     Download from https://fonts.google.com/specimen/Poppins (OFL licence).
 
 Usage:
     python generate-charts.py
-    Output files are written next to this script.
+    Output files are written to ../visual-assets/.
 """
 
 import os
@@ -33,12 +33,9 @@ DATA_DIR = os.path.join(HERE, 'ecdc-sti')
 FONT_DIR = os.path.join(HERE, 'fonts')
 
 FONT_REG = os.path.join(FONT_DIR, 'Poppins-Regular.ttf')
-FONT_SB  = os.path.join(FONT_DIR, 'Poppins-SemiBold.ttf')
 
 fm.fontManager.addfont(FONT_REG)
-fm.fontManager.addfont(FONT_SB)
 POPPINS    = fm.FontProperties(fname=FONT_REG)
-POPPINS_SB = fm.FontProperties(fname=FONT_SB)
 
 # ── data files ────────────────────────────────────────────────────────────────
 FILES = {
@@ -59,7 +56,6 @@ BLUE  = '#60a5fa'
 GRAY  = '#9ca3af'
 GRID  = '#1a1a28'
 
-SOURCE = 'Source: European Centre for Disease Prevention and Control'
 REGION = 'EUEEA30_21'
 YEARS  = list(range(2015, 2025))
 
@@ -87,36 +83,32 @@ def style_ax(ax, ymax=None):
     ax.set_axisbelow(True)
     for spine in ax.spines.values():
         spine.set_visible(False)
-    ax.tick_params(axis='both', which='both', length=0, colors=GRAY)
+    ax.tick_params(axis='both', which='both', length=0, colors=GRAY,
+                   labelsize=10.5, pad=6)
     ax.set_xticks(YEARS)
     ax.set_xticklabels([str(y) for y in YEARS],
-                       fontproperties=POPPINS, fontsize=8.5, color=GRAY)
+                       fontproperties=POPPINS, fontsize=10.5, color=GRAY)
     for lbl in ax.get_yticklabels():
         lbl.set_fontproperties(POPPINS)
+        lbl.set_fontsize(10.5)
         lbl.set_color(GRAY)
     ax.set_xlim(2014.5, 2024.5)
     ax.set_ylim(bottom=0, top=ymax)
     ax.set_ylabel('')
 
 
-def make_fig(title, subtitle):
+def make_fig():
     fig, ax = plt.subplots(figsize=(6.6, 4.2), dpi=220)
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG2)
-    fig.text(0.065, 0.97, title,
-             fontproperties=POPPINS_SB, fontsize=13, color=WHITE, va='top', ha='left')
-    fig.text(0.065, 0.90, subtitle,
-             fontproperties=POPPINS, fontsize=9, color=GRAY, va='top', ha='left')
-    fig.text(0.065, 0.025, SOURCE,
-             fontproperties=POPPINS, fontsize=8, color=GRAY, va='bottom', ha='left')
     return fig, ax
 
 
 def finish(fig, ax, filename, ncol=3):
-    ax.legend(loc='upper left', frameon=False, prop=POPPINS, fontsize=9.5,
+    ax.legend(loc='upper left', frameon=False, prop=POPPINS, fontsize=11,
               labelcolor=GRAY, ncol=ncol, columnspacing=1.2,
               handlelength=1.8, handletextpad=0.5)
-    plt.subplots_adjust(left=0.07, right=0.97, top=0.82, bottom=0.13)
+    plt.subplots_adjust(left=0.08, right=0.97, top=0.97, bottom=0.12)
     out = os.path.join(HERE, '..', 'visual-assets', filename)
     fig.savefig(out, dpi=220, facecolor=BG)
     plt.close()
@@ -131,10 +123,7 @@ gon_gen = load('gon_gen')
 syp_gen = load('syp_gen')
 chl_gen = load('chl_gen')
 
-fig, ax = make_fig(
-    'Bacterial STIs at record highs in Europe',
-    'Confirmed cases, EU/EEA, thousands',
-)
+fig, ax = make_fig()
 ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS, vals(gon_gen), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS, vals(syp_gen), color=TEAL,  marker='o', label='Syphilis',   **LW)
@@ -150,10 +139,7 @@ chl_msm = load('chl_msm')
 chl_years = [y for y in YEARS if chl_msm.get(y) is not None]
 chl_vals  = [chl_msm[y] for y in chl_years]
 
-fig, ax = make_fig(
-    'Gonorrhoea leads STI cases among MSM and is rising faster',
-    'Confirmed cases among men who have sex with men, EU/EEA, thousands',
-)
+fig, ax = make_fig()
 ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS,     vals(gon_msm), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS,     vals(syp_msm), color=TEAL,  marker='o', label='Syphilis',   **LW)
@@ -161,6 +147,6 @@ style_ax(ax, ymax=35)
 ax.annotate('data from 2020',
             xy=(2020, chl_msm[2020]),
             xytext=(2017.8, 5),
-            fontproperties=POPPINS, fontsize=7.5, color=GRAY,
-            arrowprops=dict(arrowstyle='-', color=GRAY, lw=0.8))
+            fontproperties=POPPINS, fontsize=10, color=GRAY,
+            arrowprops=dict(arrowstyle='-', color=GRAY, lw=1))
 finish(fig, ax, 'chart-sti-msm.png')
