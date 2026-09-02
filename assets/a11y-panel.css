@@ -28,7 +28,10 @@
 
 .a11y-widget {
   position: fixed;
-  top: 16px;
+  /* position:fixed is measured from the layout viewport, so body's padding
+     doesn't move this — it needs the same offset applied directly, or it
+     stays behind Chrome's URL bar. See assets/viewport-inset.js. */
+  top: calc(16px + var(--chrome-top-inset, 0px));
   right: max(16px, env(safe-area-inset-right));
   z-index: 60;
 }

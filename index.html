@@ -60,6 +60,7 @@
     <link rel="alternate icon" href="visual-assets/favicon-32.png" type="image/png" />
     <link rel="apple-touch-icon" href="visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="assets/a11y-panel.css" />
+    <script src="assets/viewport-inset.js" defer></script>
     <style>
       :root {
         --bg: #0a0a10;
@@ -137,6 +138,10 @@
            visual effect without establishing one. */
         overflow-x: hidden;
         overflow-x: clip;
+        /* Set by assets/viewport-inset.js, and 0 everywhere except the Chrome
+           on iOS state where the page renders behind the browser's own
+           toolbars. See that file for the full description. */
+        padding-top: var(--chrome-top-inset, 0px);
       }
       a {
         -webkit-tap-highlight-color: transparent;

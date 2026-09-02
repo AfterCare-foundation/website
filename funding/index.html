@@ -19,6 +19,7 @@
     <link rel="alternate icon" href="../visual-assets/favicon-32.png" type="image/png" />
     <link rel="apple-touch-icon" href="../visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="../assets/a11y-panel.css" />
+    <script src="../assets/viewport-inset.js" defer></script>
     <style>
       :root {
         --bg: #0a0a10;
@@ -72,6 +73,9 @@
         display: flex;
         flex-direction: column;
         min-height: 100dvh;
+        /* Set by assets/viewport-inset.js; 0 outside the Chrome on iOS state
+           where the page renders behind the browser's own toolbars. */
+        padding-top: var(--chrome-top-inset, 0px);
       }
       a {
         color: var(--teal);
