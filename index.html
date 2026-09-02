@@ -120,7 +120,8 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        min-height: 100dvh;
+        min-height: 100vh;
+        min-height: 100svh;
         overflow-x: hidden;
       }
       a {
@@ -1924,6 +1925,9 @@
           opacity 0.2s ease,
           visibility 0s linear 0.2s;
       }
+      .chart-overlay[hidden] {
+        display: none;
+      }
       .chart-overlay.is-open {
         opacity: 1;
         visibility: visible;
@@ -1937,7 +1941,8 @@
         padding: 20px;
         max-width: min(520px, 100%);
         width: 100%;
-        max-height: calc(100dvh - 32px);
+        max-height: calc(100vh - 32px);
+        max-height: calc(100svh - 32px);
         overflow-y: auto;
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
         transform: translateY(6px) scale(0.98);
@@ -2003,7 +2008,8 @@
         }
         .chart-overlay-panel {
           border-radius: 16px 16px 0 0;
-          max-height: calc(100dvh - 56px);
+          max-height: calc(100vh - 56px);
+          max-height: calc(100svh - 56px);
           padding: 16px 14px 0;
           display: flex;
           flex-direction: column;
@@ -3269,18 +3275,21 @@
         function openOverlay() {
           overlay.removeAttribute('hidden');
           requestAnimationFrame(function () {
-            overlay.classList.add('is-open');
+            requestAnimationFrame(function () {
+              overlay.classList.add('is-open');
+            });
           });
           closeBtn.focus({ preventScroll: true });
         }
 
         function closeOverlay() {
           overlay.classList.remove('is-open');
-          overlay.addEventListener('transitionend', function handler() {
+          overlay.addEventListener('transitionend', function handler(e) {
+            if (e.target !== overlay) return;
             overlay.setAttribute('hidden', '');
             overlay.removeEventListener('transitionend', handler);
           });
-          btn.focus();
+          btn.focus({ preventScroll: true });
         }
 
         btn.addEventListener('click', openOverlay);
