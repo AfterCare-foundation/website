@@ -94,6 +94,10 @@
       var doctop = document.getElementById("doctop");
       var events = [];
       var frozen = false;
+      // ?nudge=1 tests whether a synthetic scroll provokes the same correction
+      // a real finger-scroll does. scrollY is already 0 in the broken state,
+      // so scrollTo(0,0) is a no-op — it has to move away from 0 and back.
+      var nudge = location.search.indexOf("nudge=1") !== -1;
 
       function inset(name) {
         var d = document.createElement("div");
@@ -125,6 +129,7 @@
           "FIXED probe .top   " + Math.round(p.top) + "  (css says 16)",
           "FIXED probe size   " + Math.round(p.width) + "x" + Math.round(p.height),
           "DOC TOP bar .top   " + Math.round(t.top) + "  (0 = at viewport top)",
+          "nudge mode         " + (nudge ? "ON" : "off"),
         ].join("\n");
       }
 
@@ -181,6 +186,14 @@
       }
       window.addEventListener("load", function () {
         note("load");
+        if (nudge) {
+          window.scrollTo(0, 1);
+          note("nudge->1");
+          requestAnimationFrame(function () {
+            window.scrollTo(0, 0);
+            note("nudge->0");
+          });
+        }
       });
       setTimeout(function () {
         note("t+1500ms");
