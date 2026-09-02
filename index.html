@@ -122,7 +122,12 @@
         flex-direction: column;
         min-height: 100vh;
         min-height: 100svh;
+        /* clip, not hidden: overflow-x: hidden forces overflow-y to compute
+           to auto, making body its own scroll container — which is what let
+           the centred hero clip its top row off-screen. clip has the same
+           visual effect without establishing one. */
         overflow-x: hidden;
+        overflow-x: clip;
       }
       a {
         -webkit-tap-highlight-color: transparent;
@@ -268,6 +273,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        /* Falls back to start alignment instead of overflowing off the top
+           edge when the content is taller than the box — centred flex
+           overflow is otherwise unreachable in both directions. */
+        justify-content: safe center;
         text-align: center;
         padding: clamp(32px, 8vh, 80px) max(20px, env(safe-area-inset-right))
           clamp(24px, 6vh, 56px) max(20px, env(safe-area-inset-left));
@@ -282,6 +291,14 @@
       }
       :root[data-theme="light"] .hero {
         background: none;
+      }
+      /* Opening a link from another app gives Chrome its shortest viewport —
+         both toolbars expanded — and the hero content is taller than that,
+         so centring put the logo above the top edge. Phones scroll anyway. */
+      @media (max-width: 680px) {
+        .hero {
+          justify-content: flex-start;
+        }
       }
       .kicker {
         font-size: 0.8125rem;
