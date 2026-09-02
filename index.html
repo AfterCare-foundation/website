@@ -2,10 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+    <!-- No viewport-fit=cover: it lets the layout viewport extend under the
+         browser's own chrome, and Chrome on iOS stacks a "back to <app>"
+         banner above its URL bar when a link is opened from another app —
+         which hid the top ~120px of the hero, logo and all, plus the
+         position:fixed a11y toggle. Nothing here paints into the notch, so
+         the edge-to-edge opt-in bought us nothing. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a10" />
     <meta name="color-scheme" content="dark" />
     <meta
