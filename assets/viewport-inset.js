@@ -27,16 +27,30 @@
   // A horizontal scrollbar makes innerHeight exceed clientHeight by ~15px on
   // desktop; only a gap far larger than that means real chrome over the page.
   var MIN_GAP = 60;
-  var OFFSET = "110px";
+
+  // The gap covers Chrome's chrome top *and* bottom, and only the top half
+  // occludes us. The bottom — toolbar plus home indicator — is the steadier
+  // of the two across devices, so subtracting it estimates the top. Measured
+  // on an iPhone (852px screen): gap 187, of which 108 was on top; 187 - 80
+  // gives 107. Deriving it this way rather than hardcoding ~110px lets the
+  // estimate track each device's own chrome instead of assuming that phone.
+  var BOTTOM_CHROME = 80;
+
+  // Clamped because the estimate is exactly that. Erring high is the cheaper
+  // mistake: too much only seats content a little low for the moment before
+  // the first scroll, too little leaves the logo clipped again.
+  var MIN_OFFSET = 60;
+  var MAX_OFFSET = 170;
 
   function sync() {
     // Before first layout clientHeight is 0, which would read as a huge gap.
     if (!root.clientHeight) return;
     var gap = window.innerHeight - root.clientHeight;
-    root.style.setProperty(
-      "--chrome-top-inset",
-      gap > MIN_GAP ? OFFSET : "0px"
-    );
+    var offset = 0;
+    if (gap > MIN_GAP) {
+      offset = Math.min(MAX_OFFSET, Math.max(MIN_OFFSET, gap - BOTTOM_CHROME));
+    }
+    root.style.setProperty("--chrome-top-inset", offset + "px");
   }
 
   sync();
