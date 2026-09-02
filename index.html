@@ -1106,6 +1106,9 @@
       .tc-logo {
         width: clamp(44px, 12vw, 58px);
         height: auto;
+        pointer-events: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
       }
       .tc-qr {
         width: 66%;
@@ -2009,6 +2012,7 @@
           gap: 10px;
           overflow-y: auto;
           flex: 1 1 auto;
+          min-height: 0;
           padding-bottom: 8px;
         }
         .chart-overlay-footer {
@@ -2104,7 +2108,6 @@
     </style>
     <script>
       if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
-      window.scrollTo(0, 0);
     </script>
     <script>
       (function () {
@@ -3268,7 +3271,7 @@
           requestAnimationFrame(function () {
             overlay.classList.add('is-open');
           });
-          closeBtn.focus();
+          closeBtn.focus({ preventScroll: true });
         }
 
         function closeOverlay() {
