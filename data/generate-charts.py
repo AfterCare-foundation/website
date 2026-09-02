@@ -100,7 +100,7 @@ def style_ax(ax, ymax=None):
 
 
 def make_fig(title, subtitle):
-    fig, ax = plt.subplots(figsize=(6.6, 4.2), dpi=160)
+    fig, ax = plt.subplots(figsize=(6.6, 4.2), dpi=220)
     fig.patch.set_facecolor(BG)
     ax.set_facecolor(BG2)
     fig.text(0.065, 0.97, title,
@@ -118,7 +118,7 @@ def finish(fig, ax, filename, ncol=3):
               handlelength=1.8, handletextpad=0.5)
     plt.subplots_adjust(left=0.07, right=0.97, top=0.82, bottom=0.13)
     out = os.path.join(HERE, '..', 'visual-assets', filename)
-    fig.savefig(out, dpi=160, facecolor=BG)
+    fig.savefig(out, dpi=220, facecolor=BG)
     plt.close()
     print('saved', out)
 
