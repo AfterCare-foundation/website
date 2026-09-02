@@ -413,33 +413,56 @@
         margin: 0 0 24px;
       }
 
-      /* ---- notification chain diagram ---- */
+      /* ---- building-blocks diagram ---- */
       .chain {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
-        gap: 6px 4px;
-        max-width: 520px;
+        gap: 6px;
+        max-width: 420px;
         margin: 0 auto 56px;
         padding: 0 24px;
       }
-      .chain-node {
-        background: rgba(var(--fg-rgb), 0.06);
-        border: 1px solid rgba(var(--fg-rgb), calc(var(--control-border-alpha) * 0.35));
-        border-radius: 20px;
-        padding: 7px 18px;
-        font-size: 0.875rem;
-        color: var(--white);
-        white-space: nowrap;
-        letter-spacing: 0.01em;
+      .chain-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
       }
-      .chain-arrow {
+      .chain-node {
+        border-radius: 10px;
+        padding: 9px 18px;
+        font-size: 0.875rem;
+        letter-spacing: 0.01em;
+        text-align: center;
+        flex: 1;
+        color: rgba(244, 244, 246, 0.88);
+      }
+      /* 6 steps reading left→right, top→bottom.
+         Text stays uniformly white; only background + border progress. */
+      .chain-node.step-1 {
+        background: rgba(244, 244, 246, 0.03);
+        border: 1px solid rgba(244, 244, 246, 0.10);
+      }
+      .chain-node.step-2 {
+        background: rgba(244, 244, 246, 0.06);
+        border: 1px solid rgba(244, 244, 246, 0.15);
+      }
+      .chain-node.step-3 {
+        background: rgba(244, 244, 246, 0.09);
+        border: 1px solid rgba(244, 244, 246, 0.20);
+      }
+      .chain-node.step-4 {
+        background: rgba(45, 212, 191, 0.07);
+        border: 1px solid rgba(45, 212, 191, 0.18);
+      }
+      .chain-node.step-5 {
+        background: rgba(45, 212, 191, 0.12);
+        border: 1px solid rgba(45, 212, 191, 0.28);
+      }
+      .chain-node.step-6 {
+        background: rgba(45, 212, 191, 0.18);
+        border: 1px solid rgba(45, 212, 191, 0.50);
         color: var(--teal);
-        font-size: 0.85rem;
-        line-height: 1;
-        flex-shrink: 0;
-        opacity: 0.75;
       }
 
       .mockup {
@@ -2350,7 +2373,7 @@
 
     <main id="main-content">
     <div class="hero">
-      <p class="kicker reveal" style="--d: 0">You found the card.</p>
+      <p class="kicker reveal" style="--d: 0">You found our card.</p>
       <div class="logo-badge reveal" style="--d: 1">
         <img
           src="visual-assets/aftercare-logo.svg"
@@ -2374,19 +2397,22 @@
           aria-haspopup="dialog"
           aria-controls="chartOverlay"
           >record highs across Europe</button
-        >. Let's fight them together!<br />AfterCare closes the notification gap that anonymous encounters leave open.
+        >.<br />Let's fight them together!<br />AfterCare closes the notification gap that anonymous encounters leave open.
       </p>
 
       <div class="chain reveal" style="--d: 4" aria-label="How early notification helps">
-        <span class="chain-node">Every exposure covered</span>
-        <span class="chain-arrow" aria-hidden="true">→</span>
-        <span class="chain-node">Prompt notification</span>
-        <span class="chain-arrow" aria-hidden="true">→</span>
-        <span class="chain-node">Early detection &amp; treatment</span>
-        <span class="chain-arrow" aria-hidden="true">→</span>
-        <span class="chain-node">Less spread</span>
-        <span class="chain-arrow" aria-hidden="true">→</span>
-        <span class="chain-node">Fewer STI cases</span>
+        <div class="chain-row">
+          <span class="chain-node step-1">Every exposure covered</span>
+          <span class="chain-node step-2">Prompt<br />notifications</span>
+        </div>
+        <div class="chain-row">
+          <span class="chain-node step-3">Early detection</span>
+          <span class="chain-node step-4">Faster treatment</span>
+        </div>
+        <div class="chain-row">
+          <span class="chain-node step-5">Less spreading</span>
+          <span class="chain-node step-6">Fewer STI cases</span>
+        </div>
       </div>
 
       <div class="mockup reveal" style="--d: 5">
@@ -2454,7 +2480,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2476,7 +2502,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2509,7 +2535,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2537,7 +2563,7 @@
                 <div class="mp-frame">
                   <img
                     class="mp-frame-qr"
-                    src="qr-placeholder.png"
+                    src="visual-assets/qr-placeholder.png"
                     alt=""
                     width="280"
                     height="280"
@@ -3343,8 +3369,7 @@
         <div class="chart-overlay-charts">
           <figure class="chart-card">
             <figcaption>
-              <h2 class="chart-card-title">Bacterial STIs at record highs in Europe</h2>
-              <p class="chart-card-subtitle">Confirmed cases, EU/EEA, thousands</p>
+              <h2 class="chart-card-title">EU/EEA. Confirmed cases, thousands</h2>
             </figcaption>
             <img
               src="visual-assets/chart-sti-general.png"
@@ -3356,8 +3381,8 @@
           </figure>
           <figure class="chart-card">
             <figcaption>
-              <h2 class="chart-card-title">For MSM, gonorrhoea leads STI cases and is rising faster</h2>
-              <p class="chart-card-subtitle">Confirmed cases among men who have sex with men, EU/EEA, thousands</p>
+              <h2 class="chart-card-title">Men having sex with men (MSM), EU/EEA. Confirmed cases, thousands</h2>
+              <p class="chart-card-subtitle">Gonorrhoea leads STI cases among MSM and is rising faster</p>
             </figcaption>
             <img
               src="visual-assets/chart-sti-msm.png"
