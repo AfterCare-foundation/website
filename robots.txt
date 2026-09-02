@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Redirect stub, nothing to index.
+Disallow: /connect/
+
+Sitemap: https://www.after-care.eu/sitemap.xml
