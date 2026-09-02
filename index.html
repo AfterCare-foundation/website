@@ -1890,6 +1890,122 @@
         border-color: var(--purple-light);
       }
 
+      /* ---- stats chart button ---- */
+      .stats-chart-btn {
+        font: inherit;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(96, 165, 250, 0.5);
+        padding: 0;
+        cursor: pointer;
+      }
+
+      /* ---- chart overlay ---- */
+      .chart-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.2s ease,
+          visibility 0s linear 0.2s;
+      }
+      .chart-overlay.is-open {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.2s ease, visibility 0s;
+      }
+      .chart-overlay-panel {
+        position: relative;
+        background: var(--bg2);
+        border: 1px solid rgba(var(--fg-rgb), 0.14);
+        border-radius: 16px;
+        padding: 20px;
+        max-width: min(520px, 100%);
+        width: 100%;
+        max-height: calc(100dvh - 32px);
+        overflow-y: auto;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        transform: translateY(6px) scale(0.98);
+        transform-origin: center center;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .chart-overlay.is-open .chart-overlay-panel {
+        transform: translateY(0) scale(1);
+      }
+      .chart-overlay-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid rgba(var(--fg-rgb), 0.28);
+        background: rgba(var(--fg-rgb), 0.10);
+        color: var(--white);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      }
+      .chart-overlay-close:hover {
+        background: rgba(var(--fg-rgb), 0.22);
+        border-color: rgba(var(--fg-rgb), 0.5);
+      }
+      .chart-overlay-charts {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 4px;
+      }
+      .chart-overlay-charts img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+      .chart-overlay-footer {
+        margin-top: 14px;
+        text-align: right;
+      }
+      .chart-overlay-footer a {
+        font-size: 13px;
+        color: var(--gray);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(var(--fg-rgb), 0.25);
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .chart-overlay-footer a:hover {
+        color: var(--white);
+        border-color: var(--white);
+      }
+      @media (max-width: 680px) {
+        .chart-overlay {
+          padding: 8px;
+          align-items: flex-end;
+        }
+        .chart-overlay-panel {
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+          max-height: calc(100dvh - 60px);
+          padding: 16px 14px 20px;
+        }
+        .chart-overlay-charts {
+          gap: 10px;
+        }
+      }
+
       /* ---- hero entrance stagger (page load) ---- */
       .reveal {
         opacity: 0;
@@ -2126,12 +2242,12 @@
       </h1>
       <p class="sub reveal" style="--d: 4">
         Bacterial STIs are at
-        <a
-          class="footer-origin-link"
-          href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
-          target="_blank"
-          rel="noopener noreferrer"
-          >record highs across Europe</a
+        <button
+          class="footer-origin-link stats-chart-btn"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="chartOverlay"
+          >record highs across Europe</button
         >. Let's fight them together: AfterCare closes the notification gap that anonymous encounters leave open.
       </p>
 
@@ -3086,5 +3202,78 @@
       })();
     </script>
     <script src="assets/a11y-panel.js" defer></script>
+
+    <!-- chart overlay -->
+    <div
+      id="chartOverlay"
+      class="chart-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="STI trends in Europe"
+      hidden
+    >
+      <div class="chart-overlay-panel">
+        <button class="chart-overlay-close" aria-label="Close charts">&#x2715;</button>
+        <div class="chart-overlay-charts">
+          <img
+            src="visual-assets/chart-sti-general.png"
+            alt="Bacterial STIs at record highs in Europe — confirmed cases EU/EEA 2015–2024"
+            width="726" height="462"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src="visual-assets/chart-sti-msm.png"
+            alt="Gonorrhoea leads STI cases among MSM and is rising faster — confirmed cases EU/EEA 2015–2024"
+            width="726" height="462"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="chart-overlay-footer">
+          <a
+            href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Read more at ECDC ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var overlay = document.getElementById('chartOverlay');
+        var btn     = document.querySelector('.stats-chart-btn');
+        var closeBtn = overlay.querySelector('.chart-overlay-close');
+
+        function openOverlay() {
+          overlay.removeAttribute('hidden');
+          requestAnimationFrame(function () {
+            overlay.classList.add('is-open');
+          });
+          closeBtn.focus();
+        }
+
+        function closeOverlay() {
+          overlay.classList.remove('is-open');
+          overlay.addEventListener('transitionend', function handler() {
+            overlay.setAttribute('hidden', '');
+            overlay.removeEventListener('transitionend', handler);
+          });
+          btn.focus();
+        }
+
+        btn.addEventListener('click', openOverlay);
+        closeBtn.addEventListener('click', closeOverlay);
+
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeOverlay();
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+        });
+      })();
+    </script>
   </body>
 </html>
