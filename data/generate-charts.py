@@ -37,6 +37,11 @@ FONT_REG = os.path.join(FONT_DIR, 'Poppins-Regular.ttf')
 fm.fontManager.addfont(FONT_REG)
 POPPINS    = fm.FontProperties(fname=FONT_REG)
 
+# Legend.__init__ ignores `fontsize` whenever `prop` is also given, so the
+# legend size has to ride along on the FontProperties itself.
+POPPINS_LEGEND = POPPINS.copy()
+POPPINS_LEGEND.set_size(14)
+
 # ── data files ────────────────────────────────────────────────────────────────
 FILES = {
     'gon_gen': 'Gonorrhoea - Confirmed cases - Reported cases.csv',
@@ -77,23 +82,27 @@ def vals(d):
     return [d.get(y) for y in YEARS]
 
 
-def style_ax(ax, ymax=None):
+def style_ax(ax, ymin=0, ymax=None, yticks=None):
     ax.yaxis.grid(True, color=GRID, linewidth=0.8, zorder=0)
     ax.xaxis.grid(False)
     ax.set_axisbelow(True)
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(axis='both', which='both', length=0, colors=GRAY,
-                   labelsize=10.5, pad=6)
+                   labelsize=13.5, pad=7)
     ax.set_xticks(YEARS)
     ax.set_xticklabels([str(y) for y in YEARS],
-                       fontproperties=POPPINS, fontsize=10.5, color=GRAY)
+                       fontproperties=POPPINS, fontsize=13.5, color=GRAY)
+    ax.set_xlim(2014.5, 2024.5)
+    ax.set_ylim(bottom=ymin, top=ymax)
+    # Ticks stop at the last labelled value so the legend band above it
+    # has no gridline running through the labels.
+    if yticks is not None:
+        ax.set_yticks(yticks)
     for lbl in ax.get_yticklabels():
         lbl.set_fontproperties(POPPINS)
-        lbl.set_fontsize(10.5)
+        lbl.set_fontsize(13.5)
         lbl.set_color(GRAY)
-    ax.set_xlim(2014.5, 2024.5)
-    ax.set_ylim(bottom=0, top=ymax)
     ax.set_ylabel('')
 
 
@@ -105,10 +114,11 @@ def make_fig():
 
 
 def finish(fig, ax, filename, ncol=3):
-    ax.legend(loc='upper left', frameon=False, prop=POPPINS, fontsize=11,
+    ax.legend(loc='upper left', frameon=False, prop=POPPINS_LEGEND,
               labelcolor=GRAY, ncol=ncol, columnspacing=1.2,
-              handlelength=1.8, handletextpad=0.5)
-    plt.subplots_adjust(left=0.08, right=0.97, top=0.97, bottom=0.12)
+              handlelength=1.8, handletextpad=0.5, borderaxespad=0.25)
+    # Bigger tick labels need more room than the old 0.08/0.12 left behind.
+    plt.subplots_adjust(left=0.10, right=0.975, top=0.97, bottom=0.145)
     out = os.path.join(HERE, '..', 'visual-assets', filename)
     fig.savefig(out, dpi=220, facecolor=BG)
     plt.close()
@@ -127,7 +137,9 @@ fig, ax = make_fig()
 ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS, vals(gon_gen), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS, vals(syp_gen), color=TEAL,  marker='o', label='Syphilis',   **LW)
-style_ax(ax, ymax=250)
+# Headroom above 250 so the legend sits in an empty band — no extra tick,
+# so no gridline under the labels.
+style_ax(ax, ymin=0, ymax=292, yticks=range(0, 251, 50))
 finish(fig, ax, 'chart-sti-general.png')
 
 
@@ -143,10 +155,12 @@ fig, ax = make_fig()
 ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS,     vals(gon_msm), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS,     vals(syp_msm), color=TEAL,  marker='o', label='Syphilis',   **LW)
-style_ax(ax, ymax=35)
-ax.annotate('data from 2020',
+# Unpinned from 0: series sit between ~7 and 33. Headroom above 35 so
+# the legend band has no gridline.
+style_ax(ax, ymin=5, ymax=39.6, yticks=range(5, 36, 5))
+ax.annotate('Reported from 2020',
             xy=(2020, chl_msm[2020]),
-            xytext=(2017.8, 5),
-            fontproperties=POPPINS, fontsize=10, color=GRAY,
+            xytext=(2016.5, 5.6),
+            fontproperties=POPPINS, fontsize=13, color=GRAY,
             arrowprops=dict(arrowstyle='-', color=GRAY, lw=1))
 finish(fig, ax, 'chart-sti-msm.png')
