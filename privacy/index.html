@@ -20,7 +20,37 @@
     <link rel="apple-touch-icon" href="../visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="../assets/a11y-panel.css" />
     <script src="../assets/viewport-inset.js" defer></script>
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-semibold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
+      /* Self-hosted Poppins — see the longer note in the root index.html.
+         Never a font CDN; only 400 and 600 ship. */
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-regular.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-semibold.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
       :root {
         --bg: #0a0a10;
         --bg2: #0f0f17;
@@ -75,7 +105,8 @@
       body {
         background: var(--bg);
         color: var(--white);
-        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family: "Poppins", -apple-system, "Segoe UI", Helvetica, Arial,
+          sans-serif;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
         -webkit-tap-highlight-color: transparent;
