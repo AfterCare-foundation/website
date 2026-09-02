@@ -36,28 +36,48 @@
   // estimate track each device's own chrome instead of assuming that phone.
   var BOTTOM_CHROME = 80;
 
-  // Clamped because the estimate is exactly that. Erring high is the cheaper
-  // mistake: too much only seats content a little low for the moment before
-  // the first scroll, too little leaves the logo clipped again.
-  var MIN_OFFSET = 60;
+  // Capped because the estimate is exactly that, and an absurd gap shouldn't
+  // translate into an absurd offset. No floor: a small gap means little or
+  // nothing is being hidden, and forcing a minimum offset in that case pushes
+  // the page down for no reason.
   var MAX_OFFSET = 170;
 
+  // The misplacement only happens before the first scroll. Afterwards Chrome
+  // has corrected itself, and the very same divergence means something
+  // harmless instead — collapsed toolbars, which enlarge the web view without
+  // hiding anything. Continuing to compensate then is what left the fixed a11y
+  // toggle floating ~110px too low while scrolled.
+  var settled = false;
+
   function sync() {
+    if (settled) return;
     // Before first layout clientHeight is 0, which would read as a huge gap.
     if (!root.clientHeight) return;
     var gap = window.innerHeight - root.clientHeight;
-    var offset = 0;
-    if (gap > MIN_GAP) {
-      offset = Math.min(MAX_OFFSET, Math.max(MIN_OFFSET, gap - BOTTOM_CHROME));
-    }
+    var offset =
+      gap > MIN_GAP ? Math.min(MAX_OFFSET, Math.max(0, gap - BOTTOM_CHROME)) : 0;
     root.style.setProperty("--chrome-top-inset", offset + "px");
+  }
+
+  function settle() {
+    if (settled) return;
+    settled = true;
+    // Chrome shifts the page down by roughly this much at the same moment, so
+    // dropping the offset here cancels out rather than visibly jumping.
+    root.style.setProperty("--chrome-top-inset", "0px");
   }
 
   sync();
   window.addEventListener("resize", sync);
   window.addEventListener("orientationchange", sync);
-  window.addEventListener("scroll", sync, { passive: true });
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", sync);
   }
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (window.scrollY > 0) settle();
+    },
+    { passive: true }
+  );
 })();
