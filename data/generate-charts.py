@@ -135,9 +135,9 @@ fig, ax = make_fig(
     'Bacterial STIs at record highs in Europe',
     'Confirmed cases, EU/EEA, thousands',
 )
+ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS, vals(gon_gen), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS, vals(syp_gen), color=TEAL,  marker='o', label='Syphilis',   **LW)
-ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia', **LW)
 style_ax(ax, ymax=250)
 finish(fig, ax, 'chart-sti-general.png')
 
@@ -154,9 +154,9 @@ fig, ax = make_fig(
     'Chlamydia and gonorrhoea are rising faster among MSM',
     'Confirmed cases among men who have sex with men, EU/EEA, thousands',
 )
+ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS,     vals(gon_msm), color=WHITE, marker='o', label='Gonorrhoea', **LW)
 ax.plot(YEARS,     vals(syp_msm), color=TEAL,  marker='o', label='Syphilis',   **LW)
-ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia', **LW)
 style_ax(ax, ymax=35)
 ax.annotate('data from 2020',
             xy=(2020, chl_msm[2020]),
