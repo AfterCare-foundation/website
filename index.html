@@ -1498,6 +1498,21 @@
          width/height bypass that fallback entirely — same fix as
          .mp-checkmark's own inset bug elsewhere on this page, different
          cause. */
+      .mp-qr-solo {
+        margin: 6px auto 4px;
+        width: 72%;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .mp-qr-solo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 8px;
+      }
       .mp-frame-qr {
         position: absolute;
         top: 15%;
@@ -1632,6 +1647,39 @@
         opacity: 1;
         transform: none;
         box-shadow: none;
+      }
+
+      /* ---- use-case toggle ---- */
+      .use-case-toggle {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin: 0 auto 28px;
+        padding: 4px;
+        background: rgba(var(--fg-rgb), 0.05);
+        border: 1px solid rgba(var(--fg-rgb), 0.10);
+        border-radius: 999px;
+        width: fit-content;
+      }
+      .uc-btn {
+        background: none;
+        border: none;
+        border-radius: 999px;
+        padding: 7px 22px;
+        font-family: inherit;
+        font-size: 0.875rem;
+        color: rgba(244, 244, 246, 0.55);
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s;
+        letter-spacing: 0.01em;
+      }
+      .uc-btn:hover {
+        color: rgba(244, 244, 246, 0.85);
+      }
+      .uc-btn.is-active {
+        background: rgba(var(--fg-rgb), 0.18);
+        color: var(--white);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.4);
       }
 
       /* ---- steps: centered stack mobile-first, left-rail beside text once there's room ---- */
@@ -2452,10 +2500,42 @@
     </div>
 
     <section class="how" id="how">
+      <div class="use-case-toggle scroll-reveal" role="group" aria-label="Use case">
+        <button class="uc-btn is-active" data-uc="club">Club</button>
+        <button class="uc-btn" data-uc="sauna">Sauna</button>
+        <button class="uc-btn" data-uc="home">Home</button>
+      </div>
       <div class="how-title scroll-reveal">How it works</div>
 
       <ol class="steps">
-        <li class="step step-featured scroll-reveal" style="--sd: 0">
+        <!-- Generate step — only visible in Home mode -->
+        <li class="step step-featured scroll-reveal" data-step="generate" style="display:none; --sd: 0">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <span class="step-label">Generate</span>
+            <span class="step-desc">Generate your personal QR code in the app — no card needed.</span>
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <span class="mp-label">Your QR code</span>
+                <div class="mp-qr-solo">
+                  <img
+                    src="visual-assets/qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <span class="mp-sub">Unique token created each time</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step step-featured scroll-reveal" data-step="tear" style="--sd: 0">
           <span class="step-num">1</span>
           <div class="step-body">
             <span class="step-label">Tear</span>
@@ -2514,7 +2594,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 1">
+        <li class="step scroll-reveal" data-step="keep" style="--sd: 1">
           <span class="step-num">2</span>
           <div class="step-body">
             <span class="step-label">Keep</span>
@@ -2547,19 +2627,18 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 2">
+        <li class="step scroll-reveal" data-step="scan" style="--sd: 2">
           <span class="step-num">3</span>
           <div class="step-body">
             <span class="step-label">Scan</span>
-            <span class="step-desc"
-              >Scan it in the app, whenever you're ready.</span
-            >
+            <span class="step-desc" data-desc-default>Scan it in the app, whenever you're ready.</span>
+            <span class="step-desc" data-desc-home style="display:none">Show your QR to the other person — they scan it with their phone camera.</span>
           </div>
           <div class="step-visual">
             <div class="mini-phone" aria-hidden="true">
               <div class="mp-bar"><span class="mp-island"></span></div>
               <div class="mp-screen">
-                <span class="mp-label">Scan your card</span>
+                <span class="mp-label">Scan the code</span>
                 <div class="mp-frame">
                   <img
                     class="mp-frame-qr"
@@ -2585,7 +2664,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 3">
+        <li class="step scroll-reveal" data-step="connected" style="--sd: 3">
           <span class="step-num">4</span>
           <div class="step-body">
             <span class="step-label"
@@ -2618,9 +2697,8 @@
                 >
               </span>
             </span>
-            <span class="step-desc"
-              >Your halves match up — anonymously, once you've both scanned.</span
-            >
+            <span class="step-desc" data-desc-default>Your halves match up — anonymously, once you've both scanned.</span>
+              <span class="step-desc" data-desc-home style="display:none">Once the other person scans, the connection is established — anonymously.</span>
           </div>
           <div class="step-visual">
             <div class="mini-phone mp-connected" aria-hidden="true">
@@ -2633,7 +2711,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 4">
+        <li class="step scroll-reveal" data-step="notified" style="--sd: 4">
           <span class="step-num">5</span>
           <div class="step-body">
             <span class="step-label">Notified</span>
@@ -2670,7 +2748,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 5">
+        <li class="step scroll-reveal" data-step="treated" style="--sd: 5">
           <span class="step-num">6</span>
           <div class="step-body">
             <span class="step-label">Treated</span>
@@ -3441,6 +3519,58 @@
         document.addEventListener('keydown', function (e) {
           if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
         });
+      })();
+
+      // ── use-case toggle ──────────────────────────────────────────────────────
+      (function () {
+        var btns = document.querySelectorAll('.uc-btn');
+        var stepsEl = document.querySelector('.steps');
+
+        // Steps hidden in Home (card-based steps replaced by Generate)
+        var cardOnly  = ['tear', 'keep'];
+        var homeOnly  = ['generate'];
+
+        function applyUc(uc) {
+          var isHome = (uc === 'home');
+          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
+            var s = li.dataset.step;
+            var hide = isHome ? cardOnly.includes(s) : homeOnly.includes(s);
+            li.style.display = hide ? 'none' : '';
+          });
+          // Swap Scan label for Home
+          var scanLabel = stepsEl.querySelector('li[data-step="scan"] .step-label');
+          if (scanLabel) scanLabel.textContent = isHome ? 'Show' : 'Scan';
+
+          // Swap Scan description for Home
+          var scanStep = stepsEl.querySelector('li[data-step="scan"]');
+          if (scanStep) {
+            scanStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
+            scanStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
+          }
+          // Swap Connected description for Home
+          var connStep = stepsEl.querySelector('li[data-step="connected"]');
+          if (connStep) {
+            connStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
+            connStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
+          }
+          var n = 1;
+          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
+            if (li.style.display === 'none') return;
+            var numEl = li.querySelector('.step-num');
+            if (numEl) numEl.textContent = n++;
+          });
+        }
+
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            btns.forEach(function (b) { b.classList.remove('is-active'); });
+            btn.classList.add('is-active');
+            applyUc(btn.dataset.uc);
+          });
+        });
+
+        // Init with default (Club)
+        applyUc('club');
       })();
     </script>
   </body>
