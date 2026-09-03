@@ -58,6 +58,7 @@ BG2   = '#0f0f17'
 WHITE = '#f4f4f6'
 TEAL  = '#2dd4bf'
 BLUE  = '#60a5fa'
+PURPLE = '#7d47e0'  # logo gradient start ("devil purple")
 GRAY  = '#9ca3af'
 GRID  = '#1a1a28'
 
@@ -136,7 +137,7 @@ chl_gen = load('chl_gen')
 fig, ax = make_fig()
 ax.plot(YEARS, vals(chl_gen), color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS, vals(gon_gen), color=WHITE, marker='o', label='Gonorrhoea', **LW)
-ax.plot(YEARS, vals(syp_gen), color=TEAL,  marker='o', label='Syphilis',   **LW)
+ax.plot(YEARS, vals(syp_gen), color=PURPLE, marker='o', label='Syphilis',   **LW)
 # Headroom above 250 so the legend sits in an empty band — no extra tick,
 # so no gridline under the labels.
 style_ax(ax, ymin=0, ymax=292, yticks=range(0, 251, 50))
@@ -154,7 +155,7 @@ chl_vals  = [chl_msm[y] for y in chl_years]
 fig, ax = make_fig()
 ax.plot(chl_years, chl_vals,      color=BLUE,  marker='o', label='Chlamydia',  **LW)
 ax.plot(YEARS,     vals(gon_msm), color=WHITE, marker='o', label='Gonorrhoea', **LW)
-ax.plot(YEARS,     vals(syp_msm), color=TEAL,  marker='o', label='Syphilis',   **LW)
+ax.plot(YEARS,     vals(syp_msm), color=PURPLE, marker='o', label='Syphilis',   **LW)
 # Unpinned from 0: series sit between ~7 and 33. Headroom above 35 so
 # the legend band has no gridline.
 style_ax(ax, ymin=5, ymax=39.6, yticks=range(5, 36, 5))
