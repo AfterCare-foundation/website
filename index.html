@@ -359,19 +359,44 @@
         margin: 0 0 22px;
       }
       .logo-badge {
-        width: 56px;
-        height: 56px;
-        margin-bottom: 28px;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
         flex-shrink: 0;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
       }
+      .logo-badge-text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        text-align: left;
+      }
       .logo-badge img {
-        width: 100%;
-        height: 100%;
+        width: 48px;
+        height: 48px;
         object-fit: contain;
-        filter: drop-shadow(0 0 24px rgba(96, 165, 250, 0.35));
+        filter: drop-shadow(0 0 20px rgba(125, 71, 224, 0.5));
         pointer-events: none;
+        flex-shrink: 0;
+      }
+      .logo-badge-name {
+        font-size: clamp(1.6rem, 0.8rem + 3vw, 2.6rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #7d47e0 0%, #2dd4bf 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+      .app-subtitle {
+        font-size: 0.9375rem;
+        color: rgba(var(--fg-rgb), 0.5);
+        margin: 0;
+        letter-spacing: 0.01em;
       }
       .eyebrow {
         display: inline-block;
@@ -386,12 +411,16 @@
         margin-bottom: 24px;
       }
       h1 {
-        font-size: clamp(2rem, 1rem + 4vw, 3.4rem);
+        font-size: clamp(1.35rem, 0.65rem + 2.5vw, 2.2rem);
         line-height: 1.1;
         font-weight: 600;
         letter-spacing: -0.02em;
         max-width: 720px;
         margin: 0 0 18px;
+      }
+      h1 .h1-sub {
+        font-size: 1em;
+        opacity: 1;
       }
       h1 span {
         background: linear-gradient(120deg, var(--purple-light), var(--teal));
@@ -407,7 +436,7 @@
       }
       .sub {
         color: var(--gray);
-        font-size: clamp(1rem, 0.85rem + 0.6vw, 1.15rem);
+        font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
         line-height: 1.55;
         max-width: 520px;
         margin: 0 0 24px;
@@ -2425,19 +2454,23 @@
       <div class="logo-badge reveal" style="--d: 1">
         <img
           src="visual-assets/aftercare-logo.svg"
-          alt="AfterCare"
-          width="56"
-          height="56"
+          alt=""
+          width="48"
+          height="48"
           decoding="async"
         />
+        <div class="logo-badge-text">
+          <span class="logo-badge-name">AfterCare</span>
+          <span class="app-subtitle">Anonymous STI notification app</span>
+        </div>
       </div>
       <div class="eyebrow reveal" style="--d: 2">In development</div>
       <h1 class="reveal" style="--d: 3">
         Stay informed.<br />
-        <span>No contact needed,</span><br />
-        <span class="h1-teal">no message to write.</span>
+        <span class="h1-sub">No contact needed,</span><br />
+        <span class="h1-sub h1-teal">no message to write.</span>
       </h1>
-      <p class="sub reveal" style="--d: 4">
+      <p class="sub reveal" style="--d: 5">
         Bacterial STIs are at
         <button
           class="footer-origin-link stats-chart-btn"
@@ -2445,10 +2478,10 @@
           aria-haspopup="dialog"
           aria-controls="chartOverlay"
           >record highs across Europe</button
-        >.<br />Let's fight them together!<br />AfterCare closes the notification gap that anonymous encounters leave open.
+        >.<br />Let's fight them together!<br />AfterCare closes the notification gap<br />that anonymous encounters leave open.
       </p>
 
-      <div class="chain reveal" style="--d: 4" aria-label="How early notification helps">
+      <div class="chain reveal" style="--d: 5" aria-label="How early notification helps">
         <div class="chain-row">
           <span class="chain-node step-1">Every partner notified in time</span>
         </div>
