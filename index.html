@@ -2,15 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+    <!-- No viewport-fit=cover: it lets the layout viewport extend under the
+         browser's own chrome, and Chrome on iOS stacks a "back to <app>"
+         banner above its URL bar when a link is opened from another app —
+         which hid the top ~120px of the hero, logo and all, plus the
+         position:fixed a11y toggle. Nothing here paints into the notch, so
+         the edge-to-edge opt-in bought us nothing. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a10" />
     <meta name="color-scheme" content="dark" />
     <meta
       name="description"
-      content="AfterCare lets you connect anonymously with someone you've met — so if either of you tests positive later, one tap tells the other, without needing a name or number."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
@@ -23,33 +26,78 @@
     <meta property="og:site_name" content="AfterCare" />
     <meta
       property="og:title"
-      content="AfterCare — tell them without telling them who you are"
+      content="AfterCare — anonymous STI notifications, no contact info needed"
     />
     <meta
       property="og:description"
-      content="Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
-    <meta property="og:image" content="visual-assets/logo-no-text.png" />
+    <meta property="og:url" content="https://www.after-care.eu/" />
+    <meta
+      property="og:image"
+      content="https://www.after-care.eu/visual-assets/aftercare-logo-black-bg.png"
+    />
     <meta name="twitter:card" content="summary" />
     <meta
       name="twitter:title"
-      content="AfterCare — tell them without telling them who you are"
+      content="AfterCare — anonymous STI notifications, no contact info needed"
     />
     <meta
       name="twitter:description"
-      content="Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required."
+      content="Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required."
     />
-    <meta name="twitter:image" content="visual-assets/logo-no-text.png" />
-    <title>AfterCare — tell them without telling them who you are</title>
+    <meta
+      name="twitter:image"
+      content="https://www.after-care.eu/visual-assets/aftercare-logo-black-bg.png"
+    />
+    <title>AfterCare — anonymous STI notifications, no contact info needed</title>
+    <link rel="canonical" href="https://www.after-care.eu/" />
     <link
       rel="icon"
       href="visual-assets/aftercare-logo.svg"
       type="image/svg+xml"
     />
-    <link rel="alternate icon" href="visual-assets/logo-no-text.png" />
-    <link rel="apple-touch-icon" href="visual-assets/logo-no-text.png" />
+    <link rel="alternate icon" href="visual-assets/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="assets/a11y-panel.css" />
+    <script src="assets/viewport-inset.js" defer></script>
+    <link
+      rel="preload"
+      href="assets/fonts/poppins-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/poppins-semibold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
+      /* Self-hosted Poppins — never a font CDN, so no visitor IP reaches a
+         third party before they've consented to anything. Subset to Latin
+         plus punctuation from the OFL TTFs in data/fonts/, the same files
+         data/generate-charts.py labels the charts with, so page and charts
+         share one typeface. Only 400 and 600 ship: 500 and 700 appear in a
+         handful of small labels and map onto these cleanly. Arrows and ✕
+         aren't in Poppins at all, so they keep rendering from the system
+         stack below. */
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-regular.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("assets/fonts/poppins-semibold.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
       :root {
         --bg: #0a0a10;
         --bg2: #0f0f17;
@@ -111,15 +159,26 @@
       body {
         background: var(--bg);
         color: var(--white);
-        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family: "Poppins", -apple-system, "Segoe UI", Helvetica, Arial,
+          sans-serif;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
         -webkit-tap-highlight-color: transparent;
         position: relative;
         display: flex;
         flex-direction: column;
-        min-height: 100dvh;
+        min-height: 100vh;
+        min-height: 100svh;
+        /* clip, not hidden: overflow-x: hidden forces overflow-y to compute
+           to auto, making body its own scroll container — which is what let
+           the centred hero clip its top row off-screen. clip has the same
+           visual effect without establishing one. */
         overflow-x: hidden;
+        overflow-x: clip;
+        /* Set by assets/viewport-inset.js, and 0 everywhere except the Chrome
+           on iOS state where the page renders behind the browser's own
+           toolbars. See that file for the full description. */
+        padding-top: var(--chrome-top-inset, 0px);
       }
       a {
         -webkit-tap-highlight-color: transparent;
@@ -265,6 +324,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        /* Falls back to start alignment instead of overflowing off the top
+           edge when the content is taller than the box — centred flex
+           overflow is otherwise unreachable in both directions. */
+        justify-content: safe center;
         text-align: center;
         padding: clamp(32px, 8vh, 80px) max(20px, env(safe-area-inset-right))
           clamp(24px, 6vh, 56px) max(20px, env(safe-area-inset-left));
@@ -280,6 +343,14 @@
       :root[data-theme="light"] .hero {
         background: none;
       }
+      /* Opening a link from another app gives Chrome its shortest viewport —
+         both toolbars expanded — and the hero content is taller than that,
+         so centring put the logo above the top edge. Phones scroll anyway. */
+      @media (max-width: 680px) {
+        .hero {
+          justify-content: flex-start;
+        }
+      }
       .kicker {
         font-size: 0.8125rem;
         font-style: italic;
@@ -288,16 +359,46 @@
         margin: 0 0 22px;
       }
       .logo-badge {
-        width: 56px;
-        height: 56px;
-        margin-bottom: 28px;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
         flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+      .logo-badge-text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        text-align: left;
       }
       .logo-badge img {
-        width: 100%;
-        height: 100%;
+        width: 48px;
+        height: 48px;
         object-fit: contain;
-        filter: drop-shadow(0 0 24px rgba(96, 165, 250, 0.35));
+        filter: drop-shadow(0 0 20px rgba(125, 71, 224, 0.5));
+        pointer-events: none;
+        flex-shrink: 0;
+      }
+      .logo-badge-name {
+        display: inline-block;
+        width: fit-content;
+        font-size: clamp(1.6rem, 0.8rem + 3vw, 2.6rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        background: linear-gradient(90deg, #7d47e0 0%, #2dd4bf 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+      }
+      .app-subtitle {
+        font-size: 0.9375rem;
+        color: rgba(var(--fg-rgb), 0.5);
+        margin: 0;
+        letter-spacing: 0.01em;
       }
       .eyebrow {
         display: inline-block;
@@ -312,12 +413,16 @@
         margin-bottom: 24px;
       }
       h1 {
-        font-size: clamp(2rem, 1rem + 4vw, 3.4rem);
+        font-size: clamp(1.35rem, 0.65rem + 2.5vw, 2.2rem);
         line-height: 1.1;
         font-weight: 600;
         letter-spacing: -0.02em;
         max-width: 720px;
         margin: 0 0 18px;
+      }
+      h1 .h1-sub {
+        font-size: 1em;
+        opacity: 1;
       }
       h1 span {
         background: linear-gradient(120deg, var(--purple-light), var(--teal));
@@ -325,12 +430,99 @@
         background-clip: text;
         color: transparent;
       }
+      h1 .h1-teal {
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+        color: var(--teal);
+      }
+      h1 .h1-purple {
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+        color: #7d47e0;
+      }
       .sub {
         color: var(--gray);
-        font-size: clamp(1rem, 0.85rem + 0.6vw, 1.15rem);
+        font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
         line-height: 1.55;
         max-width: 520px;
-        margin: 0 0 40px;
+        margin: 0 0 24px;
+      }
+
+      /* ---- building-blocks diagram ---- */
+      .chain {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        max-width: 420px;
+        margin: 0 auto 56px;
+        padding: 0 24px;
+      }
+      .chain-label {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--white);
+        margin: 0 0 6px;
+      }
+      .chain-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+      }
+      .chain-row-annotated {
+        align-items: center;
+        position: relative;
+      }
+      .chain-row-note {
+        position: absolute;
+        left: calc(100% + 8px);
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: rgba(155, 100, 240, 0.95);
+        white-space: nowrap;
+        font-style: italic;
+      }
+      .chain-node {
+        border-radius: 10px;
+        padding: 9px 18px;
+        font-size: 0.875rem;
+        letter-spacing: 0.01em;
+        text-align: center;
+        flex: 1;
+        color: rgba(244, 244, 246, 0.88);
+      }
+      /* 6 steps reading left→right, top→bottom.
+         Text stays uniformly white; only background + border progress. */
+      /* 6 steps reading left→right, top→bottom.
+         Text stays uniformly white; only background + border progress. */
+      .chain-node.step-1 {
+        background: rgba(244, 244, 246, 0.03);
+        border: 1px solid rgba(244, 244, 246, 0.10);
+      }
+      .chain-node.step-2 {
+        background: rgba(244, 244, 246, 0.06);
+        border: 1px solid rgba(244, 244, 246, 0.15);
+      }
+      .chain-node.step-3 {
+        background: rgba(244, 244, 246, 0.09);
+        border: 1px solid rgba(244, 244, 246, 0.20);
+      }
+      .chain-node.step-4 {
+        background: rgba(45, 212, 191, 0.07);
+        border: 1px solid rgba(45, 212, 191, 0.18);
+      }
+      .chain-node.step-5 {
+        background: rgba(45, 212, 191, 0.12);
+        border: 1px solid rgba(45, 212, 191, 0.28);
+      }
+      .chain-node.step-6 {
+        background: rgba(45, 212, 191, 0.18);
+        border: 1px solid rgba(45, 212, 191, 0.50);
+        color: var(--teal);
+        color: var(--teal);
       }
 
       .mockup {
@@ -389,6 +581,52 @@
         50% {
           transform: translateY(6px);
         }
+      }
+
+      /* ---- why AfterCare value props ---- */
+      .why {
+        padding: 0 24px 64px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .why-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 680px) {
+        .why-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .why-card {
+        background: rgba(var(--fg-rgb), 0.04);
+        border: 1px solid rgba(var(--fg-rgb), 0.1);
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .why-card-icon {
+        width: 32px;
+        height: 32px;
+        color: var(--teal);
+        flex-shrink: 0;
+        margin-bottom: 4px;
+      }
+      .why-card-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--white);
+        letter-spacing: -0.01em;
+      }
+      .why-card-desc {
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: var(--gray);
+        margin: 0;
       }
 
       /* ---- how it works ---- */
@@ -660,9 +898,9 @@
         --descend-dur: 0.7s;
       }
       .torn-card.large.fast {
-        --tear-dur: 0.45s;
-        --leave-dur: 0.3s;
-        --descend-dur: 0.3s;
+        --tear-dur: 0.75s;
+        --leave-dur: 0.5s;
+        --descend-dur: 0.5s;
       }
       /* Each ghost is sized/positioned to match its half's own resting spot
          (not measured — just the same width/radius rules as .tc-half
@@ -1066,6 +1304,9 @@
       .tc-logo {
         width: clamp(44px, 12vw, 58px);
         height: auto;
+        pointer-events: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
       }
       .tc-qr {
         width: 66%;
@@ -1258,7 +1499,7 @@
         background: rgba(40, 40, 46, 0.78);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        border-radius: 20%;
+        border-radius: 14px;
         padding: 8% 9%;
         text-align: left;
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
@@ -1266,20 +1507,23 @@
         transform: translateY(-80%) scale(0.92);
       }
       /* A solid rounded-square, not a translucent circle — real
-         notification icons are opaque app icons, not soft glass badges. */
+         notification icons are opaque app icons, not soft glass badges.
+         The icon art carries its own background, so no gradient here. */
       .mp-notif-icon {
         flex-shrink: 0;
         width: 22%;
         aspect-ratio: 1;
         border-radius: 26%;
-        background: linear-gradient(135deg, var(--purple-light), var(--purple));
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
       }
-      .mp-notif-icon svg {
-        width: 58%;
-        height: 58%;
+      .mp-notif-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
       }
       .mp-notif-text {
         display: flex;
@@ -1360,6 +1604,21 @@
          width/height bypass that fallback entirely — same fix as
          .mp-checkmark's own inset bug elsewhere on this page, different
          cause. */
+      .mp-qr-solo {
+        margin: 6px auto 4px;
+        width: 72%;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .mp-qr-solo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 8px;
+      }
       .mp-frame-qr {
         position: absolute;
         top: 15%;
@@ -1494,6 +1753,39 @@
         opacity: 1;
         transform: none;
         box-shadow: none;
+      }
+
+      /* ---- use-case toggle ---- */
+      .use-case-toggle {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin: 0 auto 28px;
+        padding: 4px;
+        background: rgba(var(--fg-rgb), 0.05);
+        border: 1px solid rgba(var(--fg-rgb), 0.10);
+        border-radius: 999px;
+        width: fit-content;
+      }
+      .uc-btn {
+        background: none;
+        border: none;
+        border-radius: 999px;
+        padding: 7px 22px;
+        font-family: inherit;
+        font-size: 0.875rem;
+        color: rgba(244, 244, 246, 0.55);
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s;
+        letter-spacing: 0.01em;
+      }
+      .uc-btn:hover {
+        color: rgba(244, 244, 246, 0.85);
+      }
+      .uc-btn.is-active {
+        background: rgba(var(--fg-rgb), 0.18);
+        color: var(--white);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.4);
       }
 
       /* ---- steps: centered stack mobile-first, left-rail beside text once there's room ---- */
@@ -1850,6 +2142,170 @@
         border-color: var(--purple-light);
       }
 
+      /* ---- stats chart button ---- */
+      .stats-chart-btn {
+        font: inherit;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(96, 165, 250, 0.5);
+        padding: 0;
+        cursor: pointer;
+      }
+
+      /* ---- chart overlay ---- */
+      .chart-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.2s ease,
+          visibility 0s linear 0.2s;
+      }
+      .chart-overlay[hidden] {
+        display: none;
+      }
+      .chart-overlay.is-open {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.2s ease, visibility 0s;
+      }
+      .chart-overlay-panel {
+        position: relative;
+        background: var(--bg2);
+        border: 1px solid rgba(var(--fg-rgb), 0.14);
+        border-radius: 16px;
+        padding: 20px;
+        max-width: min(520px, 100%);
+        width: 100%;
+        max-height: calc(100vh - 32px);
+        max-height: calc(100svh - 32px);
+        overflow-y: auto;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        transform: translateY(6px) scale(0.98);
+        transform-origin: center center;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .chart-overlay.is-open .chart-overlay-panel {
+        transform: translateY(0) scale(1);
+      }
+      .chart-overlay-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid rgba(var(--fg-rgb), 0.28);
+        background: rgba(var(--fg-rgb), 0.10);
+        color: var(--white);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      }
+      .chart-overlay-close:hover {
+        background: rgba(var(--fg-rgb), 0.22);
+        border-color: rgba(var(--fg-rgb), 0.5);
+      }
+      .chart-overlay-charts {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+        margin-top: 4px;
+      }
+      .chart-card {
+        margin: 0;
+      }
+      .chart-card figcaption {
+        padding: 0 52px 8px 4px;
+      }
+      .chart-card-title {
+        margin: 0;
+        color: var(--white);
+        font-size: 1rem;
+        line-height: 1.3;
+        font-weight: 700;
+      }
+      .chart-card-subtitle {
+        margin: 3px 0 0;
+        color: var(--gray);
+        font-size: 0.8125rem;
+        line-height: 1.45;
+      }
+      .chart-overlay-charts img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+      .chart-overlay-footer {
+        margin-top: 14px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 14px;
+        color: var(--gray);
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+      .chart-overlay-source {
+        margin: 0;
+      }
+      .chart-overlay-footer a {
+        flex-shrink: 0;
+        font-size: inherit;
+        color: var(--gray);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(var(--fg-rgb), 0.25);
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+      .chart-overlay-footer a:hover {
+        color: var(--white);
+        border-color: var(--white);
+      }
+      @media (max-width: 680px) {
+        .chart-overlay {
+          padding: 0;
+          align-items: flex-end;
+        }
+        .chart-overlay-panel {
+          border-radius: 16px 16px 0 0;
+          max-height: calc(100vh - 56px);
+          max-height: calc(100svh - 56px);
+          padding: 16px 14px 0;
+          display: flex;
+          flex-direction: column;
+        }
+        .chart-overlay-charts {
+          gap: 20px;
+          overflow-y: auto;
+          flex: 1 1 auto;
+          min-height: 0;
+          padding-bottom: 8px;
+        }
+        .chart-overlay-footer {
+          flex-shrink: 0;
+          padding: 10px 0 max(16px, env(safe-area-inset-bottom));
+          border-top: 1px solid rgba(var(--fg-rgb), 0.1);
+          margin-top: 0;
+        }
+        .chart-card figcaption {
+          padding-left: 2px;
+        }
+      }
+
       /* ---- hero entrance stagger (page load) ---- */
       .reveal {
         opacity: 0;
@@ -1933,6 +2389,9 @@
         animation: none;
       }
     </style>
+    <script>
+      if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+    </script>
     <script>
       (function () {
         try {
@@ -2072,36 +2531,51 @@
       <div class="logo-badge reveal" style="--d: 1">
         <img
           src="visual-assets/aftercare-logo.svg"
-          alt="AfterCare"
-          width="56"
-          height="56"
+          alt=""
+          width="48"
+          height="48"
           decoding="async"
         />
+        <div class="logo-badge-text">
+          <span class="logo-badge-name">AfterCare</span>
+          <span class="app-subtitle">Anonymous STI notification tool</span>
+        </div>
       </div>
       <div class="eyebrow reveal" style="--d: 2">In development</div>
       <h1 class="reveal" style="--d: 3">
-        The hardest conversation,<br />
-        <span>made unnecessary.</span>
+        <span class="h1-purple">More fun.</span><br />Less STIs.
       </h1>
-      <p class="sub reveal" style="--d: 4">
+      <p class="sub reveal" style="--d: 5">
         Bacterial STIs are at
-        <a
-          class="footer-origin-link"
-          href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
-          target="_blank"
-          rel="noopener noreferrer"
-          >record highs across Europe</a
-        >. The conversation that would slow them down is the one nobody wants to
-        have — so AfterCare makes it one tap: anonymous, and soon enough to
-        treat it.
+        <button
+          class="footer-origin-link stats-chart-btn"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="chartOverlay"
+          >record highs across Europe</button
+        >.<br />Let's fight them together!
       </p>
+
+      <div class="chain reveal" style="--d: 5" aria-label="How early notification helps">
+        <p class="chain-label">How AfterCare can help</p>
+        <div class="chain-row chain-row-annotated">
+          <span class="chain-node step-1">Every partner notified</span>
+          <span class="chain-row-note">← our job</span>
+        </div>
+        <div class="chain-row">
+          <span class="chain-node step-3">Treated before spreading</span>
+        </div>
+        <div class="chain-row">
+          <span class="chain-node step-6">A healthier scene for everyone</span>
+        </div>
+      </div>
 
       <div class="mockup reveal" style="--d: 5">
         <img
-          src="visual-assets/mockup-cutout.webp"
+          src="visual-assets/mockup-cutout2.webp"
           alt="AfterCare app showing an anonymous exposure notification"
           width="96"
-          height="185"
+          height="192"
           fetchpriority="high"
           decoding="async"
         />
@@ -2132,11 +2606,80 @@
       </a>
     </div>
 
+    <section class="why" aria-label="Why AfterCare">
+      <div class="why-cards">
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <h3 class="why-card-title">Stay informed</h3>
+          <p class="why-card-desc">AfterCare notifications keep you informed about the STIs exposure, so that you can take care of your health in time, not weeks later.</p>
+        </div>
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <!-- person head + shoulders -->
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M1 21v-2a6 6 0 0 1 9.33-5"/>
+            <!-- bold question mark -->
+            <path d="M17 9.5a2.5 2.5 0 0 1 2.5 2.5c0 1.5-2.5 2-2.5 3.5"/>
+            <circle cx="17" cy="19" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="why-card-title">No contact needed</h3>
+          <p class="why-card-desc">No number? No name? No problem. AfterCare works for anonymous encounters too, connecting you without sharing any personal data.</p>
+        </div>
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/>
+          </svg>
+          <h3 class="why-card-title">No message to write</h3>
+          <p class="why-card-desc">AfterCare handles the wording. You decide, you tap — done. No drafting, no figuring out what to say.</p>
+        </div>
+
+      </div>
+    </section>
+
     <section class="how" id="how">
+      <div class="use-case-toggle" role="group" aria-label="Use case">
+        <button class="uc-btn is-active" data-uc="club">Club</button>
+        <button class="uc-btn" data-uc="sauna">Sauna</button>
+        <button class="uc-btn" data-uc="home">Home</button>
+      </div>
       <div class="how-title scroll-reveal">How it works</div>
 
       <ol class="steps">
-        <li class="step step-featured scroll-reveal" style="--sd: 0">
+        <!-- Generate step — only visible in Home mode -->
+        <li class="step step-featured scroll-reveal" data-step="generate" style="display:none; --sd: 0">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <span class="step-label">Generate</span>
+            <span class="step-desc">Generate your personal QR code in the app — no card needed.</span>
+          </div>
+          <div class="step-visual">
+            <div class="mini-phone" aria-hidden="true">
+              <div class="mp-bar"><span class="mp-island"></span></div>
+              <div class="mp-screen">
+                <span class="mp-label">Your QR code</span>
+                <div class="mp-qr-solo">
+                  <img
+                    src="visual-assets/qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <span class="mp-sub">Unique token created each time</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step step-featured scroll-reveal" data-step="tear" style="--sd: 0">
           <span class="step-num">1</span>
           <div class="step-body">
             <span class="step-label">Tear</span>
@@ -2161,7 +2704,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2183,7 +2726,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2195,7 +2738,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 1">
+        <li class="step scroll-reveal" data-step="keep" style="--sd: 1">
           <span class="step-num">2</span>
           <div class="step-body">
             <span class="step-label">Keep</span>
@@ -2216,7 +2759,7 @@
                 />
                 <img
                   class="tc-qr"
-                  src="qr-placeholder.png"
+                  src="visual-assets/qr-placeholder.png"
                   alt=""
                   width="280"
                   height="280"
@@ -2228,23 +2771,22 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 2">
+        <li class="step scroll-reveal" data-step="scan" style="--sd: 2">
           <span class="step-num">3</span>
           <div class="step-body">
             <span class="step-label">Scan</span>
-            <span class="step-desc"
-              >Scan it in the app, whenever you're ready.</span
-            >
+            <span class="step-desc" data-desc-default>Scan it in the app, whenever you're ready.</span>
+            <span class="step-desc" data-desc-home style="display:none">Show your QR to the other person — they scan it with their phone camera.</span>
           </div>
           <div class="step-visual">
             <div class="mini-phone" aria-hidden="true">
               <div class="mp-bar"><span class="mp-island"></span></div>
               <div class="mp-screen">
-                <span class="mp-label">Scan your card</span>
+                <span class="mp-label">Scan the code</span>
                 <div class="mp-frame">
                   <img
                     class="mp-frame-qr"
-                    src="qr-placeholder.png"
+                    src="visual-assets/qr-placeholder.png"
                     alt=""
                     width="280"
                     height="280"
@@ -2266,7 +2808,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 3">
+        <li class="step scroll-reveal" data-step="connected" style="--sd: 3">
           <span class="step-num">4</span>
           <div class="step-body">
             <span class="step-label"
@@ -2299,9 +2841,8 @@
                 >
               </span>
             </span>
-            <span class="step-desc"
-              >Your halves match up — anonymously, once you've both scanned.</span
-            >
+            <span class="step-desc" data-desc-default>Your halves match up — anonymously, once you've both scanned.</span>
+              <span class="step-desc" data-desc-home style="display:none">Once the other person scans, the connection is established — anonymously.</span>
           </div>
           <div class="step-visual">
             <div class="mini-phone mp-connected" aria-hidden="true">
@@ -2314,7 +2855,7 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 4">
+        <li class="step scroll-reveal" data-step="notified" style="--sd: 4">
           <span class="step-num">5</span>
           <div class="step-body">
             <span class="step-label">Notified</span>
@@ -2329,17 +2870,14 @@
               <div class="mp-screen mp-screen-notif">
                 <div class="mp-notif">
                   <span class="mp-notif-icon">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#ffffff"
-                      stroke-width="2.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                    </svg>
+                    <img
+                      src="visual-assets/aftercare-icon-halo.png"
+                      alt=""
+                      width="128"
+                      height="128"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                   <span class="mp-notif-text">
                     <span class="mp-notif-meta">
@@ -2354,49 +2892,12 @@
             </div>
           </div>
         </li>
-        <li class="step scroll-reveal" style="--sd: 5">
+        <li class="step scroll-reveal" data-step="treated" style="--sd: 5">
           <span class="step-num">6</span>
           <div class="step-body">
-            <span class="step-label"
-              >Treated
-              <span class="info-tip">
-                <button
-                  type="button"
-                  class="info-tip-btn"
-                  aria-label="Source for the record-high STI rates"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="13"
-                    height="13"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4" />
-                    <path d="M12 8h.01" />
-                  </svg>
-                </button>
-                <span class="info-tip-pop" role="tooltip"
-                  >Gonorrhoea and syphilis notifications in Europe hit their
-                  highest levels in over a decade in 2024, and syphilis cases
-                  have more than doubled since 2015.
-                  <a
-                    href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >Source: ECDC</a
-                  >.</span
-                >
-              </span>
-            </span>
+            <span class="step-label">Treated</span>
             <span class="step-desc"
-              >Get treated sooner, and help push back against bacterial STIs
-              across the community.</span
+              >Get treated sooner. Early detection means less spread — and a healthier scene for everyone.<br /><br />AfterCare is a notification tool — we don't provide medical services. But we refer you to a trusted clinic nearby if needed!</span
             >
           </div>
         </li>
@@ -2508,7 +3009,7 @@
         <br />
         A doctor or researcher? <br />
         <a
-          href="mailto:contact.aftercare@protonmail.com?subject=Doctor%2FResearcher%20Partnership"
+          href="mailto:contact@after-care.eu?subject=Doctor%2FResearcher%20Partnership"
           >Get in touch</a
         >
         to partner
@@ -2635,8 +3136,8 @@
           if (!largeCard || largeCard.classList.contains("departing")) {
             return;
           }
-          // Matches --descend-dur — 300ms in .fast mode, 700ms otherwise.
-          var duration = largeCard.classList.contains("fast") ? 300 : 700;
+          // Matches --descend-dur — 500ms in .fast mode, 700ms otherwise.
+          var duration = largeCard.classList.contains("fast") ? 500 : 700;
           largeCard.classList.add("departing");
           yoursDepartureDoneAt =
             performance.now() + Math.max(0, duration - DEPARTURE_OVERLAP_MS);
@@ -2680,9 +3181,9 @@
             triggerTheirsLeaving();
             triggerYoursDeparture();
             if (onDone) {
-              setTimeout(onDone, 300); // matches --descend-dur in fast mode
+              setTimeout(onDone, 500); // matches --descend-dur in fast mode
             }
-          }, 350);
+          }, 500);
         };
         if (reduceMotion) {
           tornCards.forEach(function (card) {
@@ -2903,7 +3404,7 @@
           shareBtn.addEventListener("click", function () {
             var shareData = {
               title: "AfterCare",
-              text: "Tear a card in half with someone. If either of you tests positive later, one tap tells the other — anonymously, no name or identifying info required.",
+              text: "Tear a card, keep one half, give the other. If either of you tests positive later, one tap sends an anonymous notification — no contact info required.",
               url: window.location.origin + "/",
             };
             if (navigator.share) {
@@ -3075,5 +3576,146 @@
       })();
     </script>
     <script src="assets/a11y-panel.js" defer></script>
+
+    <!-- chart overlay -->
+    <div
+      id="chartOverlay"
+      class="chart-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="STI trends in Europe"
+      hidden
+    >
+      <div class="chart-overlay-panel">
+        <button class="chart-overlay-close" aria-label="Close charts">&#x2715;</button>
+        <div class="chart-overlay-charts">
+          <figure class="chart-card">
+            <figcaption>
+              <h2 class="chart-card-title">Bacterial STIs at record highs in Europe</h2>
+              <p class="chart-card-subtitle">Confirmed cases, EU/EEA, thousands</p>
+            </figcaption>
+            <img
+              src="visual-assets/chart-sti-general.png"
+              alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases in the EU/EEA from 2015 to 2024"
+              width="726" height="462"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <figure class="chart-card">
+            <figcaption>
+              <h2 class="chart-card-title">For MSM, gonorrhoea leads STI cases and is rising faster</h2>
+              <p class="chart-card-subtitle">Confirmed cases among men who have sex with men, EU/EEA, thousands</p>
+            </figcaption>
+            <img
+              src="visual-assets/chart-sti-msm.png"
+              alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases among men who have sex with men in the EU/EEA from 2015 to 2024"
+              width="726" height="462"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </div>
+        <div class="chart-overlay-footer">
+          <p class="chart-overlay-source">Source: European Centre for Disease Prevention and Control</p>
+          <a
+            href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Read more at ECDC ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var overlay = document.getElementById('chartOverlay');
+        var btn     = document.querySelector('.stats-chart-btn');
+        var closeBtn = overlay.querySelector('.chart-overlay-close');
+
+        function openOverlay() {
+          overlay.removeAttribute('hidden');
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              overlay.classList.add('is-open');
+            });
+          });
+          closeBtn.focus({ preventScroll: true });
+        }
+
+        function closeOverlay() {
+          overlay.classList.remove('is-open');
+          overlay.addEventListener('transitionend', function handler(e) {
+            if (e.target !== overlay) return;
+            overlay.setAttribute('hidden', '');
+            overlay.removeEventListener('transitionend', handler);
+          });
+          btn.focus({ preventScroll: true });
+        }
+
+        btn.addEventListener('click', openOverlay);
+        closeBtn.addEventListener('click', closeOverlay);
+
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeOverlay();
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+        });
+      })();
+
+      // ── use-case toggle ──────────────────────────────────────────────────────
+      (function () {
+        var btns = document.querySelectorAll('.uc-btn');
+        var stepsEl = document.querySelector('.steps');
+
+        // Steps hidden in Home (card-based steps replaced by Generate)
+        var cardOnly  = ['tear', 'keep'];
+        var homeOnly  = ['generate'];
+
+        function applyUc(uc) {
+          var isHome = (uc === 'home');
+          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
+            var s = li.dataset.step;
+            var hide = isHome ? cardOnly.includes(s) : homeOnly.includes(s);
+            li.style.display = hide ? 'none' : '';
+          });
+          // Swap Scan label for Home
+          var scanLabel = stepsEl.querySelector('li[data-step="scan"] .step-label');
+          if (scanLabel) scanLabel.textContent = isHome ? 'Show' : 'Scan';
+
+          // Swap Scan description for Home
+          var scanStep = stepsEl.querySelector('li[data-step="scan"]');
+          if (scanStep) {
+            scanStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
+            scanStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
+          }
+          // Swap Connected description for Home
+          var connStep = stepsEl.querySelector('li[data-step="connected"]');
+          if (connStep) {
+            connStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
+            connStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
+          }
+          var n = 1;
+          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
+            if (li.style.display === 'none') return;
+            var numEl = li.querySelector('.step-num');
+            if (numEl) numEl.textContent = n++;
+          });
+        }
+
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            btns.forEach(function (b) { b.classList.remove('is-active'); });
+            btn.classList.add('is-active');
+            applyUc(btn.dataset.uc);
+          });
+        });
+
+        // Init with default (Club)
+        applyUc('club');
+      })();
+    </script>
   </body>
 </html>

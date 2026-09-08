@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a10" />
     <meta name="color-scheme" content="dark" />
     <meta
@@ -13,15 +10,47 @@
       content="How AfterCare is funded: grants, sponsorship, and partnerships — never advertising or data sales."
     />
     <title>Funding — AfterCare</title>
+    <link rel="canonical" href="https://www.after-care.eu/funding/" />
     <link
       rel="icon"
       href="../visual-assets/aftercare-logo.svg"
       type="image/svg+xml"
     />
-    <link rel="alternate icon" href="../visual-assets/logo-no-text.png" />
-    <link rel="apple-touch-icon" href="../visual-assets/logo-no-text.png" />
+    <link rel="alternate icon" href="../visual-assets/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="../visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="../assets/a11y-panel.css" />
+    <script src="../assets/viewport-inset.js" defer></script>
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-semibold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
+      /* Self-hosted Poppins — see the longer note in the root index.html.
+         Never a font CDN; only 400 and 600 ship. */
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-regular.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-semibold.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
       :root {
         --bg: #0a0a10;
         --bg2: #0f0f17;
@@ -67,13 +96,17 @@
       body {
         background: var(--bg);
         color: var(--white);
-        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family: "Poppins", -apple-system, "Segoe UI", Helvetica, Arial,
+          sans-serif;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
         -webkit-tap-highlight-color: transparent;
         display: flex;
         flex-direction: column;
         min-height: 100dvh;
+        /* Set by assets/viewport-inset.js; 0 outside the Chrome on iOS state
+           where the page renders behind the browser's own toolbars. */
+        padding-top: var(--chrome-top-inset, 0px);
       }
       a {
         color: var(--teal);
@@ -283,7 +316,7 @@
       </p>
       <p>
         Representing an organization?
-        <a href="mailto:contact.aftercare@protonmail.com">Get in touch</a>
+        <a href="mailto:contact@after-care.eu">Get in touch</a>
         about sponsorship.
       </p>
       <a class="back" href="../">← Back to AfterCare</a>
