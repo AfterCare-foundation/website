@@ -362,9 +362,10 @@
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        gap: 12px;
+        gap: 8px;
         margin-bottom: 20px;
         flex-shrink: 0;
+        font-size: clamp(1.6rem, 0.8rem + 3vw, 2.6rem);
         -webkit-tap-highlight-color: transparent;
         user-select: none;
       }
@@ -375,9 +376,10 @@
         text-align: left;
       }
       .logo-badge img {
-        width: 48px;
-        height: 48px;
+        width: 1em;
+        height: 1em;
         object-fit: contain;
+        margin-top: -0.07em;
         filter: drop-shadow(0 0 20px rgba(125, 71, 224, 0.5));
         pointer-events: none;
         flex-shrink: 0;
@@ -527,6 +529,7 @@
 
       .scrollcue-wrap {
         display: block;
+        width: fit-content;
         margin: 24px auto 0;
         padding: 8px;
         transition: transform 0.15s ease;
@@ -552,6 +555,53 @@
         50% {
           transform: translateY(6px);
         }
+      }
+
+      /* ---- why cards ---- */
+      .why {
+        width: 100%;
+        max-width: clamp(320px, 92vw, 640px);
+        margin: 0 auto;
+        padding: 0 20px 8px;
+      }
+      .why-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      @media (max-width: 680px) {
+        .why-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .why-card {
+        background: rgba(var(--fg-rgb), 0.04);
+        border: 1px solid rgba(var(--fg-rgb), 0.1);
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .why-card-icon {
+        width: 32px;
+        height: 32px;
+        color: var(--teal);
+        flex-shrink: 0;
+        margin-bottom: 4px;
+      }
+      .why-card-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--white);
+        letter-spacing: -0.01em;
+      }
+      .why-card-desc {
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: var(--gray);
+        margin: 0;
       }
 
       /* ---- how it works ---- */
@@ -1975,7 +2025,32 @@
         text-align: center;
         margin: 12px 0 0;
       }
+      .share-tagline {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--white);
+        margin: 12px 0 0;
+        text-align: center;
+      }
       .share-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 20px;
+        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+        border-radius: 999px;
+        background: rgba(var(--fg-rgb), 0.04);
+        color: var(--gray);
+        font-family: inherit;
+        font-size: 0.844rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          transform 0.15s ease;
+      }
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -2452,7 +2527,7 @@
 
     <main id="main-content">
     <div class="hero">
-      <p class="kicker reveal" style="--d: 0">You found our card.</p>
+      <p class="kicker reveal" style="--d: 0">You found the card.</p>
       <div class="logo-badge reveal" style="--d: 1">
         <img
           src="visual-assets/aftercare-logo.svg"
@@ -2467,7 +2542,7 @@
         </div>
       </div>
       <div class="eyebrow reveal" style="--d: 2">In development</div>
-      <h1 class="reveal" style="--d: 3">
+      <h1 class="reveal" style="--d: 3; display:none" aria-hidden="true">
         Stay informed.<br />
         <span class="h1-sub">No contact needed,</span><br />
         <span class="h1-sub h1-teal">no message to write.</span>
@@ -2480,20 +2555,8 @@
           aria-haspopup="dialog"
           aria-controls="chartOverlay"
           >record highs across Europe</button
-        >.<br />Let's fight them together!<br />AfterCare closes the notification gap<br />that anonymous encounters leave open.
+        >.<br />Let's fight them together!<br /><br />Close the gaps in STI notification with AfterCare.
       </p>
-
-      <div class="chain reveal" style="--d: 5" aria-label="How early notification helps">
-        <div class="chain-row">
-          <span class="chain-node step-1">Every partner notified in time</span>
-        </div>
-        <div class="chain-row">
-          <span class="chain-node step-3">Treated before spreading</span>
-        </div>
-        <div class="chain-row">
-          <span class="chain-node step-6">A healthier scene for everyone</span>
-        </div>
-      </div>
 
       <div class="mockup reveal" style="--d: 5">
         <img
@@ -2507,37 +2570,88 @@
       </div>
 
       <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
-
-      <a
-        class="scrollcue-wrap reveal"
-        href="#how"
-        style="--d: 7"
-        aria-label="See how it works"
-      >
-        <span class="scrollcue">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </span>
-      </a>
     </div>
 
+    <section class="why" aria-label="Why AfterCare">
+      <div class="why-cards">
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M1 21v-2a6 6 0 0 1 9.33-5"/>
+            <path d="M17 9.5a2.5 2.5 0 0 1 2.5 2.5c0 1.5-2.5 2-2.5 3.5"/>
+            <circle cx="17" cy="19" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="why-card-title">No contact needed</h3>
+          <p class="why-card-desc">No name? No phone number? No problem. Even with anonymous encounters, AfterCare delivers STI notifications anyway, no personal data involved.</p>
+        </div>
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/>
+          </svg>
+          <h3 class="why-card-title">No messages to write</h3>
+          <p class="why-card-desc">AfterCare handles the communication: no awkwardness, no finding the right words, no time spent sending out the texts. You decide, you tap, you confirm — notifications sent, quickly and anonymously.</p>
+        </div>
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <h3 class="why-card-title">Stay informed</h3>
+          <p class="why-card-desc">Thanks to effortless and anonymous notifications, with AfterCare you get much more complete information about your exposure to STIs, so that you can take care of your health in time, not weeks later.</p>
+        </div>
+
+        <div class="why-card scroll-reveal">
+          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <!-- full heart scaled to ~80%, shifted upper-left -->
+            <g transform="translate(0, 0.5) scale(0.78)">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+            </g>
+            <!-- circle badge bottom-right -->
+            <circle cx="17.5" cy="17.5" r="5.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.5"/>
+            <!-- filled pharmacy cross -->
+            <rect x="16" y="13.5" width="3" height="8" rx="0.5" fill="currentColor" stroke="none"/>
+            <rect x="13.5" y="16" width="8" height="3" rx="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+          <h3 class="why-card-title">Healthier scene for everyone</h3>
+          <p class="why-card-desc">With improved notification coverage, AfterCare enables earlier detection and treatment of STIs before they spread further — leading to healthier communities where you don't have to worry about STIs as much.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <a
+      class="scrollcue-wrap reveal"
+      href="#how"
+      style="--d: 7"
+      aria-label="See how it works"
+    >
+      <span class="scrollcue">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </a>
+
     <section class="how" id="how">
+      <div class="how-title scroll-reveal">How it works</div>
       <div class="use-case-toggle" role="group" aria-label="Use case">
         <button class="uc-btn is-active" data-uc="club">Club</button>
         <button class="uc-btn" data-uc="sauna">Sauna</button>
         <button class="uc-btn" data-uc="home">Home</button>
       </div>
-      <div class="how-title scroll-reveal">How it works</div>
 
       <ol class="steps">
         <!-- Generate step — only visible in Home mode -->
@@ -2790,6 +2904,8 @@
           </div>
         </li>
       </ol>
+      <p class="share-tagline scroll-reveal" style="--sd: 6">Take care with AfterCare 💜</p>
+      <br />
 
       <ul class="trust scroll-reveal" style="--sd: 6">
         <li>
