@@ -568,11 +568,6 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
       }
-      @media (max-width: 680px) {
-        .why-cards {
-          grid-template-columns: 1fr;
-        }
-      }
       .why-card {
         background: rgba(var(--fg-rgb), 0.04);
         border: 1px solid rgba(var(--fg-rgb), 0.1);
@@ -601,6 +596,58 @@
         line-height: 1.6;
         color: var(--gray);
         margin: 0;
+      }
+
+      /* ---- mission funnel ---- */
+      .mission {
+        width: 100%;
+        max-width: clamp(320px, 92vw, 640px);
+        margin: 0 auto;
+        padding: 24px 20px 8px;
+        text-align: center;
+      }
+      .mission-label {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray);
+        margin: 28px 0 20px;
+      }
+      .funnel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+      .funnel-step {
+        width: 100%;
+        border-radius: 10px;
+        padding: 13px 20px;
+        font-size: 0.9375rem;
+        font-weight: 400;
+        text-align: center;
+      }
+      .funnel-step.fs-1 {
+        background: rgba(244, 244, 246, 0.04);
+        border: 1px solid rgba(244, 244, 246, 0.18);
+        color: rgba(244, 244, 246, 0.55);
+      }
+      .funnel-step.fs-2 {
+        background: rgba(100, 210, 200, 0.07);
+        border: 1px solid rgba(100, 210, 200, 0.28);
+        color: rgba(130, 220, 210, 0.75);
+      }
+      .funnel-step.fs-3 {
+        background: rgba(45, 212, 191, 0.10);
+        border: 1px solid rgba(45, 212, 191, 0.42);
+        color: rgba(45, 212, 191, 0.88);
+      }
+      .funnel-step.fs-4 {
+        background: rgba(45, 212, 191, 0.15);
+        border: 1px solid rgba(45, 212, 191, 0.62);
+        color: #2dd4bf;
       }
 
       /* ---- how it works ---- */
@@ -1948,6 +1995,9 @@
           font-size: 13px;
           margin-bottom: 28px;
         }
+        .mission-label {
+          font-size: 13px;
+        }
         .step {
           grid-template-columns: 34px 1fr auto;
           column-gap: 24px;
@@ -2582,7 +2632,7 @@
             <circle cx="17" cy="19" r="0.5" fill="currentColor" stroke="none"/>
           </svg>
           <h3 class="why-card-title">No contact needed</h3>
-          <p class="why-card-desc">No name? No number? No problem.<br />Even with anonymous encounters, AfterCare delivers STI notifications anyway, no personal data involved.</p>
+          <p class="why-card-desc">Notify partners even when you didn't exchange names or numbers.</p>
         </div>
 
         <div class="why-card scroll-reveal">
@@ -2591,7 +2641,7 @@
             <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/>
           </svg>
           <h3 class="why-card-title">No messages to write</h3>
-          <p class="why-card-desc">AfterCare handles the communication: no awkwardness, no finding the right words, no time spent sending out the texts.<br />You decide, you tap, you confirm — notifications sent, quickly and anonymously.</p>
+          <p class="why-card-desc">Send notifications effortlessly and without feeling awkward.</p>
         </div>
 
         <div class="why-card scroll-reveal">
@@ -2600,7 +2650,7 @@
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
           <h3 class="why-card-title">Stay informed</h3>
-          <p class="why-card-desc">Thanks to effortless and anonymous notifications, AfterCare is able to provide much more complete information about your exposure to STIs.<br />With it, you can take care of your health in time, not weeks later.</p>
+          <p class="why-card-desc">Follow your STI exposure to take care of your health without delays.</p>
         </div>
 
         <div class="why-card scroll-reveal">
@@ -2616,9 +2666,19 @@
             <rect x="13.5" y="16" width="8" height="3" rx="0.5" fill="currentColor" stroke="none"/>
           </svg>
           <h3 class="why-card-title">Healthier scene for everyone</h3>
-          <p class="why-card-desc">With improved notification coverage, AfterCare enables earlier detection and treatment of STIs before they spread further.<br />This eventually leads to healthier communities where one doesn't have to worry about STIs as much now.</p>
+          <p class="why-card-desc">The more people are in the loop, the safer it gets — for you too.</p>
         </div>
 
+      </div>
+    </section>
+
+    <section class="mission scroll-reveal" aria-label="Our vision">
+      <p class="mission-label">Our vision</p>
+      <div class="funnel">
+        <div class="funnel-step fs-1">Better notification</div>
+        <div class="funnel-step fs-2">Earlier detection &amp; treatment</div>
+        <div class="funnel-step fs-3">Less transmission</div>
+        <div class="funnel-step fs-4">Fewer STIs, safer scene</div>
       </div>
     </section>
 
