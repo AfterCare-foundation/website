@@ -1776,6 +1776,24 @@
         box-shadow: none;
       }
 
+      /* ---- sauna flow: reader illustrations (steps 1-2) ---- */
+      .sauna-shot {
+        display: block;
+        /* landscape artwork next to portrait phone mockups: matched on
+           rendered *height* rather than width, so these steps carry the
+           same visual weight as the mini-phone ones. Stacked mobile has
+           the full column to itself, so it goes widest here; the
+           side-by-side rail below has to leave room for the text. */
+        width: min(80vw, 320px);
+        height: auto;
+        border-radius: 14px;
+        /* same dark-blue glow as the torn card and mini-phone, so the
+           sauna steps read as part of the same visual family. The
+           artwork keeps its own dark background in light mode, like the
+           fixed-dark device chrome of .tc-half and .mini-phone. */
+        filter: drop-shadow(0 10px 24px rgba(29, 78, 216, 0.35));
+      }
+
       /* ---- use-case toggle ---- */
       .use-case-toggle {
         display: flex;
@@ -1930,6 +1948,9 @@
           align-self: center;
           margin-top: 0;
         }
+        .sauna-shot {
+          width: clamp(230px, 36vw, 310px);
+        }
         /* step 1's torn-card visual is too large to sit beside the text, so
            it drops to a centered row below — but the number stays on the
            same rail as every other step, so the connector line runs
@@ -2033,6 +2054,9 @@
         }
         .mini-phone {
           width: 190px;
+        }
+        .sauna-shot {
+          width: 380px;
         }
         .trust {
           gap: 16px;
@@ -2740,6 +2764,50 @@
             </div>
           </div>
         </li>
+        <!-- Pair / Check out — only visible in Sauna mode -->
+        <li class="step scroll-reveal" data-step="pair" style="display:none; --sd: 0">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <span class="step-label">Pair</span>
+            <span class="step-desc"
+              >Tap the reader with your wristband, then the other person taps
+              theirs right after. A blinking light confirms you're
+              connected.</span
+            >
+          </div>
+          <div class="step-visual">
+            <img
+              class="sauna-shot"
+              src="visual-assets/sauna-pair.webp"
+              alt=""
+              width="800"
+              height="604"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </li>
+        <li class="step scroll-reveal" data-step="checkout" style="display:none; --sd: 1">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <span class="step-label">Check out</span>
+            <span class="step-desc"
+              >Tap your wristband on the reader on your way out, then enter the
+              code it shows into the app.</span
+            >
+          </div>
+          <div class="step-visual">
+            <img
+              class="sauna-shot"
+              src="visual-assets/sauna-checkout.webp"
+              alt=""
+              width="800"
+              height="624"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </li>
         <li class="step step-featured scroll-reveal" data-step="tear" style="--sd: 0">
           <span class="step-num">1</span>
           <div class="step-body">
@@ -2904,6 +2972,7 @@
             </span>
             <span class="step-desc" data-desc-default>Your halves match up — anonymously, once you've both scanned.</span>
               <span class="step-desc" data-desc-home style="display:none">Once the other person scans, the connection is established — anonymously.</span>
+              <span class="step-desc" data-desc-sauna style="display:none">Your wristband pairing shows up in the app — anonymously, once you've both checked out.</span>
           </div>
           <div class="step-visual">
             <div class="mini-phone mp-connected" aria-hidden="true">
@@ -3733,33 +3802,35 @@
         var btns = document.querySelectorAll('.uc-btn');
         var stepsEl = document.querySelector('.steps');
 
-        // Steps hidden in Home (card-based steps replaced by Generate)
-        var cardOnly  = ['tear', 'keep'];
-        var homeOnly  = ['generate'];
+        // Which steps each use case shows. Home replaces the card steps
+        // with Generate; Sauna replaces the card steps — and the scan that
+        // goes with them — with the reader's own Pair / Check out pair.
+        var stepsByUc = {
+          club:  ['tear', 'keep', 'scan', 'connected', 'notified', 'treated'],
+          sauna: ['pair', 'checkout', 'connected', 'notified', 'treated'],
+          home:  ['generate', 'scan', 'connected', 'notified', 'treated']
+        };
 
         function applyUc(uc) {
-          var isHome = (uc === 'home');
+          var shown = stepsByUc[uc] || stepsByUc.club;
           stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
-            var s = li.dataset.step;
-            var hide = isHome ? cardOnly.includes(s) : homeOnly.includes(s);
-            li.style.display = hide ? 'none' : '';
+            li.style.display = shown.indexOf(li.dataset.step) === -1 ? 'none' : '';
           });
           // Swap Scan label for Home
           var scanLabel = stepsEl.querySelector('li[data-step="scan"] .step-label');
-          if (scanLabel) scanLabel.textContent = isHome ? 'Show' : 'Scan';
+          if (scanLabel) scanLabel.textContent = (uc === 'home') ? 'Show' : 'Scan';
 
-          // Swap Scan description for Home
-          var scanStep = stepsEl.querySelector('li[data-step="scan"]');
-          if (scanStep) {
-            scanStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
-            scanStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
-          }
-          // Swap Connected description for Home
-          var connStep = stepsEl.querySelector('li[data-step="connected"]');
-          if (connStep) {
-            connStep.querySelector('[data-desc-default]').style.display = isHome ? 'none' : '';
-            connStep.querySelector('[data-desc-home]').style.display    = isHome ? '' : 'none';
-          }
+          // Show each step's use-case-specific description, falling back to
+          // the default copy where that use case has none of its own
+          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
+            var variants = li.querySelectorAll('[data-desc-default], [data-desc-home], [data-desc-sauna]');
+            if (!variants.length) return;
+            var match = li.querySelector('[data-desc-' + uc + ']') || li.querySelector('[data-desc-default]');
+            variants.forEach(function (el) {
+              el.style.display = (el === match) ? '' : 'none';
+            });
+          });
+
           var n = 1;
           stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
             if (li.style.display === 'none') return;
