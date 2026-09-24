@@ -1,3 +1,4 @@
 {
-  "liveServer.settings.multiRootWorkspaceName": "website"
+  "liveServer.settings.multiRootWorkspaceName": "website",
+  "liveServer.settings.port": 8011
 }

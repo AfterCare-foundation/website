@@ -50,14 +50,20 @@
       name="twitter:image"
       content="https://www.after-care.eu/visual-assets/aftercare-logo-black-bg.png"
     />
-    <title>AfterCare — anonymous STI notifications, no contact info needed</title>
+    <title>
+      AfterCare — anonymous STI notifications, no contact info needed
+    </title>
     <link rel="canonical" href="https://www.after-care.eu/" />
     <link
       rel="icon"
       href="visual-assets/aftercare-logo.svg"
       type="image/svg+xml"
     />
-    <link rel="alternate icon" href="visual-assets/favicon-32.png" type="image/png" />
+    <link
+      rel="alternate icon"
+      href="visual-assets/favicon-32.png"
+      type="image/png"
+    />
     <link rel="apple-touch-icon" href="visual-assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="assets/a11y-panel.css" />
     <script src="assets/viewport-inset.js" defer></script>
@@ -556,46 +562,1137 @@
         }
       }
 
-      /* ---- why cards ---- */
+      /* ---- why: highlights carousel ----
+         One full card at a time (Apple "Highlights" pattern) instead of a
+         2x2 grid, so nothing competes for attention at once: caption block
+         pinned at the top, an inset visual panel filling the rest — the
+         same anatomy Apple uses (headline over a plain/gradient card, the
+         photo or device shot sitting inset below it, not full-bleed behind
+         the text). Manual swipe via native scroll-snap; auto-advance is
+         layered on top in JS and mirrors the segmented-progress-bar
+         convention from that same reference. */
       .why {
         width: 100%;
         max-width: clamp(320px, 92vw, 640px);
         margin: 0 auto;
         padding: 0 20px 8px;
       }
-      .why-cards {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+      .why-carousel {
+        position: relative;
       }
-      .why-card {
-        background: rgba(var(--fg-rgb), 0.04);
-        border: 1px solid rgba(var(--fg-rgb), 0.1);
-        border-radius: 16px;
-        padding: 22px;
+      .why-track {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-right: 14px;
+      }
+      .why-track::-webkit-scrollbar {
+        display: none;
+      }
+      .why-track:focus-visible {
+        border-radius: 28px;
+      }
+      .why-slide {
+        position: relative;
+        flex: 0 0 86%;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        min-height: 460px;
+        border-radius: 28px;
+        padding: 26px 24px 24px;
+        border: 1px solid rgba(var(--fg-rgb), 0.1);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
       }
-      .why-card-icon {
-        width: 32px;
-        height: 32px;
-        color: var(--teal);
+      @media (min-width: 560px) {
+        .why-slide {
+          flex-basis: 78%;
+        }
+      }
+      .why-slide-1 {
+        background:
+          radial-gradient(130% 90% at 15% -10%, rgba(96, 165, 250, 0.35), transparent 55%),
+          linear-gradient(160deg, #16224a 0%, #0a0a10 70%);
+      }
+      .why-slide-2 {
+        background:
+          radial-gradient(130% 90% at 85% -10%, rgba(45, 212, 191, 0.28), transparent 55%),
+          linear-gradient(200deg, #0d2a2a 0%, #0a0a10 70%);
+        height: 460px;
+      }
+      .why-slide-3 {
+        background:
+          radial-gradient(130% 90% at 15% 110%, rgba(29, 78, 216, 0.34), transparent 55%),
+          linear-gradient(160deg, #14183a 0%, #0a0a10 70%);
+      }
+      .why-slide-4 {
+        background:
+          radial-gradient(
+            130% 90% at 85% 110%,
+            rgba(45, 212, 191, 0.24),
+            rgba(96, 165, 250, 0.18) 45%,
+            transparent 65%
+          ),
+          linear-gradient(200deg, #1a1430 0%, #0a0a10 70%);
+      }
+      .why-slide-content {
+        flex: 0 0 auto;
+        margin-bottom: 20px;
+      }
+      .why-slide-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(var(--fg-rgb), 0.08);
+        border: 1px solid rgba(var(--fg-rgb), 0.16);
+        margin-bottom: 14px;
         flex-shrink: 0;
+      }
+      .why-slide-icon svg {
+        width: 20px;
+        height: 20px;
+        color: var(--teal);
+      }
+      .why-slide-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--white);
+        margin: 0 0 6px;
+      }
+      .why-slide-desc {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: rgba(var(--fg-rgb), 0.78);
+        margin: 0;
+        max-width: 32ch;
+      }
+
+      /* ---- why: inset visual panel (photo, or a widget like the phone
+         mockup below) — the part of the card that plays the Highlights'
+         "device shot" role ---- */
+      .why-slide-visual {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 190px;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .why-slide-1 .why-slide-visual {
+        background: radial-gradient(
+          120% 120% at 50% 30%,
+          rgba(96, 165, 250, 0.16),
+          rgba(0, 0, 0, 0.3) 70%
+        );
+      }
+      .why-slide-2 .why-slide-visual {
+        isolation: isolate;
+        overflow: visible;
+        align-items: flex-start;
+        background:
+          linear-gradient(145deg, rgba(26, 87, 86, 0.9), rgba(8, 20, 29, 0.98)),
+          repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.035) 0,
+            rgba(255, 255, 255, 0.035) 1px,
+            transparent 1px,
+            transparent 12px
+          );
+      }
+      .why-slide-2 .why-slide-visual::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(
+          90% 75% at 50% 28%,
+          rgba(45, 212, 191, 0.2),
+          transparent 72%
+        );
+        pointer-events: none;
+      }
+      .why-slide-3 .why-slide-visual {
+        background: radial-gradient(
+          120% 120% at 50% 30%,
+          rgba(29, 78, 216, 0.16),
+          rgba(0, 0, 0, 0.3) 70%
+        );
+      }
+      .why-slide-4 .why-slide-visual {
+        background: radial-gradient(
+          120% 120% at 50% 30%,
+          rgba(45, 212, 191, 0.12),
+          rgba(0, 0, 0, 0.3) 70%
+        );
+      }
+      .why-slide-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* ---- why: floating notification bubble (slide 3) ----
+         Photo stays plain full-bleed cover, same as slides 1 and 4; the
+         banana's own crop leans left-of-frame, so the bubble sits upright
+         (no tilt) in the open sky on the right, kept narrow enough to
+         leave a clear gap between it and the banana rather than crowding
+         up against it. */
+      .why-notif {
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
+        z-index: 1;
+        max-width: 44%;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        background: rgba(18, 18, 26, 0.85);
+        border: 1px solid rgba(var(--fg-rgb), 0.14);
+        border-radius: 12px;
+        padding: 8px 9px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+      }
+      .why-notif-icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(45, 212, 191, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .why-notif-icon svg {
+        width: 10px;
+        height: 10px;
+        color: var(--teal);
+      }
+      .why-notif-text {
+        font-size: 9px;
+        line-height: 1.4;
+        color: rgba(var(--fg-rgb), 0.85);
+      }
+      .why-notif-text b {
+        display: block;
+        font-size: 9.5px;
+        color: var(--white);
+        margin-bottom: 1px;
+      }
+
+      /* ---- why: iMessage-style chat bubbles over the fist-bump photo (slide 4) ----
+         Hand-placed against why-healthier-scene.webp's specific
+         composition (a vertical stack of fist bumps against a plain
+         magenta background) rather than derived generically, so each
+         bubble sits in the open background next to the arm it "speaks"
+         for instead of covering a hand. Styled after real iOS Messages
+         bubbles (rounded body + a trailing two-dot tail, blue for
+         iMessage / green for SMS) instead of the old flat-white cartoon
+         speech bubble, so it reads as an authentic screenshot rather
+         than a comic-strip caption. Bubbles start hidden (blurred,
+         slightly sunk and scaled down) and each settles into place on
+         its own long delay (see .speech-in, toggled by the
+         IntersectionObserver below) with real pauses between them —
+         0.4s / 1.05s / 1.6s — like three separate replies landing one
+         at a time, rather than a quick cascade. */
+      .why-speech {
+        position: absolute;
+        z-index: 2;
+        max-width: 44%;
+        color: var(--white);
+        font-size: 11.5px;
+        font-weight: 600;
+        line-height: 1.35;
+        padding: 8px 12px;
+        border-radius: 18px;
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+        filter: blur(4px);
+        transition:
+          opacity 1.1s cubic-bezier(0.19, 1, 0.22, 1),
+          transform 1.1s cubic-bezier(0.19, 1, 0.22, 1),
+          filter 1.1s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      #why-slide-3.speech-in .why-speech {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+      #why-slide-3.speech-in .why-speech.is-faded {
+        opacity: 0;
+        transition-delay: 0s;
+      }
+      .why-speech-blue {
+        background: #0a84ff;
+        box-shadow:
+          0 8px 20px rgba(10, 132, 255, 0.35),
+          0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      .why-speech-green {
+        background: #30d158;
+        box-shadow:
+          0 8px 20px rgba(48, 209, 88, 0.32),
+          0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      /* Bubbles 1 & 3 sit toward the right of the frame, so their tail
+         trails off the bottom-right, sender-style; bubble 2 sits left,
+         so its tail trails bottom-left. */
+      .why-speech-1,
+      .why-speech-3 {
+        border-bottom-right-radius: 5px;
+      }
+      .why-speech-1::before,
+      .why-speech-3::before {
+        content: "";
+        position: absolute;
+        right: 7px;
+        bottom: -3px;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+        border-radius: 50%;
+      }
+      .why-speech-1::after,
+      .why-speech-3::after {
+        content: "";
+        position: absolute;
+        right: 1px;
+        bottom: -7px;
+        width: 4px;
+        height: 4px;
+        background: inherit;
+        border-radius: 50%;
+        opacity: 0.85;
+      }
+      .why-speech-2 {
+        border-bottom-left-radius: 5px;
+      }
+      .why-speech-2::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        bottom: -3px;
+        width: 8px;
+        height: 8px;
+        background: inherit;
+        border-radius: 50%;
+      }
+      .why-speech-2::after {
+        content: "";
+        position: absolute;
+        left: 1px;
+        bottom: -7px;
+        width: 4px;
+        height: 4px;
+        background: inherit;
+        border-radius: 50%;
+        opacity: 0.85;
+      }
+      .why-speech-1 {
+        top: 4%;
+        right: 6%;
+      }
+      #why-slide-3.speech-in .why-speech-1 {
+        transition-delay: 0.7s;
+      }
+      .why-speech-2 {
+        top: 45%;
+        left: 5%;
+      }
+      #why-slide-3.speech-in .why-speech-2 {
+        transition-delay: 1.35s;
+      }
+      .why-speech-3 {
+        top: 63%;
+        right: 5%;
+      }
+      #why-slide-3.speech-in .why-speech-3 {
+        transition-delay: 1.9s;
+      }
+
+      /* ---- why: compact phone-mockup widget (slide 2) ----
+         A trimmed, self-contained port of the "before/after" compose
+         animation prototyped in aftercare-sebastian-journey.html — full
+         credit there; this keeps only the single-draft version (skips the
+         two earlier fumbled drafts) so it fits a five-second card instead
+         of a whole scrollytelling section. */
+      .why-phone {
+        position: relative;
+        width: clamp(136px, 38vw, 172px);
+        aspect-ratio: 1 / 2;
+        border-radius: 25px;
+        background: linear-gradient(
+          145deg,
+          #d7dce0 0%,
+          #7b858f 17%,
+          #242a32 45%,
+          #11151b 72%,
+          #aab2bb 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        padding: 6px;
+        box-shadow:
+          0 18px 30px rgba(0, 0, 0, 0.42),
+          0 2px 4px rgba(255, 255, 255, 0.16) inset,
+          0 -2px 4px rgba(0, 0, 0, 0.35) inset;
+        flex-shrink: 0;
+      }
+      .why-phone::before {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 22px;
+        pointer-events: none;
+      }
+      .why-phone::after {
+        content: "";
+        position: absolute;
+        top: 86px;
+        right: -3px;
+        width: 2px;
+        height: 25px;
+        border-radius: 0 2px 2px 0;
+        background: #737d88;
+        box-shadow: 0 32px 0 #737d88;
+        pointer-events: none;
+      }
+      .why-phone-notch {
+        position: absolute;
+        z-index: 2;
+        top: 11px;
+        left: 50%;
+        width: 43px;
+        height: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        background: #050608;
+        box-shadow: 0 1px 2px rgba(255, 255, 255, 0.08) inset;
+        transform: translateX(-50%);
+      }
+      .why-phone-notch::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        right: 7px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #151d2b;
+        box-shadow: 0 0 3px rgba(96, 165, 250, 0.45);
+      }
+      .why-phone-screen {
+        background:
+          linear-gradient(180deg, #050608 0%, #000 38%, #030405 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 19px;
+        height: 100%;
+        padding: 28px 9px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.7),
+          0 0 18px rgba(0, 0, 0, 0.5) inset;
+      }
+      .why-ba-banner {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 4px 7px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+      }
+      .why-ba-before {
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
+      }
+      .why-ba-after {
+        background: rgba(45, 212, 191, 0.15);
+        color: var(--teal);
+      }
+      .why-compose-label {
+        font-size: 8.5px;
+        color: #6b7280;
+        text-align: center;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .why-compose-mock {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 274px;
+      }
+      .why-compose-bubble {
+        background: linear-gradient(145deg, #168eff, #0876e8);
+        color: #fff;
+        align-self: flex-end;
+        max-width: 94%;
+        min-height: 15px;
+        padding: 7px 10px;
+        border-radius: 13px;
+        border-bottom-right-radius: 4px;
+        font-size: 10.5px;
+        line-height: 1.35;
+        box-shadow: 0 5px 14px rgba(0, 96, 210, 0.28);
+      }
+      .why-compose-stage {
+        position: relative;
+        z-index: 1;
+        padding: 0 2px 92px;
+      }
+      .why-compose-stage::after {
+        content: "";
+        position: absolute;
+        left: 10%;
+        right: 10%;
+        bottom: 62px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      }
+      .why-compose-stage .why-compose-label {
+        margin-bottom: 13px;
+      }
+      .why-compose-stage .why-compose-bubble {
+        margin-bottom: 14px;
+      }
+      .why-keyboard {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 8px 5px 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg, #252529, #1c1c1f);
+        box-shadow:
+          0 -8px 18px rgba(0, 0, 0, 0.28),
+          0 1px rgba(255, 255, 255, 0.05) inset;
+      }
+      .why-keyboard-row {
+        display: flex;
+        gap: 3px;
         margin-bottom: 4px;
       }
-      .why-card-title {
-        font-size: 0.9375rem;
-        font-weight: 600;
-        margin: 0;
-        color: var(--white);
-        letter-spacing: -0.01em;
+      .why-keyboard-row-inset {
+        padding: 0 5px;
       }
-      .why-card-desc {
-        font-size: 0.8125rem;
-        line-height: 1.6;
-        color: var(--gray);
+      .why-keyboard-row-bottom {
+        padding: 0 1px;
+      }
+      .why-keyboard i,
+      .why-keyboard-space,
+      .why-keyboard-utility {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 17px;
+        flex: 1;
+        border-radius: 4px;
+        background: #3a3a3e;
+        color: rgba(255, 255, 255, 0.82);
+        font-family: inherit;
+        font-size: 7px;
+        font-style: normal;
+        box-shadow:
+          0 1px 1px rgba(0, 0, 0, 0.45),
+          inset 0 1px rgba(255, 255, 255, 0.11);
+        transition:
+          background 0.08s ease,
+          color 0.08s ease,
+          transform 0.08s ease,
+          box-shadow 0.08s ease;
+      }
+      .why-keyboard i.pressed,
+      .why-keyboard-space.pressed {
+        background: rgba(45, 212, 191, 0.58);
+        color: #fff;
+        transform: translateY(1px) scale(0.96);
+        box-shadow:
+          inset 0 1px rgba(255, 255, 255, 0.2),
+          0 0 8px rgba(45, 212, 191, 0.45);
+      }
+      .why-keyboard-shift,
+      .why-keyboard-backspace {
+        flex: 1.35 !important;
+        color: rgba(255, 255, 255, 0.68) !important;
+      }
+      .why-keyboard-space {
+        flex: 4.3;
+        height: 17px;
+      }
+      .why-keyboard-utility {
+        flex: 1.35;
+        color: rgba(255, 255, 255, 0.58);
+      }
+      .why-keyboard-utility-globe {
+        font-size: 8px;
+      }
+      .why-keyboard-utility-return {
+        flex: 1.5;
+      }
+      .why-strike-wrap {
+        position: relative;
+        display: inline-block;
+      }
+      .why-strike-wrap::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        height: 2px;
+        width: 0;
+        background: #fff;
+        box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+        transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .why-strike-wrap.struck::after {
+        width: 100%;
+      }
+      .why-compose-bubble.struck {
+        opacity: 0.55;
+      }
+      .why-compose-caret {
+        display: inline-block;
+        width: 1px;
+        height: 8px;
+        background: #fff;
+        margin-left: 1px;
+        vertical-align: -1px;
+        animation: why-caret-blink 0.8s steps(1) infinite;
+      }
+      .why-compose-caret.hide {
+        display: none;
+      }
+      @keyframes why-caret-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .why-tap-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 274px;
+        padding: 2px 2px 0;
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+        transition:
+          opacity 0.55s cubic-bezier(0.19, 1, 0.22, 1),
+          transform 0.55s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      .why-tap-panel.show {
+        opacity: 1;
+        transform: none;
+      }
+      /* ---- why: iOS-style app switch (slide 2) ----
+         Messages "closes" by shrinking into its dock icon (JS morphs
+         #whyMessagesWindow onto #whyMessagesIcon), landing on a home
+         screen where every other app is a blurred, low-fi placeholder so
+         AfterCare is the only thing in focus; opening AfterCare then grows
+         #whyLaunchWindow out of its icon, the way iOS launches an app. */
+      .why-app-window {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        padding: 28px 9px 10px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #050608 0%, #000 38%, #030405 100%);
+        overflow: hidden;
+      }
+      .why-launch-window {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        background:
+          radial-gradient(90% 55% at 50% 46%, rgba(125, 71, 224, 0.3), transparent 70%),
+          #07060d;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .why-launch-window::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(145deg, #7d47e0, #4b32ab);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .why-launch-window img {
+        position: relative;
+        width: 38%;
+        transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .why-launch-window.from-icon::before { opacity: 1; transition: none; }
+      .why-launch-window.from-icon img { transform: scale(1.75); transition: none; }
+
+      .why-app-handoff {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        padding: 4px 10px 7px;
+        background:
+          radial-gradient(120% 60% at 15% 8%, rgba(125, 71, 224, 0.55), transparent 62%),
+          radial-gradient(110% 60% at 92% 88%, rgba(45, 212, 191, 0.42), transparent 62%),
+          linear-gradient(170deg, #1d1745 0%, #0f2130 55%, #06131a 100%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: scale(1.12);
+        transition:
+          opacity 0.35s ease,
+          transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+          visibility 0s linear 0.6s;
+      }
+      .why-app-handoff.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
+        transition:
+          opacity 0.3s ease,
+          transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .why-app-handoff.show.launching {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(1.14);
+        transition:
+          opacity 0.4s ease 0.1s,
+          transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .why-home-status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 14px;
+        padding: 0 7px;
+        color: #fff;
+        font-size: 7px;
+        font-weight: 600;
+      }
+      .why-home-status i {
+        position: relative;
+        width: 11px;
+        height: 5.5px;
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        border-radius: 2px;
+      }
+      .why-home-status i::after {
+        content: "";
+        position: absolute;
+        inset: 0.5px 2.5px 0.5px 0.5px;
+        border-radius: 1px;
+        background: #fff;
+      }
+      .why-home-grid,
+      .why-home-dock {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 9px;
+      }
+      .why-home-grid {
+        row-gap: 8px;
+        margin-top: 14px;
+        padding: 0 2px;
+      }
+      .why-home-app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        min-width: 0;
+      }
+      .why-home-app > i,
+      .why-app-handoff-button {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 23%;
+      }
+      .why-home-app > i {
+        position: relative;
+        background: linear-gradient(160deg, #5ac8fa, #1c7cd6);
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.22);
+        opacity: 0.7;
+        filter: blur(1.3px) saturate(0.7);
+      }
+      .why-home-app > i::after {
+        content: "";
+        position: absolute;
+        inset: 28%;
+        border-radius: 30%;
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .why-home-app:nth-child(3n) > i::after { border-radius: 50%; }
+      .why-home-app:nth-child(3n + 2) > i::after { inset: 40% 22%; border-radius: 2px; }
+      .why-home-app:nth-child(6n + 2) > i { background: linear-gradient(160deg, #ffd60a, #ff9f0a); }
+      .why-home-app:nth-child(6n + 3) > i { background: linear-gradient(160deg, #4cd964, #248a3d); }
+      .why-home-app:nth-child(6n + 4) > i { background: linear-gradient(160deg, #f2f2f7, #c7c7cc); }
+      .why-home-app:nth-child(6n + 4) > i::after { background: rgba(60, 60, 67, 0.45); }
+      .why-home-app:nth-child(6n + 5) > i { background: linear-gradient(160deg, #ff6961, #d70015); }
+      .why-home-app:nth-child(6n) > i { background: linear-gradient(160deg, #bf5af2, #7d3fb8); }
+      .why-home-app > b {
+        display: block;
+        width: 70%;
+        height: 3px;
+        margin: 1.5px 0;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.35);
+        filter: blur(0.6px);
+      }
+      .why-home-app-focus > b {
+        width: auto;
+        height: auto;
         margin: 0;
+        background: none;
+        filter: none;
+        color: #fff;
+        font-size: 6px;
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+      }
+      .why-home-search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        width: 34%;
+        height: 11px;
+        margin: auto 0 7px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .why-home-search i {
+        width: 50%;
+        height: 2.5px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.45);
+        filter: blur(0.4px);
+      }
+      .why-home-dock {
+        padding: 6px 7px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.13);
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.18);
+      }
+      .why-home-dock .why-home-app:nth-child(1) > i { background: linear-gradient(160deg, #4cd964, #248a3d); }
+      .why-home-dock .why-home-app:nth-child(2) > i { background: linear-gradient(160deg, #f2f2f7, #5ac8fa); }
+      .why-home-dock .why-home-app:nth-child(4) > i { background: linear-gradient(160deg, #ff6482, #d70040); }
+      .why-home-dock .why-home-app-messages > i { background: linear-gradient(160deg, #5bf675, #0cbd2a); }
+      .why-home-dock .why-home-app-messages > i::after { inset: 27% 22% 33%; border-radius: 50%; }
+      .why-app-handoff-button {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 17%;
+        border: 0;
+        background: linear-gradient(145deg, #7d47e0, #4b32ab);
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.5),
+          0 0 12px rgba(125, 71, 224, 0.55),
+          0 5px 10px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        transition: transform 0.16s ease, filter 0.16s ease;
+        animation: why-app-handoff-breathe 2.2s ease-in-out infinite;
+      }
+      .why-app-handoff-button:active,
+      .why-app-handoff-button.pressed {
+        transform: scale(0.9);
+        filter: brightness(0.72);
+      }
+      .why-app-handoff-button img { width: 100%; height: 100%; object-fit: contain; }
+      @keyframes why-app-handoff-breathe {
+        50% {
+          box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.65),
+            0 0 18px rgba(45, 212, 191, 0.5),
+            0 5px 10px rgba(0, 0, 0, 0.35);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-app-handoff-button { animation: none; }
+        .why-app-handoff,
+        .why-app-handoff.show,
+        .why-app-handoff.show.launching { transition: none; }
+      }
+      :root[data-motion="reduced"] .why-app-handoff-button { animation: none; }
+      :root[data-motion="reduced"] .why-app-handoff,
+      :root[data-motion="reduced"] .why-app-handoff.show,
+      :root[data-motion="reduced"] .why-app-handoff.show.launching { transition: none; }
+      .why-tap-panel .why-ba-banner {
+        margin: 0 2px 8px;
+        padding: 6px 7px;
+        border: 1px solid rgba(45, 212, 191, 0.16);
+        background: rgba(45, 212, 191, 0.1);
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+      }
+      .why-pill {
+        position: relative;
+        background: linear-gradient(145deg, rgba(38, 40, 52, 0.92), rgba(24, 25, 34, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 11px;
+        padding: 11px 11px 11px 19px;
+        color: #d1d5db;
+        font-size: 9.5px;
+        line-height: 1.45;
+        box-shadow:
+          inset 0 1px rgba(255, 255, 255, 0.04),
+          0 7px 16px rgba(0, 0, 0, 0.16);
+      }
+      .why-tap-panel > .why-pill:first-of-type::before {
+        content: "";
+        position: absolute;
+        top: 14px;
+        left: 9px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 7px rgba(45, 212, 191, 0.55);
+      }
+      .why-pill-purple {
+        border-left: 1px solid rgba(167, 139, 250, 0.7);
+      }
+      .why-thank-you-heart {
+        display: inline-block;
+        width: 11px;
+        height: 11px;
+        margin-left: 3px;
+        vertical-align: -1px;
+        fill: rgba(167, 139, 250, 0.9);
+        stroke: var(--teal);
+        stroke-width: 1.1;
+        filter: drop-shadow(0 0 3px rgba(45, 212, 191, 0.28));
+      }
+      #whyThankYouPill {
+        opacity: 0;
+        transform: translateY(5px);
+        transition:
+          opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+          transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+      #whyThankYouPill.show {
+        opacity: 1;
+        transform: none;
+      }
+      .why-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: linear-gradient(145deg, #8b5cf6, #6d28d9);
+        color: #fff;
+        text-align: center;
+        padding: 10px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        user-select: none;
+        overflow: hidden;
+        transition:
+          background 0.35s ease,
+          box-shadow 0.35s ease,
+          transform 0.2s ease,
+          opacity 0.25s;
+        box-shadow:
+          inset 0 1px rgba(255, 255, 255, 0.16),
+          0 7px 15px rgba(109, 40, 217, 0.24);
+      }
+      .why-btn:active {
+        opacity: 0.86;
+        transform: scale(0.98);
+      }
+      .why-btn.sent {
+        background: linear-gradient(145deg, #20b486, #138a72);
+        box-shadow:
+          inset 0 1px rgba(255, 255, 255, 0.16),
+          0 7px 15px rgba(19, 138, 114, 0.22);
+      }
+      .why-btn svg {
+        width: 12px;
+        height: 12px;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        fill: none;
+      }
+      /* ---- why: simulated "ghost tap" on Notify Partners (slide 2) ----
+         An iOS-style translucent tap highlight that fires on its own a
+         beat after the button appears, so the carousel's auto-advance
+         doesn't skip past the "Sent" state for viewers who never touch
+         the card themselves — a real tap still works and looks the same. */
+      .why-tap-ghost {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 42px;
+        height: 42px;
+        margin: -21px 0 0 -21px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.42),
+          rgba(255, 255, 255, 0.12) 52%,
+          rgba(255, 255, 255, 0) 72%
+        );
+        box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.14);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .why-tap-ghost.tap {
+        animation: why-tap-ghost-pulse 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      @keyframes why-tap-ghost-pulse {
+        0% {
+          opacity: 0;
+          transform: scale(0.35);
+        }
+        20% {
+          opacity: 0.5;
+          transform: scale(0.65);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1.15);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-tap-ghost.tap {
+          animation: none;
+        }
+      }
+      :root[data-motion="reduced"] .why-tap-ghost.tap {
+        animation: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-compose-caret {
+          animation: none;
+        }
+      }
+      :root[data-motion="reduced"] .why-compose-caret {
+        animation: none;
+      }
+
+      /* ---- why: segmented progress + play/pause ---- */
+      .why-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .why-progress {
+        display: flex;
+        gap: 6px;
+      }
+      .why-progress-seg {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 10px 0;
+        margin: 0;
+        cursor: pointer;
+      }
+      .why-progress-track {
+        position: relative;
+        display: block;
+        width: 26px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(var(--fg-rgb), 0.18);
+        overflow: hidden;
+      }
+      .why-progress-fill {
+        position: absolute;
+        inset: 0;
+        background: var(--white);
+        border-radius: inherit;
+        transform: scaleX(0);
+        transform-origin: left;
+      }
+      .why-progress-seg.is-done .why-progress-fill {
+        transform: scaleX(1);
+      }
+      /* Duration comes from --why-duration, set in JS from each slide's
+         own data-duration-ms (falling back to 5s) — the fill animation and
+         the JS advance timer are two independent clocks kept in sync only
+         by sharing that one number per slide. */
+      .why-progress-seg.is-active .why-progress-fill {
+        animation: why-progress-fill var(--why-duration, 5s) linear forwards;
+      }
+      @keyframes why-progress-fill {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+      .why-playpause {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+        background: rgba(var(--fg-rgb), 0.05);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .why-playpause svg {
+        width: 13px;
+        height: 13px;
+      }
+      .why-playpause .icon-play {
+        margin-left: 1px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-progress-seg.is-active .why-progress-fill {
+          animation: none;
+          transform: scaleX(1);
+        }
+      }
+      :root[data-motion="reduced"]
+        .why-progress-seg.is-active
+        .why-progress-fill {
+        animation: none;
+        transform: scaleX(1);
       }
 
       /* ---- mission funnel ---- */
@@ -1966,41 +3063,95 @@
           margin-top: 24px;
         }
       }
-      /* ---- trust bullets: card grid ---- */
+      /* ---- trust bullets: Apple-style spec grid ----
+         Apple's own spec grids (iPhone highlights, environment cards) never
+         blow one card up to fill a row — every card is the same size, so a
+         short caption just sits in a compact box instead of stranding a
+         void beneath it. An earlier version here gave "Privacy first" a
+         full-width hero card, which read as a big empty rectangle at
+         desktop widths; this keeps all four cards equal instead. Each
+         still gets its own subtle tinted glow, reusing the same
+         radial-gradient language as the .why-slide highlight cards above,
+         so the two card patterns read as one system. */
       .trust {
         list-style: none;
         margin: 8px auto 0;
         padding: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 12px;
         width: 100%;
       }
+      @media (min-width: 480px) {
+        .trust {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
       .trust li {
+        position: relative;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 9px;
-        padding: 20px 14px;
-        background: rgba(var(--fg-rgb), 0.04);
+        align-items: flex-start;
+        justify-content: center;
+        text-align: left;
+        gap: 10px;
+        padding: 22px 20px;
         border: 1px solid rgba(var(--fg-rgb), 0.1);
-        border-radius: 16px;
+        border-radius: 22px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
       }
-      .trust-icon {
-        width: 24px;
-        height: 24px;
+      .trust li:nth-child(1) {
+        background:
+          radial-gradient(130% 140% at 15% -20%, rgba(96, 165, 250, 0.3), transparent 55%),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .trust li:nth-child(2) {
+        background:
+          radial-gradient(130% 140% at 85% -20%, rgba(45, 212, 191, 0.26), transparent 55%),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .trust li:nth-child(3) {
+        background:
+          radial-gradient(130% 140% at 15% 120%, rgba(29, 78, 216, 0.28), transparent 55%),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .trust li:nth-child(4) {
+        background:
+          radial-gradient(
+            130% 140% at 85% 120%,
+            rgba(45, 212, 191, 0.22),
+            rgba(96, 165, 250, 0.14) 45%,
+            transparent 65%
+          ),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .trust-icon-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(var(--fg-rgb), 0.08);
+        border: 1px solid rgba(var(--fg-rgb), 0.16);
         flex-shrink: 0;
       }
+      .trust-icon {
+        width: 19px;
+        height: 19px;
+        flex-shrink: 0;
+        color: var(--teal);
+      }
       .trust-title {
-        font-size: 0.844rem;
+        font-size: 1.05rem;
         font-weight: 600;
+        letter-spacing: -0.01em;
         color: var(--white);
       }
       .trust-desc {
-        font-size: 0.75rem;
+        font-size: 0.8125rem;
         color: var(--gray);
-        line-height: 1.4;
+        line-height: 1.45;
       }
 
       /* enhancement for wide desktop: the section was capped at 640px at
@@ -2062,17 +3213,21 @@
           gap: 16px;
         }
         .trust li {
-          padding: 24px 16px;
+          padding: 26px 24px;
+        }
+        .trust-icon-badge {
+          width: 42px;
+          height: 42px;
         }
         .trust-icon {
-          width: 27px;
-          height: 27px;
+          width: 21px;
+          height: 21px;
         }
         .trust-title {
-          font-size: 0.906rem;
+          font-size: 1.125rem;
         }
         .trust-desc {
-          font-size: 0.781rem;
+          font-size: 0.875rem;
         }
       }
 
@@ -2421,7 +3576,8 @@
 
       @media (prefers-reduced-motion: reduce) {
         .reveal,
-        .scroll-reveal {
+        .scroll-reveal,
+        .why-speech {
           animation: none;
           transition: none;
           opacity: 1;
@@ -2442,7 +3598,8 @@
         }
       }
       :root[data-motion="reduced"] .reveal,
-      :root[data-motion="reduced"] .scroll-reveal {
+      :root[data-motion="reduced"] .scroll-reveal,
+      :root[data-motion="reduced"] .why-speech {
         animation: none;
         transition: none;
         opacity: 1;
@@ -2463,7 +3620,9 @@
       }
     </style>
     <script>
-      if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
     </script>
     <script>
       (function () {
@@ -2588,555 +3747,1011 @@
     <div id="progress" aria-hidden="true"></div>
 
     <main id="main-content">
-    <div class="hero">
-      <p class="kicker reveal" style="--d: 0">You found the card.</p>
-      <div class="logo-badge reveal" style="--d: 1">
-        <img
-          src="visual-assets/aftercare-logo.svg"
-          alt=""
-          width="48"
-          height="48"
-          decoding="async"
-        />
-        <div class="logo-badge-text">
-          <span class="logo-badge-name">AfterCare</span>
-          <span class="app-subtitle">Anonymous STI notification app</span>
-        </div>
-      </div>
-      <div class="eyebrow reveal" style="--d: 2">In development</div>
-      <h1 class="reveal" style="--d: 3; display:none" aria-hidden="true">
-        Stay informed.<br />
-        <span class="h1-sub">No contact needed,</span><br />
-        <span class="h1-sub h1-teal">no message to write.</span>
-      </h1>
-      <p class="sub reveal" style="--d: 5">
-        Bacterial STIs are at
-        <button
-          class="footer-origin-link stats-chart-btn"
-          type="button"
-          aria-haspopup="dialog"
-          aria-controls="chartOverlay"
-          >record highs across Europe</button
-        >.<br />Let's fight them together!<br /><br />Close the gaps in STI notification with AfterCare.
-      </p>
-
-      <div class="mockup reveal" style="--d: 5">
-        <img
-          src="visual-assets/mockup-cutout2.webp"
-          alt="AfterCare app showing an anonymous exposure notification"
-          width="96"
-          height="192"
-          fetchpriority="high"
-          decoding="async"
-        />
-      </div>
-
-      <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
-    </div>
-
-    <section class="why" aria-label="Why AfterCare">
-      <div class="why-cards">
-
-        <div class="why-card scroll-reveal">
-          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M1 21v-2a6 6 0 0 1 9.33-5"/>
-            <path d="M17 9.5a2.5 2.5 0 0 1 2.5 2.5c0 1.5-2.5 2-2.5 3.5"/>
-            <circle cx="17" cy="19" r="0.5" fill="currentColor" stroke="none"/>
-          </svg>
-          <h3 class="why-card-title">No contact needed</h3>
-          <p class="why-card-desc">Notify partners even when you didn't exchange names or numbers.</p>
-        </div>
-
-        <div class="why-card scroll-reveal">
-          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/>
-          </svg>
-          <h3 class="why-card-title">No messages to write</h3>
-          <p class="why-card-desc">Send notifications effortlessly and without feeling awkward.</p>
-        </div>
-
-        <div class="why-card scroll-reveal">
-          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <h3 class="why-card-title">Stay informed</h3>
-          <p class="why-card-desc">Follow your STI exposure to take care of your health without delays.</p>
-        </div>
-
-        <div class="why-card scroll-reveal">
-          <svg class="why-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <!-- full heart scaled to ~80%, shifted upper-left -->
-            <g transform="translate(0, 0.5) scale(0.78)">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
-            </g>
-            <!-- circle badge bottom-right -->
-            <circle cx="17.5" cy="17.5" r="5.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.5"/>
-            <!-- filled pharmacy cross -->
-            <rect x="16" y="13.5" width="3" height="8" rx="0.5" fill="currentColor" stroke="none"/>
-            <rect x="13.5" y="16" width="8" height="3" rx="0.5" fill="currentColor" stroke="none"/>
-          </svg>
-          <h3 class="why-card-title">Healthier scene for everyone</h3>
-          <p class="why-card-desc">The more people are in the loop, the safer it gets — for you too.</p>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="mission scroll-reveal" aria-label="Our vision">
-      <p class="mission-label">Our vision</p>
-      <div class="funnel">
-        <div class="funnel-step fs-1">Better notification</div>
-        <div class="funnel-step fs-2">Earlier detection &amp; treatment</div>
-        <div class="funnel-step fs-3">Less transmission</div>
-        <div class="funnel-step fs-4">Fewer STIs, safer scene</div>
-      </div>
-    </section>
-
-    <a
-      class="scrollcue-wrap reveal"
-      href="#how"
-      style="--d: 7"
-      aria-label="See how it works"
-    >
-      <span class="scrollcue">
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3.25"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </span>
-    </a>
-
-    <section class="how" id="how">
-      <div class="how-title scroll-reveal">How it works</div>
-      <div class="use-case-toggle" role="group" aria-label="Use case">
-        <button class="uc-btn is-active" data-uc="club">Club</button>
-        <button class="uc-btn" data-uc="sauna">Sauna</button>
-        <button class="uc-btn" data-uc="home">Home</button>
-      </div>
-
-      <ol class="steps">
-        <!-- Generate step — only visible in Home mode -->
-        <li class="step step-featured scroll-reveal" data-step="generate" style="display:none; --sd: 0">
-          <span class="step-num">1</span>
-          <div class="step-body">
-            <span class="step-label">Generate</span>
-            <span class="step-desc">Generate your personal QR code in the app — no card needed.</span>
+      <div class="hero">
+        <p class="kicker reveal" style="--d: 0">You found the card.</p>
+        <div class="logo-badge reveal" style="--d: 1">
+          <img
+            src="visual-assets/aftercare-logo.svg"
+            alt=""
+            width="48"
+            height="48"
+            decoding="async"
+          />
+          <div class="logo-badge-text">
+            <span class="logo-badge-name">AfterCare</span>
+            <span class="app-subtitle">Anonymous STI notification app</span>
           </div>
-          <div class="step-visual">
-            <div class="mini-phone" aria-hidden="true">
-              <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen">
-                <span class="mp-label">Your QR code</span>
-                <div class="mp-qr-solo">
-                  <img
-                    src="visual-assets/qr-placeholder.png"
-                    alt=""
-                    width="280"
-                    height="280"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <span class="mp-sub">Unique token created each time</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <!-- Pair / Check out — only visible in Sauna mode -->
-        <li class="step scroll-reveal" data-step="pair" style="display:none; --sd: 0">
-          <span class="step-num">1</span>
-          <div class="step-body">
-            <span class="step-label">Pair</span>
-            <span class="step-desc"
-              >Tap the reader with your wristband, then the other person taps
-              theirs right after. A blinking light confirms you're
-              connected.</span
+        </div>
+        <div class="eyebrow reveal" style="--d: 2">In development</div>
+        <h1 class="reveal" style="--d: 3; display: none" aria-hidden="true">
+          Stay informed.<br />
+          <span class="h1-sub">No contact needed,</span><br />
+          <span class="h1-sub h1-teal">no message to write.</span>
+        </h1>
+        <p class="sub reveal" style="--d: 5">
+          Bacterial STIs are at
+          <button
+            class="footer-origin-link stats-chart-btn"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="chartOverlay"
+          >
+            record highs across Europe</button
+          >.<br />Let's fight them together!<br /><br />Close the gaps in STI
+          notification with AfterCare.
+        </p>
+
+        <div class="mockup reveal" style="--d: 5">
+          <img
+            src="visual-assets/mockup-cutout2.webp"
+            alt="AfterCare app showing an anonymous exposure notification"
+            width="96"
+            height="192"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+
+        <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
+      </div>
+
+      <section class="why scroll-reveal" aria-label="Why AfterCare">
+        <div class="why-carousel" id="whyCarousel">
+          <div
+            class="why-track"
+            id="whyTrack"
+            tabindex="0"
+            aria-label="Why AfterCare — swipe or use the controls below to browse"
+          >
+            <article
+              class="why-slide why-slide-1"
+              id="why-slide-0"
+              data-duration-ms="4200"
             >
-          </div>
-          <div class="step-visual">
-            <img
-              class="sauna-shot"
-              src="visual-assets/sauna-pair.webp"
-              alt=""
-              width="800"
-              height="604"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="checkout" style="display:none; --sd: 1">
-          <span class="step-num">2</span>
-          <div class="step-body">
-            <span class="step-label">Check out</span>
-            <span class="step-desc"
-              >Tap your wristband on the reader on your way out, then enter the
-              code it shows into the app.</span
-            >
-          </div>
-          <div class="step-visual">
-            <img
-              class="sauna-shot"
-              src="visual-assets/sauna-checkout.webp"
-              alt=""
-              width="800"
-              height="624"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </li>
-        <li class="step step-featured scroll-reveal" data-step="tear" style="--sd: 0">
-          <span class="step-num">1</span>
-          <div class="step-body">
-            <span class="step-label">Tear</span>
-            <span class="step-desc"
-              >Split a card in half, like a cloakroom stub — one side
-              each.</span
-            >
-          </div>
-          <div class="step-visual">
-            <div class="torn-card large" aria-hidden="true">
-              <div class="tc-ghost tc-ghost-l"></div>
-              <div class="tc-ghost tc-ghost-r"></div>
-              <div class="tc-half tc-left">
-                <img
-                  class="tc-logo"
-                  src="visual-assets/aftercare-logo.svg"
-                  alt=""
-                  width="120"
-                  height="124"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="tc-qr"
-                  src="visual-assets/qr-placeholder.png"
-                  alt=""
-                  width="280"
-                  height="280"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="tc-tag">Theirs</span>
-              </div>
-              <div class="tc-perf"></div>
-              <div class="tc-half tc-right">
-                <img
-                  class="tc-logo"
-                  src="visual-assets/aftercare-logo.svg"
-                  alt=""
-                  width="120"
-                  height="124"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="tc-qr"
-                  src="visual-assets/qr-placeholder.png"
-                  alt=""
-                  width="280"
-                  height="280"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="tc-tag">Yours</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="keep" style="--sd: 1">
-          <span class="step-num">2</span>
-          <div class="step-body">
-            <span class="step-label">Keep</span>
-            <span class="step-desc">Hang onto your half.</span>
-          </div>
-          <div class="step-visual">
-            <div class="torn-card" aria-hidden="true">
-              <div class="tc-ghost-solo"></div>
-              <div class="tc-half solo">
-                <img
-                  class="tc-logo"
-                  src="visual-assets/aftercare-logo.svg"
-                  alt=""
-                  width="120"
-                  height="124"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  class="tc-qr"
-                  src="visual-assets/qr-placeholder.png"
-                  alt=""
-                  width="280"
-                  height="280"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span class="tc-tag">Yours</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="scan" style="--sd: 2">
-          <span class="step-num">3</span>
-          <div class="step-body">
-            <span class="step-label">Scan</span>
-            <span class="step-desc" data-desc-default>Scan it in the app, whenever you're ready.</span>
-            <span class="step-desc" data-desc-home style="display:none">Show your QR to the other person — they scan it with their phone camera.</span>
-          </div>
-          <div class="step-visual">
-            <div class="mini-phone" aria-hidden="true">
-              <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen">
-                <span class="mp-label">Scan the code</span>
-                <div class="mp-frame">
-                  <img
-                    class="mp-frame-qr"
-                    src="visual-assets/qr-placeholder.png"
-                    alt=""
-                    width="280"
-                    height="280"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <span class="mp-corner h tl"></span
-                  ><span class="mp-corner v tl"></span>
-                  <span class="mp-corner h tr"></span
-                  ><span class="mp-corner v tr"></span>
-                  <span class="mp-corner h bl"></span
-                  ><span class="mp-corner v bl"></span>
-                  <span class="mp-corner h br"></span
-                  ><span class="mp-corner v br"></span>
-                  <span class="mp-scanline"></span>
-                </div>
-                <span class="mp-sub">Align the QR within the frame</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="connected" style="--sd: 3">
-          <span class="step-num">4</span>
-          <div class="step-body">
-            <span class="step-label"
-              >Connected
-              <span class="info-tip">
-                <button
-                  type="button"
-                  class="info-tip-btn"
-                  aria-label="What does Connected mean?"
-                >
+              <div class="why-slide-content">
+                <span class="why-slide-icon">
                   <svg
                     viewBox="0 0 24 24"
-                    width="13"
-                    height="13"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="1.75"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     aria-hidden="true"
                   >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4" />
-                    <path d="M12 8h.01" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M1 21v-2a6 6 0 0 1 9.33-5" />
+                    <path
+                      d="M17 9.5a2.5 2.5 0 0 1 2.5 2.5c0 1.5-2.5 2-2.5 3.5"
+                    />
+                    <circle
+                      cx="17"
+                      cy="19"
+                      r="0.5"
+                      fill="currentColor"
+                      stroke="none"
+                    />
                   </svg>
-                </button>
-                <span class="info-tip-pop" role="tooltip"
-                  >Connecting shares nothing on its own — and nothing is ever
-                  sent unless you tap to send it.</span
-                >
-              </span>
-            </span>
-            <span class="step-desc" data-desc-default>Your halves match up once you've both scanned.</span>
-              <span class="step-desc" data-desc-home style="display:none">Once the other person scans, the connection is established.</span>
-              <span class="step-desc" data-desc-sauna style="display:none">Your wristband pairing shows up in the app once you've both checked out.</span>
-          </div>
-          <div class="step-visual">
-            <div class="mini-phone mp-connected" aria-hidden="true">
-              <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen">
-                <span class="mp-label">It's a match!</span>
-                <span class="mp-heart">&#128156;</span>
-                <span class="mp-sub">You're now connected.</span>
+                </span>
+                <h3 class="why-slide-title">No contact needed</h3>
+                <p class="why-slide-desc">
+                  Notify partners even when you didn't exchange names or
+                  numbers.
+                </p>
               </div>
-            </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="notified" style="--sd: 4">
-          <span class="step-num">5</span>
-          <div class="step-body">
-            <span class="step-label">Notified</span>
-            <span class="step-desc"
-              >If either of you tests positive later, one tap tells the other —
-              anonymously, no name or identifying info exchanged.</span
+              <div class="why-slide-visual">
+                <img
+                  class="why-slide-photo"
+                  src="visual-assets/why-no-contact.webp"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="900"
+                  height="1350"
+                  style="object-position: 62% 38%"
+                />
+              </div>
+            </article>
+
+            <article
+              class="why-slide why-slide-2"
+              id="why-slide-1"
+              data-duration-ms="12000"
             >
+              <div class="why-slide-content">
+                <span class="why-slide-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                    />
+                    <line x1="9" y1="10" x2="15" y2="10" />
+                    <line x1="9" y1="14" x2="13" y2="14" />
+                  </svg>
+                </span>
+                <h3 class="why-slide-title">No messages to write</h3>
+                <p class="why-slide-desc">
+                  Send notifications effortlessly and without feeling awkward.
+                </p>
+              </div>
+              <div class="why-slide-visual" aria-hidden="true">
+                <div class="why-phone">
+                  <div class="why-phone-notch"></div>
+                  <div class="why-phone-screen">
+                    <div class="why-app-window" id="whyMessagesWindow">
+                      <div class="why-compose-mock" id="whyComposeMock">
+                        <div class="why-ba-banner why-ba-before">
+                          Before AfterCare
+                        </div>
+                        <div class="why-compose-stage">
+                          <div class="why-compose-label">Messages</div>
+                          <div class="why-compose-bubble" id="whyComposeBubble">
+                            <span class="why-strike-wrap" id="whyStrikeWrap"
+                              ><span id="whyComposeText"></span
+                              ><span
+                                class="why-compose-caret"
+                                id="whyComposeCaret"
+                              ></span
+                            ></span>
+                          </div>
+                        </div>
+                        <div class="why-keyboard" aria-hidden="true">
+                          <div class="why-keyboard-row">
+                            <i>Q</i><i>W</i><i>E</i><i>R</i><i>T</i><i>Y</i
+                            ><i>U</i><i>I</i><i>O</i><i>P</i>
+                          </div>
+                          <div class="why-keyboard-row why-keyboard-row-inset">
+                            <i>A</i><i>S</i><i>D</i><i>F</i><i>G</i><i>H</i
+                            ><i>J</i><i>K</i><i>L</i>
+                          </div>
+                          <div class="why-keyboard-row why-keyboard-row-bottom">
+                            <i class="why-keyboard-shift">&#8679;</i><i>Z</i
+                            ><i>X</i><i>C</i><i>V</i><i>B</i><i>N</i><i>M</i
+                            ><i class="why-keyboard-backspace">&#9003;</i>
+                          </div>
+                          <div
+                            class="why-keyboard-row why-keyboard-row-utility"
+                          >
+                            <span class="why-keyboard-utility">123</span>
+                            <span
+                              class="why-keyboard-utility why-keyboard-utility-globe"
+                              >&#9673;</span
+                            >
+                            <span class="why-keyboard-space"></span>
+                            <span
+                              class="why-keyboard-utility why-keyboard-utility-return"
+                              >return</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="why-app-handoff" id="whyAppHandoff">
+                      <div class="why-home-status">
+                        <span>9:41</span><i></i>
+                      </div>
+                      <div class="why-home-grid">
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app why-home-app-focus">
+                          <button
+                            class="why-app-handoff-button"
+                            id="whyAppHandoffButton"
+                            type="button"
+                            aria-label="Open AfterCare"
+                          >
+                            <img
+                              src="visual-assets/aftercare-logo.svg"
+                              alt=""
+                            />
+                          </button>
+                          <b>AfterCare</b>
+                        </span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                        <span class="why-home-app"><i></i><b></b></span>
+                      </div>
+                      <div class="why-home-search"><i></i></div>
+                      <div class="why-home-dock">
+                        <span class="why-home-app"><i></i></span>
+                        <span class="why-home-app"><i></i></span>
+                        <span class="why-home-app why-home-app-messages"
+                          ><i id="whyMessagesIcon"></i
+                        ></span>
+                        <span class="why-home-app"><i></i></span>
+                      </div>
+                    </div>
+                    <div
+                      class="why-app-window why-launch-window"
+                      id="whyLaunchWindow"
+                    >
+                      <img src="visual-assets/aftercare-logo.svg" alt="" />
+                    </div>
+                    <div class="why-tap-panel" id="whyTapPanel">
+                      <div class="why-ba-banner why-ba-after">
+                        With AfterCare
+                      </div>
+                      <div class="why-pill">
+                        Let the people you've connected with know.
+                      </div>
+                      <div class="why-btn" id="whyNotifyBtn">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M4 12h15" />
+                          <path d="m13 6 6 6-6 6" />
+                        </svg>
+                        <span id="whyNotifyLabel">Notify Partners</span>
+                        <span class="why-tap-ghost" id="whyTapGhost"></span>
+                      </div>
+                      <div
+                        class="why-pill why-pill-purple"
+                        id="whyThankYouPill"
+                        style="display: none"
+                      >
+                        Thanks for taking care of your partners
+                        <svg
+                          class="why-thank-you-heart"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="why-slide why-slide-3" id="why-slide-2">
+              <div class="why-slide-content">
+                <span class="why-slide-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                </span>
+                <h3 class="why-slide-title">Stay informed</h3>
+                <p class="why-slide-desc">
+                  Follow your STI exposure to take care of your health without
+                  delays.
+                </p>
+              </div>
+              <div class="why-slide-visual">
+                <img
+                  class="why-slide-photo"
+                  src="visual-assets/why-stay-informed.webp"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="900"
+                  height="1350"
+                />
+                <div class="why-notif" aria-hidden="true">
+                  <span class="why-notif-icon">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                  </span>
+                  <span class="why-notif-text"
+                    ><b>AfterCare</b>New exposure alert — tap to check in.</span
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article class="why-slide why-slide-4" id="why-slide-3">
+              <div class="why-slide-content">
+                <span class="why-slide-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <!-- full heart scaled to ~80%, shifted upper-left -->
+                    <g transform="translate(0, 0.5) scale(0.78)">
+                      <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"
+                      />
+                    </g>
+                    <!-- circle badge bottom-right -->
+                    <circle
+                      cx="17.5"
+                      cy="17.5"
+                      r="5.5"
+                      fill="var(--bg)"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    />
+                    <!-- filled pharmacy cross -->
+                    <rect
+                      x="16"
+                      y="13.5"
+                      width="3"
+                      height="8"
+                      rx="0.5"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                    <rect
+                      x="13.5"
+                      y="16"
+                      width="8"
+                      height="3"
+                      rx="0.5"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                  </svg>
+                </span>
+                <h3 class="why-slide-title">Healthier scene for everyone</h3>
+                <p class="why-slide-desc">
+                  The more people are in the loop, the safer it gets — for you
+                  too.
+                </p>
+              </div>
+              <div class="why-slide-visual">
+                <img
+                  class="why-slide-photo"
+                  src="visual-assets/why-healthier-scene.webp"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="900"
+                  height="1350"
+                />
+                <div
+                  class="why-speech why-speech-1 why-speech-blue"
+                  aria-hidden="true"
+                >
+                  I'm on AfterCare
+                </div>
+                <div
+                  class="why-speech why-speech-2 why-speech-green"
+                  aria-hidden="true"
+                >
+                  Me too
+                </div>
+                <div
+                  class="why-speech why-speech-3 why-speech-blue"
+                  aria-hidden="true"
+                >
+                  Me three!
+                </div>
+              </div>
+            </article>
           </div>
-          <div class="step-visual">
-            <div class="mini-phone mp-notified" aria-hidden="true">
-              <div class="mp-bar"><span class="mp-island"></span></div>
-              <div class="mp-screen mp-screen-notif">
-                <div class="mp-notif">
-                  <span class="mp-notif-icon">
+
+          <div class="why-controls">
+            <div
+              class="why-progress"
+              role="tablist"
+              aria-label="Choose highlight"
+            >
+              <button
+                type="button"
+                class="why-progress-seg"
+                role="tab"
+                aria-selected="true"
+                aria-controls="why-slide-0"
+                data-index="0"
+                aria-label="1: No contact needed"
+              >
+                <span class="why-progress-track"
+                  ><span class="why-progress-fill"></span
+                ></span>
+              </button>
+              <button
+                type="button"
+                class="why-progress-seg"
+                role="tab"
+                aria-selected="false"
+                aria-controls="why-slide-1"
+                data-index="1"
+                aria-label="2: No messages to write"
+              >
+                <span class="why-progress-track"
+                  ><span class="why-progress-fill"></span
+                ></span>
+              </button>
+              <button
+                type="button"
+                class="why-progress-seg"
+                role="tab"
+                aria-selected="false"
+                aria-controls="why-slide-2"
+                data-index="2"
+                aria-label="3: Stay informed"
+              >
+                <span class="why-progress-track"
+                  ><span class="why-progress-fill"></span
+                ></span>
+              </button>
+              <button
+                type="button"
+                class="why-progress-seg"
+                role="tab"
+                aria-selected="false"
+                aria-controls="why-slide-3"
+                data-index="3"
+                aria-label="4: Healthier scene for everyone"
+              >
+                <span class="why-progress-track"
+                  ><span class="why-progress-fill"></span
+                ></span>
+              </button>
+            </div>
+            <button
+              type="button"
+              class="why-playpause"
+              id="whyPlayPause"
+              aria-label="Pause autoplay"
+              aria-pressed="false"
+            >
+              <svg
+                class="icon-pause"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+              <svg
+                class="icon-play"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                hidden
+              >
+                <path
+                  d="M8 5.5v13a1 1 0 0 0 1.53.85l10.4-6.5a1 1 0 0 0 0-1.7l-10.4-6.5A1 1 0 0 0 8 5.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="mission scroll-reveal" aria-label="Our vision">
+        <p class="mission-label">Our vision</p>
+        <div class="funnel">
+          <div class="funnel-step fs-1">Better notification</div>
+          <div class="funnel-step fs-2">Earlier detection &amp; treatment</div>
+          <div class="funnel-step fs-3">Less transmission</div>
+          <div class="funnel-step fs-4">Fewer STIs, safer scene</div>
+        </div>
+      </section>
+
+      <a
+        class="scrollcue-wrap reveal"
+        href="#how"
+        style="--d: 7"
+        aria-label="See how it works"
+      >
+        <span class="scrollcue">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </span>
+      </a>
+
+      <section class="how" id="how">
+        <div class="how-title scroll-reveal">How it works</div>
+        <div class="use-case-toggle" role="group" aria-label="Use case">
+          <button class="uc-btn is-active" data-uc="club">Club</button>
+          <button class="uc-btn" data-uc="sauna">Sauna</button>
+          <button class="uc-btn" data-uc="home">Home</button>
+        </div>
+
+        <ol class="steps">
+          <!-- Generate step — only visible in Home mode -->
+          <li
+            class="step step-featured scroll-reveal"
+            data-step="generate"
+            style="display: none; --sd: 0"
+          >
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <span class="step-label">Generate</span>
+              <span class="step-desc"
+                >Generate your personal QR code in the app — no card
+                needed.</span
+              >
+            </div>
+            <div class="step-visual">
+              <div class="mini-phone" aria-hidden="true">
+                <div class="mp-bar"><span class="mp-island"></span></div>
+                <div class="mp-screen">
+                  <span class="mp-label">Your QR code</span>
+                  <div class="mp-qr-solo">
                     <img
-                      src="visual-assets/aftercare-icon-halo.png"
+                      src="visual-assets/qr-placeholder.png"
                       alt=""
-                      width="128"
-                      height="128"
+                      width="280"
+                      height="280"
                       loading="lazy"
                       decoding="async"
                     />
-                  </span>
-                  <span class="mp-notif-text">
-                    <span class="mp-notif-meta">
-                      <span class="mp-notif-app">AfterCare</span>
-                      <span class="mp-notif-time">now</span>
-                    </span>
-                    <span class="mp-label">Possible exposure</span>
-                    <span class="mp-sub">No names. Just the alert.</span>
-                  </span>
+                  </div>
+                  <span class="mp-sub">Unique token created each time</span>
                 </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="step scroll-reveal" data-step="treated" style="--sd: 5">
-          <span class="step-num">6</span>
-          <div class="step-body">
-            <span class="step-label">Treated</span>
-            <span class="step-desc"
-              >Get treated sooner, but only when advised by healthcare professionals.<br /><br />Early detection means less spread — and a healthier scene for everyone.</span
-            >
-          </div>
-        </li>
-      </ol>
-      <p class="share-tagline scroll-reveal" style="--sd: 6">Take care with AfterCare 💜</p>
-      <br />
-
-      <ul class="trust scroll-reveal" style="--sd: 6">
-        <li>
-          <svg
-            class="trust-icon"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+          </li>
+          <!-- Pair / Check out — only visible in Sauna mode -->
+          <li
+            class="step scroll-reveal"
+            data-step="pair"
+            style="display: none; --sd: 0"
           >
-            <path
-              d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
-            />
-            <path d="m9 12 2 2 4-4" />
-          </svg>
-          <span class="trust-title">Privacy first</span>
-          <span class="trust-desc">No traceable data</span>
-        </li>
-        <li>
-          <svg
-            class="trust-icon"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <span class="step-label">Pair</span>
+              <span class="step-desc"
+                >Tap the reader with your wristband, then the other person taps
+                theirs right after. A blinking light confirms you're
+                connected.</span
+              >
+            </div>
+            <div class="step-visual">
+              <img
+                class="sauna-shot"
+                src="visual-assets/sauna-pair.webp"
+                alt=""
+                width="800"
+                height="604"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </li>
+          <li
+            class="step scroll-reveal"
+            data-step="checkout"
+            style="display: none; --sd: 1"
           >
-            <path d="M18 11c-1.5 0-2.5.5-3 2" />
-            <path
-              d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z"
-            />
-            <path d="M6 11c1.5 0 2.5.5 3 2" />
-          </svg>
-          <span class="trust-title">Anonymous</span>
-          <span class="trust-desc">No names, emails, or identifying info</span>
-        </li>
-        <li>
-          <svg
-            class="trust-icon"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <span class="step-label">Check out</span>
+              <span class="step-desc"
+                >Tap your wristband on the reader on your way out, then enter
+                the code it shows into the app.</span
+              >
+            </div>
+            <div class="step-visual">
+              <img
+                class="sauna-shot"
+                src="visual-assets/sauna-checkout.webp"
+                alt=""
+                width="800"
+                height="624"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </li>
+          <li
+            class="step step-featured scroll-reveal"
+            data-step="tear"
+            style="--sd: 0"
           >
-            <path
-              d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
-            />
-            <path d="M13 5v2" />
-            <path d="M13 17v2" />
-            <path d="M13 11v2" />
-          </svg>
-          <span class="trust-title">Free</span>
-          <span class="trust-desc">Pick up a card pair at a participating venue</span>
-        </li>
-        <li>
-          <svg
-            class="trust-icon"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="m16 18 6-6-6-6" />
-            <path d="m8 6-6 6 6 6" />
-          </svg>
-          <span class="trust-title">Open source</span>
-          <span class="trust-desc">Anyone can read the code</span>
-        </li>
-      </ul>
-    </section>
-
-    <div class="share-wrap reveal" style="--d: 9">
-      <button type="button" class="share-btn" id="shareBtn">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="18" cy="5" r="3" />
-          <circle cx="6" cy="12" r="3" />
-          <circle cx="18" cy="19" r="3" />
-          <path d="m8.6 13.5 6.8 3.9" />
-          <path d="m15.4 6.6-6.8 3.9" />
-        </svg>
-        <span>Share with a friend</span>
-      </button>
-      <p class="support-note">
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <span class="step-label">Tear</span>
+              <span class="step-desc"
+                >Split a card in half, like a cloakroom stub — one side
+                each.</span
+              >
+            </div>
+            <div class="step-visual">
+              <div class="torn-card large" aria-hidden="true">
+                <div class="tc-ghost tc-ghost-l"></div>
+                <div class="tc-ghost tc-ghost-r"></div>
+                <div class="tc-half tc-left">
+                  <img
+                    class="tc-logo"
+                    src="visual-assets/aftercare-logo.svg"
+                    alt=""
+                    width="120"
+                    height="124"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    class="tc-qr"
+                    src="visual-assets/qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="tc-tag">Theirs</span>
+                </div>
+                <div class="tc-perf"></div>
+                <div class="tc-half tc-right">
+                  <img
+                    class="tc-logo"
+                    src="visual-assets/aftercare-logo.svg"
+                    alt=""
+                    width="120"
+                    height="124"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    class="tc-qr"
+                    src="visual-assets/qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="tc-tag">Yours</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step scroll-reveal" data-step="keep" style="--sd: 1">
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <span class="step-label">Keep</span>
+              <span class="step-desc">Hang onto your half.</span>
+            </div>
+            <div class="step-visual">
+              <div class="torn-card" aria-hidden="true">
+                <div class="tc-ghost-solo"></div>
+                <div class="tc-half solo">
+                  <img
+                    class="tc-logo"
+                    src="visual-assets/aftercare-logo.svg"
+                    alt=""
+                    width="120"
+                    height="124"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <img
+                    class="tc-qr"
+                    src="visual-assets/qr-placeholder.png"
+                    alt=""
+                    width="280"
+                    height="280"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span class="tc-tag">Yours</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step scroll-reveal" data-step="scan" style="--sd: 2">
+            <span class="step-num">3</span>
+            <div class="step-body">
+              <span class="step-label">Scan</span>
+              <span class="step-desc" data-desc-default
+                >Scan it in the app, whenever you're ready.</span
+              >
+              <span class="step-desc" data-desc-home style="display: none"
+                >Show your QR to the other person — they scan it with their
+                phone camera.</span
+              >
+            </div>
+            <div class="step-visual">
+              <div class="mini-phone" aria-hidden="true">
+                <div class="mp-bar"><span class="mp-island"></span></div>
+                <div class="mp-screen">
+                  <span class="mp-label">Scan the code</span>
+                  <div class="mp-frame">
+                    <img
+                      class="mp-frame-qr"
+                      src="visual-assets/qr-placeholder.png"
+                      alt=""
+                      width="280"
+                      height="280"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span class="mp-corner h tl"></span
+                    ><span class="mp-corner v tl"></span>
+                    <span class="mp-corner h tr"></span
+                    ><span class="mp-corner v tr"></span>
+                    <span class="mp-corner h bl"></span
+                    ><span class="mp-corner v bl"></span>
+                    <span class="mp-corner h br"></span
+                    ><span class="mp-corner v br"></span>
+                    <span class="mp-scanline"></span>
+                  </div>
+                  <span class="mp-sub">Align the QR within the frame</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step scroll-reveal" data-step="connected" style="--sd: 3">
+            <span class="step-num">4</span>
+            <div class="step-body">
+              <span class="step-label"
+                >Connected
+                <span class="info-tip">
+                  <button
+                    type="button"
+                    class="info-tip-btn"
+                    aria-label="What does Connected mean?"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="13"
+                      height="13"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4" />
+                      <path d="M12 8h.01" />
+                    </svg>
+                  </button>
+                  <span class="info-tip-pop" role="tooltip"
+                    >Connecting shares nothing on its own — and nothing is ever
+                    sent unless you tap to send it.</span
+                  >
+                </span>
+              </span>
+              <span class="step-desc" data-desc-default
+                >Your halves match up once you've both scanned.</span
+              >
+              <span class="step-desc" data-desc-home style="display: none"
+                >Once the other person scans, the connection is
+                established.</span
+              >
+              <span class="step-desc" data-desc-sauna style="display: none"
+                >Your wristband pairing shows up in the app once you've both
+                checked out.</span
+              >
+            </div>
+            <div class="step-visual">
+              <div class="mini-phone mp-connected" aria-hidden="true">
+                <div class="mp-bar"><span class="mp-island"></span></div>
+                <div class="mp-screen">
+                  <span class="mp-label">It's a match!</span>
+                  <span class="mp-heart">&#128156;</span>
+                  <span class="mp-sub">You're now connected.</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step scroll-reveal" data-step="notified" style="--sd: 4">
+            <span class="step-num">5</span>
+            <div class="step-body">
+              <span class="step-label">Notified</span>
+              <span class="step-desc"
+                >If either of you tests positive later, one tap tells the other
+                — anonymously, no name or identifying info exchanged.</span
+              >
+            </div>
+            <div class="step-visual">
+              <div class="mini-phone mp-notified" aria-hidden="true">
+                <div class="mp-bar"><span class="mp-island"></span></div>
+                <div class="mp-screen mp-screen-notif">
+                  <div class="mp-notif">
+                    <span class="mp-notif-icon">
+                      <img
+                        src="visual-assets/aftercare-icon-halo.png"
+                        alt=""
+                        width="128"
+                        height="128"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                    <span class="mp-notif-text">
+                      <span class="mp-notif-meta">
+                        <span class="mp-notif-app">AfterCare</span>
+                        <span class="mp-notif-time">now</span>
+                      </span>
+                      <span class="mp-label">Possible exposure</span>
+                      <span class="mp-sub">No names. Just the alert.</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="step scroll-reveal" data-step="treated" style="--sd: 5">
+            <span class="step-num">6</span>
+            <div class="step-body">
+              <span class="step-label">Treated</span>
+              <span class="step-desc"
+                >Get treated sooner, but only when advised by healthcare
+                professionals.<br /><br />Early detection means less spread —
+                and a healthier scene for everyone.</span
+              >
+            </div>
+          </li>
+        </ol>
+        <p class="share-tagline scroll-reveal" style="--sd: 6">
+          Take care with AfterCare 💜
+        </p>
         <br />
-        A doctor or researcher? <br />
-        <a
-          href="mailto:contact@after-care.eu?subject=Doctor%2FResearcher%20Partnership"
-          >Get in touch</a
-        >
-        to partner
-        <br />with the project.
-      </p>
-    </div>
+
+        <ul class="trust scroll-reveal" style="--sd: 6">
+          <li>
+            <span class="trust-icon-badge">
+              <svg
+                class="trust-icon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </span>
+            <span class="trust-title">Privacy first</span>
+            <span class="trust-desc">No traceable data</span>
+          </li>
+          <li>
+            <span class="trust-icon-badge">
+              <svg
+                class="trust-icon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 11c-1.5 0-2.5.5-3 2" />
+                <path
+                  d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z"
+                />
+                <path d="M6 11c1.5 0 2.5.5 3 2" />
+              </svg>
+            </span>
+            <span class="trust-title">Anonymous</span>
+            <span class="trust-desc"
+              >No names, emails, or identifying info</span
+            >
+          </li>
+          <li>
+            <span class="trust-icon-badge">
+              <svg
+                class="trust-icon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"
+                />
+                <path d="M13 5v2" />
+                <path d="M13 17v2" />
+                <path d="M13 11v2" />
+              </svg>
+            </span>
+            <span class="trust-title">Free</span>
+            <span class="trust-desc"
+              >Pick up a card pair at a participating venue</span
+            >
+          </li>
+          <li>
+            <span class="trust-icon-badge">
+              <svg
+                class="trust-icon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m16 18 6-6-6-6" />
+                <path d="m8 6-6 6 6 6" />
+              </svg>
+            </span>
+            <span class="trust-title">Open source</span>
+            <span class="trust-desc">Anyone can read the code</span>
+          </li>
+        </ul>
+      </section>
+
+      <div class="share-wrap reveal" style="--d: 9">
+        <button type="button" class="share-btn" id="shareBtn">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <path d="m8.6 13.5 6.8 3.9" />
+            <path d="m15.4 6.6-6.8 3.9" />
+          </svg>
+          <span>Share with a friend</span>
+        </button>
+        <p class="support-note">
+          <br />
+          A doctor or researcher? <br />
+          <a
+            href="mailto:contact@after-care.eu?subject=Doctor%2FResearcher%20Partnership"
+            >Get in touch</a
+          >
+          to partner
+          <br />with the project.
+        </p>
+      </div>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -3694,6 +5309,629 @@
           window.addEventListener("resize", updateProgress);
           updateProgress();
         }
+
+        // ---- why: highlights carousel autoplay ----
+        // Each slide can set its own dwell time via data-duration-ms (slide
+        // 2's compose animation needs longer than a plain photo card); that
+        // same number drives both the JS advance timer and the segment's
+        // --why-duration custom property. Slide 2 adds one small readiness
+        // gate so autoplay cannot cut off the Sent state.
+        (function () {
+          var DEFAULT_DURATION_MS = 5000;
+          var track = document.getElementById("whyTrack");
+          var carousel = document.getElementById("whyCarousel");
+          if (!track || !carousel) return;
+          var slides = Array.prototype.slice.call(
+            track.querySelectorAll(".why-slide"),
+          );
+          var segs = Array.prototype.slice.call(
+            carousel.querySelectorAll(".why-progress-seg"),
+          );
+          var playPauseBtn = document.getElementById("whyPlayPause");
+          if (!slides.length || !segs.length) return;
+
+          var activeIndex = 0;
+          var userPaused = false;
+          var autoplayTimer = null;
+          var scrollDebounce = null;
+
+          function durationFor(index) {
+            var v = parseInt(slides[index].dataset.durationMs, 10);
+            return isNaN(v) ? DEFAULT_DURATION_MS : v;
+          }
+
+          function indexFromScroll() {
+            var trackLeft = track.getBoundingClientRect().left;
+            var closest = 0;
+            var closestDist = Infinity;
+            slides.forEach(function (slide, i) {
+              var dist = Math.abs(
+                slide.getBoundingClientRect().left - trackLeft,
+              );
+              if (dist < closestDist) {
+                closestDist = dist;
+                closest = i;
+              }
+            });
+            return closest;
+          }
+
+          function activateSegment(index) {
+            segs[index].style.setProperty(
+              "--why-duration",
+              durationFor(index) + "ms",
+            );
+            // Force reflow so the fill animation restarts from 0 even when
+            // re-applying .is-active to a segment that already had it.
+            void segs[index].offsetWidth;
+            segs[index].classList.add("is-active");
+          }
+
+          function setActive(index) {
+            if (
+              index === activeIndex &&
+              segs[index].classList.contains("is-active")
+            )
+              return;
+            activeIndex = index;
+            segs.forEach(function (seg, i) {
+              seg.classList.toggle("is-done", i < index);
+              seg.classList.remove("is-active");
+              seg.setAttribute("aria-selected", i === index ? "true" : "false");
+            });
+            activateSegment(activeIndex);
+          }
+
+          function goTo(index) {
+            index = Math.max(0, Math.min(slides.length - 1, index));
+            track.scrollTo({
+              left: slides[index].offsetLeft,
+              behavior: reduceMotion ? "auto" : "smooth",
+            });
+          }
+
+          function restartTimer() {
+            clearTimeout(autoplayTimer);
+            if (reduceMotion || userPaused || document.hidden) return;
+            var advance = function () {
+              if (
+                activeIndex === 1 &&
+                slides[activeIndex].dataset.notificationSent !== "true"
+              ) {
+                autoplayTimer = setTimeout(advance, 250);
+                return;
+              }
+              goTo((activeIndex + 1) % slides.length);
+            };
+            autoplayTimer = setTimeout(function () {
+              advance();
+            }, durationFor(activeIndex));
+          }
+
+          track.addEventListener(
+            "scroll",
+            function () {
+              clearTimeout(scrollDebounce);
+              scrollDebounce = setTimeout(function () {
+                setActive(indexFromScroll());
+                restartTimer();
+              }, 120);
+            },
+            { passive: true },
+          );
+
+          track.addEventListener("keydown", function (e) {
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              goTo(activeIndex + 1);
+            } else if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              goTo(activeIndex - 1);
+            }
+          });
+
+          // Tapping the peeking edge of a neighboring card slides it into
+          // view instead of (or as well as) whatever it contains — caught
+          // on the capture phase so a tap on slide 2's "Notify Partners"
+          // button, say, only ever navigates when that card isn't the
+          // active one yet, rather than also firing the button's own
+          // handler before its animation has even played.
+          track.addEventListener(
+            "click",
+            function (e) {
+              var slideEl = e.target.closest(".why-slide");
+              if (!slideEl) return;
+              var idx = slides.indexOf(slideEl);
+              if (idx !== -1 && idx !== activeIndex) {
+                e.preventDefault();
+                e.stopPropagation();
+                goTo(idx);
+              }
+            },
+            true,
+          );
+
+          segs.forEach(function (seg) {
+            seg.addEventListener("click", function () {
+              goTo(parseInt(seg.getAttribute("data-index"), 10));
+            });
+          });
+
+          carousel.addEventListener("mouseenter", function () {
+            clearTimeout(autoplayTimer);
+          });
+          carousel.addEventListener("mouseleave", function () {
+            if (!userPaused) restartTimer();
+          });
+
+          if (playPauseBtn) {
+            playPauseBtn.addEventListener("click", function () {
+              userPaused = !userPaused;
+              playPauseBtn.setAttribute(
+                "aria-pressed",
+                userPaused ? "true" : "false",
+              );
+              playPauseBtn.setAttribute(
+                "aria-label",
+                userPaused ? "Play autoplay" : "Pause autoplay",
+              );
+              var iconPause = playPauseBtn.querySelector(".icon-pause");
+              var iconPlay = playPauseBtn.querySelector(".icon-play");
+              if (iconPause) iconPause.hidden = userPaused;
+              if (iconPlay) iconPlay.hidden = !userPaused;
+              if (userPaused) {
+                clearTimeout(autoplayTimer);
+                segs[activeIndex].classList.remove("is-active");
+              } else {
+                activateSegment(activeIndex);
+                restartTimer();
+              }
+            });
+          }
+
+          document.addEventListener("visibilitychange", function () {
+            if (document.hidden) {
+              clearTimeout(autoplayTimer);
+            } else {
+              restartTimer();
+            }
+          });
+
+          activateSegment(0);
+          restartTimer();
+        })();
+
+        // ---- why: compact "before/after" compose animation (slide 2) ----
+        // A paced port of the compose-bubble sequence prototyped in
+        // aftercare-sebastian-journey.html (full credit there) — same
+        // two-fumbled-drafts-then-the-real-one story, with enough time for
+        // each message to feel human before it is replaced.
+        (function () {
+          var wrap = document.getElementById("why-slide-1");
+          var textEl = document.getElementById("whyComposeText");
+          var bubble = document.getElementById("whyComposeBubble");
+          var strikeWrap = document.getElementById("whyStrikeWrap");
+          var caret = document.getElementById("whyComposeCaret");
+          var mock = document.getElementById("whyComposeMock");
+          var appHandoff = document.getElementById("whyAppHandoff");
+          var appHandoffButton = document.getElementById("whyAppHandoffButton");
+          var messagesWindow = document.getElementById("whyMessagesWindow");
+          var messagesIcon = document.getElementById("whyMessagesIcon");
+          var launchWindow = document.getElementById("whyLaunchWindow");
+          var tapPanel = document.getElementById("whyTapPanel");
+          var notifyBtn = document.getElementById("whyNotifyBtn");
+          var notifyLabel = document.getElementById("whyNotifyLabel");
+          var tapGhost = document.getElementById("whyTapGhost");
+          var thankYouPill = document.getElementById("whyThankYouPill");
+          var keyboard = mock && mock.querySelector(".why-keyboard");
+          var keyboardKeys = keyboard
+            ? keyboard.querySelectorAll("i, .why-keyboard-space")
+            : [];
+          if (
+            !wrap ||
+            !textEl ||
+            !bubble ||
+            !strikeWrap ||
+            !mock ||
+            !appHandoff ||
+            !appHandoffButton ||
+            !messagesWindow ||
+            !messagesIcon ||
+            !launchWindow ||
+            !tapPanel ||
+            !notifyBtn ||
+            !notifyLabel
+          )
+            return;
+
+          var DRAFT_1 = "hey .. so I got some bad news....";
+          var DRAFT_2 = "got tested positive for";
+          var DRAFT_FINAL = "I don't know how to say this but . .";
+          var TYPE_MS = 58;
+          var ERASE_MS = 38;
+          // Pause after each message finishes typing so the reader has a
+          // moment to actually read it before it gets erased/revealed.
+          // Grows by 100ms per message since later drafts carry more
+          // weight and take a beat longer to land.
+          var READ_PAUSE_MS_1 = 650;
+          var READ_PAUSE_MS_2 = 700;
+          var READ_PAUSE_MS_FINAL = 800;
+
+          var timers = [];
+          function addTimeout(fn, ms) {
+            var id = setTimeout(fn, ms);
+            timers.push({ id: id, kind: "t" });
+            return id;
+          }
+          function addInterval(fn, ms) {
+            var id = setInterval(fn, ms);
+            timers.push({ id: id, kind: "i" });
+            return id;
+          }
+          function clearAllTimers() {
+            timers.forEach(function (t) {
+              if (t.kind === "t") clearTimeout(t.id);
+              else clearInterval(t.id);
+            });
+            timers = [];
+          }
+
+          function pressKeyboardKey(value) {
+            if (!keyboardKeys.length) return;
+            var target = null;
+            var normalizedValue = value.toUpperCase();
+            if (value === " ") {
+              target = keyboard.querySelector(".why-keyboard-space");
+            } else if (value === "\b") {
+              target = keyboard.querySelector(".why-keyboard-backspace");
+            } else {
+              for (
+                var keyIndex = 0;
+                keyIndex < keyboardKeys.length;
+                keyIndex++
+              ) {
+                if (
+                  keyboardKeys[keyIndex].textContent.trim().toUpperCase() ===
+                  normalizedValue
+                ) {
+                  target = keyboardKeys[keyIndex];
+                  break;
+                }
+              }
+            }
+            if (!target) return;
+            target.classList.add("pressed");
+            addTimeout(function () {
+              target.classList.remove("pressed");
+            }, 120);
+          }
+
+          function typeText(text, speed, cb) {
+            var i = 0;
+            var iv = addInterval(function () {
+              var character = text[i];
+              textEl.textContent += character;
+              pressKeyboardKey(character);
+              i++;
+              if (i >= text.length) {
+                clearInterval(iv);
+                cb && cb();
+              }
+            }, speed);
+          }
+          function eraseText(speed, cb) {
+            var iv = addInterval(function () {
+              var cur = textEl.textContent;
+              if (!cur.length) {
+                clearInterval(iv);
+                cb && cb();
+                return;
+              }
+              pressKeyboardKey("\b");
+              textEl.textContent = cur.slice(0, -1);
+            }, speed);
+          }
+
+          function resetState() {
+            clearAllTimers();
+            handoffLaunched = false;
+            textEl.textContent = "";
+            delete wrap.dataset.notificationSent;
+            for (var keyIndex = 0; keyIndex < keyboardKeys.length; keyIndex++) {
+              keyboardKeys[keyIndex].classList.remove("pressed");
+            }
+            strikeWrap.classList.remove("struck");
+            bubble.classList.remove("struck");
+            if (caret) caret.classList.remove("hide");
+            [messagesWindow, launchWindow].forEach(function (win) {
+              win.style.transition = "none";
+              win.style.transform = "";
+              win.style.clipPath = "";
+              win.style.opacity = "";
+              win.style.visibility = "";
+            });
+            launchWindow.classList.remove("from-icon");
+            appHandoff.classList.remove("show", "launching");
+            appHandoffButton.classList.remove("pressed");
+            tapPanel.classList.remove("show");
+            notifyBtn.classList.remove("sent");
+            notifyLabel.textContent = "Notify Partners";
+            if (tapGhost) tapGhost.classList.remove("tap");
+            if (thankYouPill) {
+              thankYouPill.classList.remove("show");
+              thankYouPill.style.display = "none";
+            }
+          }
+
+          function sendNotification() {
+            if (notifyBtn.classList.contains("sent")) return;
+            notifyLabel.textContent = "Sealing message…";
+            addTimeout(function () {
+              notifyLabel.textContent = "Sent ✓";
+              notifyBtn.classList.add("sent");
+              wrap.dataset.notificationSent = "true";
+              if (thankYouPill) {
+                thankYouPill.style.display = "block";
+                requestAnimationFrame(function () {
+                  thankYouPill.classList.add("show");
+                });
+              }
+            }, 800);
+          }
+
+          // The ghost tap is what makes the "Sent" state visible to
+          // everyone: it plays the same translucent tap highlight a real
+          // finger would leave, then triggers the exact same
+          // sendNotification() a manual click uses.
+          function playGhostTap() {
+            if (notifyBtn.classList.contains("sent")) return;
+            if (tapGhost) {
+              tapGhost.classList.remove("tap");
+              void tapGhost.offsetWidth;
+              tapGhost.classList.add("tap");
+            }
+            addTimeout(sendNotification, reduceMotion ? 0 : 220);
+          }
+
+          var MORPH_MS = 520;
+          var HOME_DWELL_MS = 1200;
+          var MORPH_EASE = MORPH_MS + "ms cubic-bezier(0.32, 0.72, 0, 1)";
+          var FULL_SCREEN_CLIP = "inset(0px 0px round 18px)";
+
+          // Transform + clip that shrink a full-screen app window onto an
+          // icon. Uses offset* (layout) rather than getBoundingClientRect,
+          // so the home screen's own zoom transition can't skew the target.
+          function iconMorph(win, icon) {
+            var x = 0;
+            var y = 0;
+            for (var n = icon; n && n !== appHandoff; n = n.offsetParent) {
+              x += n.offsetLeft;
+              y += n.offsetTop;
+            }
+            var w = win.offsetWidth;
+            var h = win.offsetHeight;
+            var dx = x + icon.offsetWidth / 2 - w / 2;
+            var dy = y + icon.offsetHeight / 2 - h / 2;
+            return {
+              transform:
+                "translate(" +
+                dx +
+                "px, " +
+                dy +
+                "px) scale(" +
+                icon.offsetWidth / w +
+                ")",
+              clipPath:
+                "inset(" +
+                Math.max(0, (h - w) / 2) +
+                "px 0px round " +
+                w * 0.23 +
+                "px)",
+            };
+          }
+
+          function closeMessages() {
+            appHandoff.classList.add("show");
+            if (reduceMotion) {
+              messagesWindow.style.visibility = "hidden";
+              return;
+            }
+            var m = iconMorph(messagesWindow, messagesIcon);
+            messagesWindow.style.clipPath = FULL_SCREEN_CLIP;
+            void messagesWindow.offsetWidth;
+            messagesWindow.style.transition =
+              "transform " +
+              MORPH_EASE +
+              ", clip-path " +
+              MORPH_EASE +
+              ", opacity 0.2s ease 0.3s";
+            messagesWindow.style.transform = m.transform;
+            messagesWindow.style.clipPath = m.clipPath;
+            messagesWindow.style.opacity = "0";
+            addTimeout(function () {
+              messagesWindow.style.visibility = "hidden";
+            }, MORPH_MS);
+          }
+
+          function showAftercare() {
+            appHandoff.classList.remove("show", "launching");
+            tapPanel.classList.add("show");
+            addTimeout(playGhostTap, 1200);
+          }
+
+          function openLaunchWindow() {
+            if (reduceMotion) {
+              showAftercare();
+              return;
+            }
+            var m = iconMorph(launchWindow, appHandoffButton);
+            launchWindow.style.transition = "none";
+            launchWindow.style.transform = m.transform;
+            launchWindow.style.clipPath = m.clipPath;
+            launchWindow.style.opacity = "1";
+            launchWindow.style.visibility = "visible";
+            launchWindow.classList.add("from-icon");
+            void launchWindow.offsetWidth;
+            launchWindow.style.transition =
+              "transform " +
+              MORPH_EASE +
+              ", clip-path " +
+              MORPH_EASE +
+              ", opacity 0.3s ease";
+            launchWindow.classList.remove("from-icon");
+            launchWindow.style.transform = "none";
+            launchWindow.style.clipPath = FULL_SCREEN_CLIP;
+            appHandoff.classList.add("launching");
+            addTimeout(function () {
+              showAftercare();
+              launchWindow.style.opacity = "0";
+            }, MORPH_MS + 40);
+          }
+
+          var handoffLaunched = false;
+          function launchAftercare() {
+            if (handoffLaunched) return;
+            handoffLaunched = true;
+            appHandoffButton.classList.add("pressed");
+            addTimeout(
+              function () {
+                appHandoffButton.classList.remove("pressed");
+                openLaunchWindow();
+              },
+              reduceMotion ? 0 : 160,
+            );
+          }
+
+          function reveal() {
+            if (caret) caret.classList.add("hide");
+            strikeWrap.classList.add("struck");
+            addTimeout(function () {
+              bubble.classList.add("struck");
+            }, 150);
+            addTimeout(function () {
+              closeMessages();
+              addTimeout(
+                launchAftercare,
+                reduceMotion ? 0 : MORPH_MS + HOME_DWELL_MS,
+              );
+            }, 700);
+          }
+
+          function runSequence() {
+            if (reduceMotion) {
+              textEl.textContent = DRAFT_FINAL;
+              reveal();
+              return;
+            }
+            typeText(DRAFT_1, TYPE_MS, function () {
+              addTimeout(function () {
+                eraseText(ERASE_MS, function () {
+                  addTimeout(function () {
+                    typeText(DRAFT_2, TYPE_MS, function () {
+                      addTimeout(function () {
+                        eraseText(ERASE_MS, function () {
+                          addTimeout(function () {
+                            typeText(DRAFT_FINAL, TYPE_MS, function () {
+                              addTimeout(reveal, READ_PAUSE_MS_FINAL);
+                            });
+                          }, 200);
+                        });
+                      }, READ_PAUSE_MS_2);
+                    });
+                  }, 200);
+                });
+              }, READ_PAUSE_MS_1);
+            });
+          }
+
+          var running = false;
+          var composeObserver = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  if (running) return;
+                  running = true;
+                  resetState();
+                  runSequence();
+                } else {
+                  running = false;
+                  resetState();
+                }
+              });
+            },
+            { threshold: 0.6 },
+          );
+          composeObserver.observe(wrap);
+
+          if (appHandoffButton) {
+            appHandoffButton.addEventListener("click", launchAftercare);
+          }
+
+          notifyBtn.addEventListener("click", function () {
+            if (tapGhost) tapGhost.classList.remove("tap");
+            sendNotification();
+          });
+        })();
+
+        // ---- why: staggered speech-bubble reveal (slide 4) ----
+        // Mirrors the compose observer above: toggles .speech-in on the
+        // slide each time it scrolls into (and out of) view, so the
+        // bubbles' staggered fade-in (see .why-speech / #why-slide-3
+        // .speech-in in the CSS) replays on every visit rather than only
+        // the first time.
+        (function () {
+          var wrap = document.getElementById("why-slide-3");
+          if (!wrap || !wrap.querySelector(".why-speech")) return;
+
+          var fadeTimers = [];
+          var clearFadeTimers = function () {
+            fadeTimers.forEach(function (timer) {
+              clearTimeout(timer);
+            });
+            fadeTimers = [];
+            wrap.querySelectorAll(".why-speech").forEach(function (bubble) {
+              bubble.classList.remove("is-faded");
+            });
+          };
+          var scheduleBubbleFades = function () {
+            clearFadeTimers();
+            // Fade each preceding bubble as the next one begins to appear.
+            [
+              [".why-speech-1", 2450],
+              [".why-speech-2", 3000],
+              [".why-speech-3", 3900],
+            ].forEach(function (entry) {
+              var bubble = wrap.querySelector(entry[0]);
+              if (!bubble) return;
+              fadeTimers.push(
+                setTimeout(function () {
+                  bubble.classList.add("is-faded");
+                }, entry[1]),
+              );
+            });
+          };
+
+          if (reduceMotion || !("IntersectionObserver" in window)) {
+            wrap.classList.add("speech-in");
+            return;
+          }
+
+          var speechObserver = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("speech-in");
+                  scheduleBubbleFades();
+                } else {
+                  entry.target.classList.remove("speech-in");
+                  clearFadeTimers();
+                }
+              });
+            },
+            { threshold: 0.6 },
+          );
+          speechObserver.observe(wrap);
+        })();
       })();
     </script>
     <script src="assets/a11y-panel.js" defer></script>
@@ -3708,136 +5946,163 @@
       hidden
     >
       <div class="chart-overlay-panel">
-        <button class="chart-overlay-close" aria-label="Close charts">&#x2715;</button>
+        <button class="chart-overlay-close" aria-label="Close charts">
+          &#x2715;
+        </button>
         <div class="chart-overlay-charts">
           <figure class="chart-card">
             <figcaption>
-              <h2 class="chart-card-title">Bacterial STIs at record highs in Europe</h2>
-              <p class="chart-card-subtitle">Confirmed cases, EU/EEA, thousands</p>
+              <h2 class="chart-card-title">
+                Bacterial STIs at record highs in Europe
+              </h2>
+              <p class="chart-card-subtitle">
+                Confirmed cases, EU/EEA, thousands
+              </p>
             </figcaption>
             <img
               src="visual-assets/chart-sti-general.png"
               alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases in the EU/EEA from 2015 to 2024"
-              width="726" height="462"
+              width="726"
+              height="462"
               loading="lazy"
               decoding="async"
             />
           </figure>
           <figure class="chart-card">
             <figcaption>
-              <h2 class="chart-card-title">For MSM, gonorrhoea leads STI cases and is rising faster</h2>
-              <p class="chart-card-subtitle">Confirmed cases among men who have sex with men, EU/EEA, thousands</p>
+              <h2 class="chart-card-title">
+                For MSM, gonorrhoea leads STI cases and is rising faster
+              </h2>
+              <p class="chart-card-subtitle">
+                Confirmed cases among men who have sex with men, EU/EEA,
+                thousands
+              </p>
             </figcaption>
             <img
               src="visual-assets/chart-sti-msm.png"
               alt="Line chart of confirmed chlamydia, gonorrhoea, and syphilis cases among men who have sex with men in the EU/EEA from 2015 to 2024"
-              width="726" height="462"
+              width="726"
+              height="462"
               loading="lazy"
               decoding="async"
             />
           </figure>
         </div>
         <div class="chart-overlay-footer">
-          <p class="chart-overlay-source">Source: European Centre for Disease Prevention and Control</p>
+          <p class="chart-overlay-source">
+            Source: European Centre for Disease Prevention and Control
+          </p>
           <a
             href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double"
             target="_blank"
             rel="noopener noreferrer"
-          >Read more at ECDC ↗</a>
+            >Read more at ECDC ↗</a
+          >
         </div>
       </div>
     </div>
 
     <script>
       (function () {
-        var overlay = document.getElementById('chartOverlay');
-        var btn     = document.querySelector('.stats-chart-btn');
-        var closeBtn = overlay.querySelector('.chart-overlay-close');
+        var overlay = document.getElementById("chartOverlay");
+        var btn = document.querySelector(".stats-chart-btn");
+        var closeBtn = overlay.querySelector(".chart-overlay-close");
 
         function openOverlay() {
-          overlay.removeAttribute('hidden');
+          overlay.removeAttribute("hidden");
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
-              overlay.classList.add('is-open');
+              overlay.classList.add("is-open");
             });
           });
           closeBtn.focus({ preventScroll: true });
         }
 
         function closeOverlay() {
-          overlay.classList.remove('is-open');
-          overlay.addEventListener('transitionend', function handler(e) {
+          overlay.classList.remove("is-open");
+          overlay.addEventListener("transitionend", function handler(e) {
             if (e.target !== overlay) return;
-            overlay.setAttribute('hidden', '');
-            overlay.removeEventListener('transitionend', handler);
+            overlay.setAttribute("hidden", "");
+            overlay.removeEventListener("transitionend", handler);
           });
           btn.focus({ preventScroll: true });
         }
 
-        btn.addEventListener('click', openOverlay);
-        closeBtn.addEventListener('click', closeOverlay);
+        btn.addEventListener("click", openOverlay);
+        closeBtn.addEventListener("click", closeOverlay);
 
-        overlay.addEventListener('click', function (e) {
+        overlay.addEventListener("click", function (e) {
           if (e.target === overlay) closeOverlay();
         });
 
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeOverlay();
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && overlay.classList.contains("is-open"))
+            closeOverlay();
         });
       })();
 
       // ── use-case toggle ──────────────────────────────────────────────────────
       (function () {
-        var btns = document.querySelectorAll('.uc-btn');
-        var stepsEl = document.querySelector('.steps');
+        var btns = document.querySelectorAll(".uc-btn");
+        var stepsEl = document.querySelector(".steps");
 
         // Which steps each use case shows. Home replaces the card steps
         // with Generate; Sauna replaces the card steps — and the scan that
         // goes with them — with the reader's own Pair / Check out pair.
         var stepsByUc = {
-          club:  ['tear', 'keep', 'scan', 'connected', 'notified', 'treated'],
-          sauna: ['pair', 'checkout', 'connected', 'notified', 'treated'],
-          home:  ['generate', 'scan', 'connected', 'notified', 'treated']
+          club: ["tear", "keep", "scan", "connected", "notified", "treated"],
+          sauna: ["pair", "checkout", "connected", "notified", "treated"],
+          home: ["generate", "scan", "connected", "notified", "treated"],
         };
 
         function applyUc(uc) {
           var shown = stepsByUc[uc] || stepsByUc.club;
-          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
-            li.style.display = shown.indexOf(li.dataset.step) === -1 ? 'none' : '';
+          stepsEl.querySelectorAll("li[data-step]").forEach(function (li) {
+            li.style.display =
+              shown.indexOf(li.dataset.step) === -1 ? "none" : "";
           });
           // Swap Scan label for Home
-          var scanLabel = stepsEl.querySelector('li[data-step="scan"] .step-label');
-          if (scanLabel) scanLabel.textContent = (uc === 'home') ? 'Show' : 'Scan';
+          var scanLabel = stepsEl.querySelector(
+            'li[data-step="scan"] .step-label',
+          );
+          if (scanLabel)
+            scanLabel.textContent = uc === "home" ? "Show" : "Scan";
 
           // Show each step's use-case-specific description, falling back to
           // the default copy where that use case has none of its own
-          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
-            var variants = li.querySelectorAll('[data-desc-default], [data-desc-home], [data-desc-sauna]');
+          stepsEl.querySelectorAll("li[data-step]").forEach(function (li) {
+            var variants = li.querySelectorAll(
+              "[data-desc-default], [data-desc-home], [data-desc-sauna]",
+            );
             if (!variants.length) return;
-            var match = li.querySelector('[data-desc-' + uc + ']') || li.querySelector('[data-desc-default]');
+            var match =
+              li.querySelector("[data-desc-" + uc + "]") ||
+              li.querySelector("[data-desc-default]");
             variants.forEach(function (el) {
-              el.style.display = (el === match) ? '' : 'none';
+              el.style.display = el === match ? "" : "none";
             });
           });
 
           var n = 1;
-          stepsEl.querySelectorAll('li[data-step]').forEach(function (li) {
-            if (li.style.display === 'none') return;
-            var numEl = li.querySelector('.step-num');
+          stepsEl.querySelectorAll("li[data-step]").forEach(function (li) {
+            if (li.style.display === "none") return;
+            var numEl = li.querySelector(".step-num");
             if (numEl) numEl.textContent = n++;
           });
         }
 
         btns.forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            btns.forEach(function (b) { b.classList.remove('is-active'); });
-            btn.classList.add('is-active');
+          btn.addEventListener("click", function () {
+            btns.forEach(function (b) {
+              b.classList.remove("is-active");
+            });
+            btn.classList.add("is-active");
             applyUc(btn.dataset.uc);
           });
         });
 
         // Init with default (Club)
-        applyUc('club');
+        applyUc("club");
       })();
     </script>
   </body>

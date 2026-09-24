@@ -73,6 +73,26 @@ architecture enforces.
   reach for a static-site generator or bundler for this alone; that's a
   much bigger shift than the problem warrants.
 
+## Verifying changes: headless browser tooling defaults to Firefox
+
+When a code change needs an actual rendered check — a screenshot, or
+headless browser automation via Playwright/Puppeteer/etc. — install and
+drive Firefox, not Chromium. Don't silently reach for Chromium as the
+path of least resistance just because a tool defaults to it.
+
+**Why:** this project already avoids Google-linked infrastructure for
+everything the *visitor's* browser touches (see "No big-tech telemetry,
+no third-party CDNs" above). The same preference extends to our own dev
+tooling — Chromium is a Google-controlled project; Firefox is not.
+
+**How to apply:**
+- `npx playwright install firefox` (not `chromium`) when a headless
+  browser is needed to verify a visual change.
+- If Firefox isn't available or installable in the environment either,
+  say so and fall back to a manual eyeball check (open the file in a real
+  browser, or describe the change precisely) rather than defaulting to
+  Chromium to get unblocked.
+
 ## Commit and deploy discipline
 
 Treat `main` as production, not a scratchpad — Scalingo deploys straight
