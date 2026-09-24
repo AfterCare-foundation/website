@@ -177,21 +177,15 @@
       (function () {
         try {
           var root = document.documentElement;
-          var theme = localStorage.getItem("ac-theme");
-          var isLight = theme === "light";
-          if (isLight) root.dataset.theme = "light";
+          // Light mode is temporarily hidden as an option (not yet
+          // optimized) — dark stays forced regardless of any stored
+          // "ac-theme" preference from before this was disabled.
           var size = localStorage.getItem("ac-text-size");
           if (size === "lg" || size === "xl") root.dataset.textSize = size;
           if (localStorage.getItem("ac-contrast") === "high")
             root.dataset.contrast = "high";
           if (localStorage.getItem("ac-motion") === "reduced")
             root.dataset.motion = "reduced";
-          if (isLight) {
-            var tc = document.querySelector('meta[name="theme-color"]');
-            var cs = document.querySelector('meta[name="color-scheme"]');
-            if (tc) tc.setAttribute("content", "#f5f6fa");
-            if (cs) cs.setAttribute("content", "light");
-          }
         } catch (e) {}
       })();
     </script>
@@ -235,11 +229,6 @@
         aria-label="Accessibility settings"
       >
         <p class="a11y-panel-heading">Accessibility settings</p>
-
-        <label class="a11y-toggle-row">
-          <span class="a11y-row-label">Dark mode</span>
-          <input type="checkbox" role="switch" id="a11yThemeToggle" checked />
-        </label>
 
         <div class="a11y-row">
           <span class="a11y-row-label">Text size</span>
