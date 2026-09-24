@@ -915,14 +915,14 @@
         left: 5%;
       }
       #why-slide-3.speech-in .why-speech-2 {
-        transition-delay: 1.35s;
+        transition-delay: 2s;
       }
       .why-speech-3 {
         top: 63%;
         right: 5%;
       }
       #why-slide-3.speech-in .why-speech-3 {
-        transition-delay: 1.9s;
+        transition-delay: 4.3s;
       }
 
       /* ---- why: compact phone-mockup widget (slide 2) ----
@@ -3856,7 +3856,7 @@
             <article
               class="why-slide why-slide-2"
               id="why-slide-1"
-              data-duration-ms="12000"
+              data-duration-ms="13500"
             >
               <div class="why-slide-content">
                 <span class="why-slide-icon">
@@ -4075,7 +4075,11 @@
               </div>
             </article>
 
-            <article class="why-slide why-slide-4" id="why-slide-3">
+            <article
+              class="why-slide why-slide-4"
+              id="why-slide-3"
+              data-duration-ms="7400"
+            >
               <div class="why-slide-content">
                 <span class="why-slide-icon">
                   <svg
@@ -5897,9 +5901,9 @@
             clearFadeTimers();
             // Fade each preceding bubble as the next one begins to appear.
             [
-              [".why-speech-1", 2450],
-              [".why-speech-2", 3000],
-              [".why-speech-3", 3900],
+              [".why-speech-1", 3100],
+              [".why-speech-2", 5400],
+              [".why-speech-3", 6500],
             ].forEach(function (entry) {
               var bubble = wrap.querySelector(entry[0]);
               if (!bubble) return;
