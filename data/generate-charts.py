@@ -9,7 +9,8 @@ Data source:
     ECDC surveillance atlas — https://www.ecdc.europa.eu/en/surveillance-atlas-infectious-diseases
     Download confirmed-case CSVs for Gonorrhoea, Syphilis, and Chlamydia infection
     (both "Confirmed cases" and "Men who have sex with men" populations).
-    Place them in DATA_DIR below.
+    Place them in DATA_DIR below, named as in FILES. The atlas exports some files
+    with a "|" in the name, which Windows cannot store — strip it when saving.
 
 Fonts:
     Poppins-Regular.ttf must be present in FONT_DIR.
@@ -45,7 +46,7 @@ POPPINS_LEGEND.set_size(14)
 # ── data files ────────────────────────────────────────────────────────────────
 FILES = {
     'gon_gen': 'Gonorrhoea - Confirmed cases - Reported cases.csv',
-    'gon_msm': 'Gonorrhoea - Disease surveillance|Confirmed cases - Men who have sex with men - Reported cases.csv',
+    'gon_msm': 'Gonorrhoea - Confirmed cases - Men who have sex with men - Reported cases.csv',
     'syp_gen': 'Syphilis - Confirmed cases - Reported cases.csv',
     'syp_msm': 'Syphilis - Confirmed cases - Men who have sex with men - Reported cases.csv',
     'chl_gen': 'Chlamydia infection - Confirmed cases - Reported cases.csv',
@@ -69,7 +70,7 @@ YEARS  = list(range(2015, 2025))
 def load(key, region=REGION, year_range=range(2015, 2025)):
     data = {}
     path = os.path.join(DATA_DIR, FILES[key])
-    with open(path) as f:
+    with open(path, encoding='utf-8-sig') as f:
         for row in csv.DictReader(f):
             if row['RegionCode'] == region and int(row['Time']) in year_range:
                 try:
