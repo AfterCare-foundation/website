@@ -584,6 +584,10 @@
         display: flex;
         gap: 14px;
         overflow-x: auto;
+        /* overflow-x: auto would otherwise make the y axis scrollable too,
+           so anything poking past a card's bottom edge turns a sideways
+           swipe into a diagonal wobble. */
+        overflow-y: hidden;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
@@ -623,7 +627,13 @@
         background:
           radial-gradient(130% 90% at 85% -10%, rgba(45, 212, 191, 0.28), transparent 55%),
           linear-gradient(200deg, #0d2a2a 0%, #0a0a10 70%);
-        height: 460px;
+      }
+      /* Room for the absolutely-positioned phone (see .why-phone): 300px
+         tall, 14px of it hanging below, 16px clear above. Without this
+         floor a wrapping caption would squeeze the panel until the phone
+         poked up into the text; this grows the card instead. */
+      .why-slide-2 .why-slide-visual {
+        min-height: 302px;
       }
       .why-slide-3 {
         background:
@@ -928,13 +938,25 @@
       /* ---- why: compact phone-mockup widget (slide 2) ----
          A trimmed, self-contained port of the "before/after" compose
          animation prototyped in aftercare-sebastian-journey.html — full
-         credit there; this keeps only the single-draft version (skips the
-         two earlier fumbled drafts) so it fits a five-second card instead
-         of a whole scrollytelling section. */
+         credit there; it fits the two fumbled drafts and the real one into
+         a single card instead of a whole scrollytelling section.
+
+         The phone's screen is laid out in fixed px for a 150x300 device,
+         so it's always built at that size and scaled as a whole
+         (--phone-scale, bigger on desktop) — resizing the box itself
+         would squash the keyboard off-screen or strand it mid-screen.
+         It's anchored to the coloured panel's bottom and hangs 14px past
+         it for a bit of depth; that overhang has to stay inside the
+         card's bottom padding, since anything further spills out of the
+         card and makes the scroll track scroll vertically. */
       .why-phone {
-        position: relative;
-        width: clamp(136px, 38vw, 172px);
-        aspect-ratio: 1 / 2;
+        position: absolute;
+        left: 50%;
+        bottom: -14px;
+        width: 150px;
+        height: 300px;
+        transform-origin: 50% 100%;
+        transform: translateX(-50%) scale(var(--phone-scale, 1));
         border-radius: 25px;
         background: linear-gradient(
           145deg,
@@ -1118,20 +1140,6 @@
         box-shadow:
           0 1px 1px rgba(0, 0, 0, 0.45),
           inset 0 1px rgba(255, 255, 255, 0.11);
-        transition:
-          background 0.08s ease,
-          color 0.08s ease,
-          transform 0.08s ease,
-          box-shadow 0.08s ease;
-      }
-      .why-keyboard i.pressed,
-      .why-keyboard-space.pressed {
-        background: rgba(45, 212, 191, 0.58);
-        color: #fff;
-        transform: translateY(1px) scale(0.96);
-        box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.2),
-          0 0 8px rgba(45, 212, 191, 0.45);
       }
       .why-keyboard-shift,
       .why-keyboard-backspace {
@@ -1667,17 +1675,24 @@
         height: 32px;
         flex-shrink: 0;
         border-radius: 50%;
-        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
-        background: rgba(var(--fg-rgb), 0.05);
+        border: 1px solid transparent;
+        background: rgba(var(--fg-rgb), 0.07);
         color: var(--white);
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        transition: background 0.2s ease;
+      }
+      .why-playpause:hover {
+        background: rgba(var(--fg-rgb), 0.14);
       }
       .why-playpause svg {
         width: 13px;
         height: 13px;
+      }
+      :root[data-contrast="high"] .why-playpause {
+        border-color: rgba(var(--fg-rgb), var(--control-border-alpha));
       }
       .why-playpause .icon-play {
         margin-left: 1px;
@@ -1695,6 +1710,128 @@
         transform: scaleX(1);
       }
 
+      /* ---- why: desktop expansion (Apple "Highlights" at wide widths) ----
+         On a phone the card is most of the screen; on desktop Apple lets
+         the track run full-bleed and grows the active card to a large,
+         centered panel with its neighbours peeking in from both edges,
+         controls in a quiet capsule underneath. Our visuals are
+         portrait-leaning (a phone, cropped photos), so rather than a
+         caption stacked over a very wide, short visual strip, the caption
+         moves to a left column and the visual takes the right — the card
+         reads as one composed panel instead of a stretched mobile card.
+         JS (slideScrollLeft) reads scroll-snap-align, so switching
+         to centered snapping here needs no separate code path. */
+      .why-controls {
+        gap: 8px;
+      }
+      .why-progress {
+        align-items: center;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: rgba(var(--fg-rgb), 0.07);
+      }
+      .why-progress-track {
+        width: 20px;
+      }
+      @media (min-width: 480px) {
+        .why-controls {
+          gap: 12px;
+        }
+        .why-progress {
+          height: 36px;
+          padding: 0 14px;
+        }
+        .why-progress-track {
+          width: 26px;
+        }
+        .why-playpause {
+          width: 36px;
+          height: 36px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .why {
+          --why-card-w: min(1120px, 78vw);
+          max-width: none;
+          padding: 0 0 8px;
+        }
+        .why .why-title {
+          text-align: center;
+        }
+        .why-track {
+          gap: 24px;
+          padding: 0 calc((100% - var(--why-card-w)) / 2);
+        }
+        .why-track:focus-visible {
+          outline-offset: -2px;
+        }
+        .why-slide,
+        .why-slide-2 {
+          flex: 0 0 var(--why-card-w);
+          scroll-snap-align: center;
+          display: grid;
+          grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+          align-items: center;
+          column-gap: clamp(32px, 4vw, 64px);
+          height: clamp(500px, 40vw, 580px);
+          min-height: 0;
+          padding: 40px 40px 40px clamp(40px, 5vw, 72px);
+          border-radius: 36px;
+        }
+        .why-slide-content {
+          margin: 0;
+        }
+        .why-slide-icon {
+          width: 48px;
+          height: 48px;
+          margin-bottom: 22px;
+        }
+        .why-slide-icon svg {
+          width: 23px;
+          height: 23px;
+        }
+        .why-slide-title {
+          font-size: clamp(1.875rem, 2.6vw, 2.5rem);
+          line-height: 1.1;
+          letter-spacing: -0.03em;
+          margin-bottom: 14px;
+        }
+        .why-slide-desc {
+          font-size: 1.0625rem;
+          line-height: 1.55;
+          max-width: 28ch;
+        }
+        .why-slide-visual {
+          height: 100%;
+          min-height: 0;
+          border-radius: 26px;
+        }
+        /* 1.4 x 300px = 420px: fills the panel at the smallest desktop
+           card height (500px card - 80px padding) without poking above it. */
+        .why-phone {
+          --phone-scale: 1.4;
+        }
+        .why-controls {
+          margin-top: 28px;
+        }
+        .why-progress {
+          height: 44px;
+          padding: 0 18px;
+        }
+        .why-progress-track {
+          width: 30px;
+        }
+        .why-playpause {
+          width: 44px;
+          height: 44px;
+        }
+        .why-playpause svg {
+          width: 15px;
+          height: 15px;
+        }
+      }
+
       /* ---- mission funnel ---- */
       .mission {
         width: 100%;
@@ -1703,12 +1840,31 @@
         padding: 24px 20px 8px;
         text-align: center;
       }
-      .mission-label {
-        font-size: 12px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--gray);
-        margin: 28px 0 20px;
+      /* ---- section headlines (Apple "Highlights." style) ----
+         One headline style for every section after the hero: large, tight,
+         full-stop terminated, with generous air above so each section
+         reads as its own chapter. Centered, except the carousel's on
+         mobile, which sits on the card's left edge (the card fills most of
+         the screen there, so a centered title would float off its axis). */
+      .section-title {
+        margin: 88px 0 32px;
+        font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3rem);
+        font-weight: 600;
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        color: var(--white);
+        text-align: left;
+      }
+      @media (min-width: 1024px) {
+        .section-title {
+          margin: 144px 0 48px;
+        }
+        .how .use-case-toggle {
+          margin-bottom: 72px;
+        }
+      }
+      .mission .section-title {
+        text-align: center;
       }
       .funnel {
         display: flex;
@@ -1760,11 +1916,6 @@
       }
       .how-title {
         text-align: center;
-        font-size: 12px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--gray);
-        margin: 28px 0 20px;
       }
       /* ---- info-tip: a small "what does this mean?" popover, CSS-only for
          the hover/focus reveal itself. Touch devices have no :hover, and
@@ -2896,7 +3047,7 @@
         display: flex;
         justify-content: center;
         gap: 6px;
-        margin: 0 auto 28px;
+        margin: 0 auto 48px;
         padding: 4px;
         background: rgba(var(--fg-rgb), 0.05);
         border: 1px solid rgba(var(--fg-rgb), 0.10);
@@ -3048,19 +3199,29 @@
         .sauna-shot {
           width: clamp(230px, 36vw, 310px);
         }
-        /* step 1's torn-card visual is too large to sit beside the text, so
-           it drops to a centered row below — but the number stays on the
-           same rail as every other step, so the connector line runs
-           straight through without jumping sideways */
+        /* step 1's visual is too large to sit beside the text, so it drops
+           to its own row below — but the number stays on the same rail as
+           every other step, so the connector line runs straight through
+           without jumping sideways. It's right-aligned like every later
+           step's visual rather than centered, so "yours" (club) or the QR
+           phone (home) sits directly above step 2's and slides straight
+           down into it instead of drifting across diagonally. */
         .step.step-featured {
           grid-template-columns: 29px 1fr;
         }
         .step.step-featured .step-visual {
           grid-column: 1 / -1;
           grid-row: 2;
-          justify-self: center;
+          justify-self: end;
           align-self: start;
           margin-top: 24px;
+        }
+        /* The torn "yours" half rests translateX(22%) right of its layout
+           box (see tear-right) and is wider than step 2's solo card, so
+           pull the pair in by the difference to land its center exactly
+           over step 2's: 22% x 168px - (168px - 150px) / 2 ≈ 26px. */
+        .step.step-featured .torn-card.large {
+          margin-right: 26px;
         }
       }
       /* ---- trust bullets: Apple-style spec grid ----
@@ -3072,33 +3233,32 @@
          desktop widths; this keeps all four cards equal instead. Each
          still gets its own subtle tinted glow, reusing the same
          radial-gradient language as the .why-slide highlight cards above,
-         so the two card patterns read as one system. */
+         so the two card patterns read as one system.
+         Like Apple's grid, it stays two-up even on phones and the grid is
+         width-capped: the captions are only a few words, so a full-width
+         single column (or 420px-wide desktop cards) is mostly empty box. */
       .trust {
         list-style: none;
         margin: 8px auto 0;
         padding: 0;
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
         width: 100%;
-      }
-      @media (min-width: 480px) {
-        .trust {
-          grid-template-columns: repeat(2, 1fr);
-        }
+        max-width: 520px;
       }
       .trust li {
         position: relative;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        text-align: left;
-        gap: 10px;
-        padding: 22px 20px;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: center;
+        gap: 6px;
+        padding: 18px 12px 20px;
         border: 1px solid rgba(var(--fg-rgb), 0.1);
-        border-radius: 22px;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        border-radius: 18px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
       }
       .trust li:nth-child(1) {
         background:
@@ -3129,21 +3289,22 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 4px;
         border-radius: 50%;
         background: rgba(var(--fg-rgb), 0.08);
         border: 1px solid rgba(var(--fg-rgb), 0.16);
         flex-shrink: 0;
       }
       .trust-icon {
-        width: 19px;
-        height: 19px;
+        width: 17px;
+        height: 17px;
         flex-shrink: 0;
         color: var(--teal);
       }
       .trust-title {
-        font-size: 1.05rem;
+        font-size: 0.9375rem;
         font-weight: 600;
         letter-spacing: -0.01em;
         color: var(--white);
@@ -3162,13 +3323,6 @@
       @media (min-width: 1024px) {
         .how {
           max-width: 900px;
-        }
-        .how-title {
-          font-size: 13px;
-          margin-bottom: 28px;
-        }
-        .mission-label {
-          font-size: 13px;
         }
         .step {
           grid-template-columns: 34px 1fr auto;
@@ -3197,6 +3351,10 @@
         .step.step-featured .step-visual {
           margin-top: 28px;
         }
+        /* same offset as above at the desktop card sizes (196px / 172px) */
+        .step.step-featured .torn-card.large {
+          margin-right: 29px;
+        }
         .torn-card.large .tc-half {
           width: 196px;
         }
@@ -3210,21 +3368,23 @@
           width: 380px;
         }
         .trust {
-          gap: 16px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 14px;
+          max-width: none;
         }
         .trust li {
-          padding: 26px 24px;
+          padding: 22px 16px 24px;
         }
         .trust-icon-badge {
-          width: 42px;
-          height: 42px;
+          width: 38px;
+          height: 38px;
         }
         .trust-icon {
-          width: 21px;
-          height: 21px;
+          width: 19px;
+          height: 19px;
         }
         .trust-title {
-          font-size: 1.125rem;
+          font-size: 1rem;
         }
         .trust-desc {
           font-size: 0.875rem;
@@ -3795,7 +3955,8 @@
         <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
       </div>
 
-      <section class="why scroll-reveal" aria-label="Why AfterCare">
+      <section class="why scroll-reveal" aria-labelledby="whyTitle">
+        <h2 class="section-title why-title" id="whyTitle">Why AfterCare.</h2>
         <div class="why-carousel" id="whyCarousel">
           <div
             class="why-track"
@@ -3856,7 +4017,7 @@
             <article
               class="why-slide why-slide-2"
               id="why-slide-1"
-              data-duration-ms="13500"
+              data-duration-ms="25000"
             >
               <div class="why-slide-content">
                 <span class="why-slide-icon">
@@ -4256,8 +4417,8 @@
         </div>
       </section>
 
-      <section class="mission scroll-reveal" aria-label="Our vision">
-        <p class="mission-label">Our vision</p>
+      <section class="mission scroll-reveal" aria-labelledby="missionTitle">
+        <h2 class="section-title" id="missionTitle">Our vision.</h2>
         <div class="funnel">
           <div class="funnel-step fs-1">Better notification</div>
           <div class="funnel-step fs-2">Earlier detection &amp; treatment</div>
@@ -4289,7 +4450,7 @@
       </a>
 
       <section class="how" id="how">
-        <div class="how-title scroll-reveal">How it works</div>
+        <h2 class="section-title how-title scroll-reveal">How it works.</h2>
         <div class="use-case-toggle" role="group" aria-label="Use case">
           <button class="uc-btn is-active" data-uc="club">Club</button>
           <button class="uc-btn" data-uc="sauna">Sauna</button>
@@ -5344,14 +5505,23 @@
             return isNaN(v) ? DEFAULT_DURATION_MS : v;
           }
 
+          // The scrollLeft at which a slide sits at its snap point — its
+          // left edge on mobile, centered in the track on desktop (see
+          // the min-width: 1024px block in the CSS).
+          function slideScrollLeft(slide) {
+            var centered =
+              getComputedStyle(slide).scrollSnapAlign.indexOf("center") !==
+              -1;
+            return centered
+              ? slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2
+              : slide.offsetLeft;
+          }
+
           function indexFromScroll() {
-            var trackLeft = track.getBoundingClientRect().left;
             var closest = 0;
             var closestDist = Infinity;
             slides.forEach(function (slide, i) {
-              var dist = Math.abs(
-                slide.getBoundingClientRect().left - trackLeft,
-              );
+              var dist = Math.abs(slideScrollLeft(slide) - track.scrollLeft);
               if (dist < closestDist) {
                 closestDist = dist;
                 closest = i;
@@ -5389,7 +5559,7 @@
           function goTo(index) {
             index = Math.max(0, Math.min(slides.length - 1, index));
             track.scrollTo({
-              left: slides[index].offsetLeft,
+              left: slideScrollLeft(slides[index]),
               behavior: reduceMotion ? "auto" : "smooth",
             });
           }
@@ -5400,7 +5570,7 @@
             var advance = function () {
               if (
                 activeIndex === 1 &&
-                slides[activeIndex].dataset.notificationSent !== "true"
+                slides[activeIndex].dataset.readyToAdvance !== "true"
               ) {
                 autoplayTimer = setTimeout(advance, 250);
                 return;
@@ -5424,14 +5594,39 @@
             { passive: true },
           );
 
-          track.addEventListener("keydown", function (e) {
-            if (e.key === "ArrowRight") {
-              e.preventDefault();
-              goTo(activeIndex + 1);
-            } else if (e.key === "ArrowLeft") {
-              e.preventDefault();
-              goTo(activeIndex - 1);
-            }
+          // Arrow-key steps wrap around, same as autoplay does after the
+          // last card. The scroll this triggers restarts the autoplay
+          // timer, so a manual step never gets cut short by the old
+          // countdown.
+          function step(dir) {
+            goTo((activeIndex + dir + slides.length) % slides.length);
+          }
+
+          // Arrow keys work whenever the carousel is on screen, not only
+          // once the track itself has focus — nothing else on this page
+          // uses left/right, so there's no page scrolling to steal them
+          // from. Form controls (e.g. the accessibility panel's radios)
+          // keep their own arrow-key behaviour.
+          var carouselOnScreen = false;
+          new IntersectionObserver(
+            function (entries) {
+              carouselOnScreen = entries[0].isIntersecting;
+            },
+            { threshold: 0.5 },
+          ).observe(carousel);
+          document.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+            if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey)
+              return;
+            var t = e.target;
+            if (
+              t.isContentEditable ||
+              (t.closest && t.closest("input, textarea, select"))
+            )
+              return;
+            if (!carouselOnScreen && !track.contains(t)) return;
+            e.preventDefault();
+            step(e.key === "ArrowRight" ? 1 : -1);
           });
 
           // Tapping the peeking edge of a neighboring card slides it into
@@ -5527,10 +5722,6 @@
           var notifyLabel = document.getElementById("whyNotifyLabel");
           var tapGhost = document.getElementById("whyTapGhost");
           var thankYouPill = document.getElementById("whyThankYouPill");
-          var keyboard = mock && mock.querySelector(".why-keyboard");
-          var keyboardKeys = keyboard
-            ? keyboard.querySelectorAll("i, .why-keyboard-space")
-            : [];
           if (
             !wrap ||
             !textEl ||
@@ -5551,15 +5742,26 @@
           var DRAFT_1 = "hey .. so I got some bad news....";
           var DRAFT_2 = "got tested positive for";
           var DRAFT_FINAL = "I don't know how to say this but . .";
-          var TYPE_MS = 58;
-          var ERASE_MS = 38;
+          // Paced like a real, hesitant thumb-typist (~10 chars/sec) rather
+          // than a machine: each keystroke varies by ±TYPE_JITTER_MS, and
+          // the typer stalls briefly after trailing off with "..".
+          var TYPE_MS = 100;
+          var TYPE_JITTER_MS = 35;
+          var CLAUSE_PAUSE_MS = 320;
+          // Backspace held down on iOS clears a word at a time, which is
+          // also far calmer to watch than a character-by-character wipe.
+          var ERASE_WORD_MS = 170;
+          // The beat of "okay, try again" before starting a new draft.
+          var RETYPE_PAUSE_MS = 700;
           // Pause after each message finishes typing so the reader has a
           // moment to actually read it before it gets erased/revealed.
-          // Grows by 100ms per message since later drafts carry more
-          // weight and take a beat longer to land.
-          var READ_PAUSE_MS_1 = 650;
-          var READ_PAUSE_MS_2 = 700;
-          var READ_PAUSE_MS_FINAL = 800;
+          // Later drafts carry more weight and take a beat longer to land.
+          var READ_PAUSE_MS_1 = 1300;
+          var READ_PAUSE_MS_2 = 1500;
+          var READ_PAUSE_MS_FINAL = 1700;
+          // How long "Sent ✓" and the thank-you line stay on screen before
+          // autoplay is allowed to move on.
+          var SENT_LINGER_MS = 2000;
 
           var timers = [];
           function addTimeout(fn, ms) {
@@ -5567,83 +5769,49 @@
             timers.push({ id: id, kind: "t" });
             return id;
           }
-          function addInterval(fn, ms) {
-            var id = setInterval(fn, ms);
-            timers.push({ id: id, kind: "i" });
-            return id;
-          }
           function clearAllTimers() {
             timers.forEach(function (t) {
-              if (t.kind === "t") clearTimeout(t.id);
-              else clearInterval(t.id);
+              clearTimeout(t.id);
             });
             timers = [];
           }
 
-          function pressKeyboardKey(value) {
-            if (!keyboardKeys.length) return;
-            var target = null;
-            var normalizedValue = value.toUpperCase();
-            if (value === " ") {
-              target = keyboard.querySelector(".why-keyboard-space");
-            } else if (value === "\b") {
-              target = keyboard.querySelector(".why-keyboard-backspace");
-            } else {
-              for (
-                var keyIndex = 0;
-                keyIndex < keyboardKeys.length;
-                keyIndex++
-              ) {
-                if (
-                  keyboardKeys[keyIndex].textContent.trim().toUpperCase() ===
-                  normalizedValue
-                ) {
-                  target = keyboardKeys[keyIndex];
-                  break;
-                }
-              }
-            }
-            if (!target) return;
-            target.classList.add("pressed");
-            addTimeout(function () {
-              target.classList.remove("pressed");
-            }, 120);
-          }
-
-          function typeText(text, speed, cb) {
+          function typeText(text, cb) {
             var i = 0;
-            var iv = addInterval(function () {
+            function step() {
               var character = text[i];
               textEl.textContent += character;
-              pressKeyboardKey(character);
               i++;
               if (i >= text.length) {
-                clearInterval(iv);
-                cb && cb();
-              }
-            }, speed);
-          }
-          function eraseText(speed, cb) {
-            var iv = addInterval(function () {
-              var cur = textEl.textContent;
-              if (!cur.length) {
-                clearInterval(iv);
                 cb && cb();
                 return;
               }
-              pressKeyboardKey("\b");
-              textEl.textContent = cur.slice(0, -1);
-            }, speed);
+              var delay = TYPE_MS + (Math.random() * 2 - 1) * TYPE_JITTER_MS;
+              if (/[.,]/.test(character) && !/[.,]/.test(text[i])) {
+                delay += CLAUSE_PAUSE_MS;
+              }
+              addTimeout(step, delay);
+            }
+            addTimeout(step, TYPE_MS);
+          }
+          function eraseText(cb) {
+            function step() {
+              var cur = textEl.textContent;
+              if (!cur.length) {
+                cb && cb();
+                return;
+              }
+              textEl.textContent = cur.replace(/\S*\s*$/, "");
+              addTimeout(step, ERASE_WORD_MS);
+            }
+            step();
           }
 
           function resetState() {
             clearAllTimers();
             handoffLaunched = false;
             textEl.textContent = "";
-            delete wrap.dataset.notificationSent;
-            for (var keyIndex = 0; keyIndex < keyboardKeys.length; keyIndex++) {
-              keyboardKeys[keyIndex].classList.remove("pressed");
-            }
+            delete wrap.dataset.readyToAdvance;
             strikeWrap.classList.remove("struck");
             bubble.classList.remove("struck");
             if (caret) caret.classList.remove("hide");
@@ -5673,13 +5841,15 @@
             addTimeout(function () {
               notifyLabel.textContent = "Sent ✓";
               notifyBtn.classList.add("sent");
-              wrap.dataset.notificationSent = "true";
               if (thankYouPill) {
                 thankYouPill.style.display = "block";
                 requestAnimationFrame(function () {
                   thankYouPill.classList.add("show");
                 });
               }
+              addTimeout(function () {
+                wrap.dataset.readyToAdvance = "true";
+              }, SENT_LINGER_MS);
             }, 800);
           }
 
@@ -5827,22 +5997,22 @@
               reveal();
               return;
             }
-            typeText(DRAFT_1, TYPE_MS, function () {
+            typeText(DRAFT_1, function () {
               addTimeout(function () {
-                eraseText(ERASE_MS, function () {
+                eraseText(function () {
                   addTimeout(function () {
-                    typeText(DRAFT_2, TYPE_MS, function () {
+                    typeText(DRAFT_2, function () {
                       addTimeout(function () {
-                        eraseText(ERASE_MS, function () {
+                        eraseText(function () {
                           addTimeout(function () {
-                            typeText(DRAFT_FINAL, TYPE_MS, function () {
+                            typeText(DRAFT_FINAL, function () {
                               addTimeout(reveal, READ_PAUSE_MS_FINAL);
                             });
-                          }, 200);
+                          }, RETYPE_PAUSE_MS);
                         });
                       }, READ_PAUSE_MS_2);
                     });
-                  }, 200);
+                  }, RETYPE_PAUSE_MS);
                 });
               }, READ_PAUSE_MS_1);
             });
