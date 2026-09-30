@@ -3114,6 +3114,11 @@
       /* ---- sauna flow: reader illustrations (steps 1-2) ---- */
       .sauna-shot {
         display: block;
+        /* The step's connector rail (.step::before) is absolutely
+           positioned, so a static <img> paints underneath it. The phone
+           mockups are position: relative and therefore sit on top;
+           match them here. */
+        position: relative;
         /* landscape artwork next to portrait phone mockups: matched on
            rendered *height* rather than width, so these steps carry the
            same visual weight as the mini-phone ones. Stacked mobile has
