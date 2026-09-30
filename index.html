@@ -390,11 +390,6 @@
         height: 1.3em;
         object-fit: contain;
         margin-top: -0.28em;
-        background: radial-gradient(
-          circle,
-          rgba(125, 71, 224, 0.45) 0%,
-          transparent 68%
-        );
         pointer-events: none;
         flex-shrink: 0;
       }
@@ -427,8 +422,8 @@
         line-height: 1;
         color: transparent;
         text-shadow:
-          0 0 18px rgba(125, 71, 224, 0.7),
-          0 0 40px rgba(45, 212, 191, 0.4);
+          0 0 10px rgba(125, 71, 224, 0.4),
+          0 0 18px rgba(45, 212, 191, 0.18);
         pointer-events: none;
       }
       .app-subtitle {
@@ -5663,7 +5658,13 @@
 
           function restartTimer() {
             clearTimeout(autoplayTimer);
-            if (reduceMotion || userPaused || document.hidden) return;
+            if (
+              reduceMotion ||
+              userPaused ||
+              document.hidden ||
+              !carouselOnScreen
+            )
+              return;
             var advance = function () {
               if (
                 activeIndex === 1 &&
@@ -5708,8 +5709,16 @@
           new IntersectionObserver(
             function (entries) {
               carouselOnScreen = entries[0].isIntersecting;
+              if (!carouselOnScreen) {
+                clearTimeout(autoplayTimer);
+                segs[activeIndex].classList.remove("is-active");
+                return;
+              }
+              if (userPaused || reduceMotion) return;
+              activateSegment(activeIndex);
+              restartTimer();
             },
-            { threshold: 0.5 },
+            { threshold: 0.35 },
           ).observe(carousel);
           document.addEventListener("keydown", function (e) {
             if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
@@ -5793,8 +5802,6 @@
             }
           });
 
-          activateSegment(0);
-          restartTimer();
         })();
 
         // ---- why: compact "before/after" compose animation (slide 2) ----
