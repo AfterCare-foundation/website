@@ -378,6 +378,8 @@
         user-select: none;
       }
       .logo-badge-text {
+        position: relative;
+        isolation: isolate;
         display: flex;
         flex-direction: column;
         gap: 3px;
@@ -388,14 +390,15 @@
         height: 1.3em;
         object-fit: contain;
         margin-top: -0.28em;
-        border-radius: 22%;
-        box-shadow: 0 0 20px rgba(125, 71, 224, 0.5);
+        background: radial-gradient(
+          circle,
+          rgba(125, 71, 224, 0.45) 0%,
+          transparent 68%
+        );
         pointer-events: none;
         flex-shrink: 0;
       }
       .logo-badge-name {
-        position: relative;
-        isolation: isolate;
         display: inline-block;
         width: fit-content;
         font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
@@ -407,17 +410,21 @@
         background-clip: text;
         line-height: 1;
       }
-      /* Glow via text-shadow, not filter: drop-shadow. Chrome on iOS
-         paints a drop-shadow's layer as a dark rectangle for a frame
-         whenever an ancestor fades in with opacity. */
-      .logo-badge-name::before {
+      /* Glow via a text-shadow copy behind the name, not filter:
+         drop-shadow — iOS WebKit paints a drop-shadow's layer as a dark
+         rectangle for a frame whenever an ancestor fades in. It lives on
+         the wrapper, not the name, because background-clip: text would
+         clip it too. */
+      .logo-badge-text::before {
         content: "AfterCare";
         position: absolute;
         left: 0;
         top: 0;
         z-index: -1;
-        background: none;
-        -webkit-text-fill-color: transparent;
+        font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1;
         color: transparent;
         text-shadow:
           0 0 18px rgba(125, 71, 224, 0.7),
@@ -2135,10 +2142,10 @@
         justify-content: center;
         flex-shrink: 0;
         cursor: pointer;
-        box-shadow: 0 10px 28px rgba(29, 78, 216, 0.35);
+        filter: drop-shadow(0 10px 28px rgba(29, 78, 216, 0.35));
         perspective: 800px;
         transform-style: preserve-3d;
-        transition: opacity 0.15s ease;
+        transition: filter 0.15s ease;
         /* torn-edge silhouettes: flat (intact) and perforated-tear clip
            paths for each half, referenced by the tear keyframes below. Real
            perforation tears leave a fine, closely-spaced scallop, not a
@@ -2232,7 +2239,7 @@
         );
       }
       .torn-card:not(.tearing):active {
-        opacity: 0.9;
+        filter: drop-shadow(0 10px 28px rgba(29, 78, 216, 0.35)) brightness(0.9);
       }
       .torn-card.large {
         display: flex;
