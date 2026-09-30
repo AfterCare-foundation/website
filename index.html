@@ -697,7 +697,6 @@
         font-weight: 600;
         letter-spacing: -0.02em;
         color: rgba(var(--fg-rgb), 0.85);
-        max-width: 16ch;
         margin: 0;
         /* grid row 1, col 2 */
       }
@@ -1824,6 +1823,7 @@
           line-height: 1.1;
           letter-spacing: -0.03em;
           margin-bottom: 14px;
+          max-width: 14ch;
         }
         .why-slide-desc {
           font-size: 1.0625rem;
@@ -4264,6 +4264,7 @@
                   decoding="async"
                   width="900"
                   height="1350"
+                  style="object-position: 50% 20%"
                 />
                 <div class="why-notif" aria-hidden="true">
                   <span class="why-notif-icon">
@@ -6123,20 +6124,7 @@
           };
           var scheduleBubbleFades = function () {
             clearFadeTimers();
-            // Fade each preceding bubble as the next one begins to appear.
-            [
-              [".why-speech-1", 3100],
-              [".why-speech-2", 5400],
-              [".why-speech-3", 6500],
-            ].forEach(function (entry) {
-              var bubble = wrap.querySelector(entry[0]);
-              if (!bubble) return;
-              fadeTimers.push(
-                setTimeout(function () {
-                  bubble.classList.add("is-faded");
-                }, entry[1]),
-              );
-            });
+            // All bubbles stay visible — last frame shows all three.
           };
 
           if (reduceMotion || !("IntersectionObserver" in window)) {
