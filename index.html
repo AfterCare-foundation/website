@@ -3194,12 +3194,12 @@
           scroll-snap-align: center;
           scroll-margin-top: 24px;
         }
-        /* The down-arrow links to #how. Without a snap point on the
-           section itself, proximity snapping continues to the first
-           step and the "How it works." title scrolls off the top. */
-        #how {
+        /* Snap target for the #how link. On the section itself, a snap
+           stop covered every step and the browser would refuse to scroll
+           to the title. The heading is the stop, so the first step
+           doesn't pull the title off screen. */
+        #how .how-title {
           scroll-snap-align: start;
-          scroll-snap-stop: always;
           scroll-margin-top: 16px;
         }
       }
@@ -5065,6 +5065,58 @@
         var reduceMotion =
           window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
           document.documentElement.dataset.motion === "reduced";
+
+        // history.scrollRestoration is "manual" (set in <head>), which
+        // stops the browser restoring an old scroll position — and, in
+        // Chrome on iOS, also skips the initial jump to #how. The hero
+        // mockup then finishes loading and shifts the layout, so even a
+        // jump that did happen no longer lands on the title. Re-apply it
+        // once layout has settled.
+        (function () {
+          var title = document.querySelector("#how .how-title");
+          if (!title) return;
+          var root = document.documentElement;
+          function scrollToHow(smooth) {
+            var previous = root.style.scrollSnapType;
+            root.style.scrollSnapType = "none";
+            title.scrollIntoView({
+              behavior: smooth && !reduceMotion ? "smooth" : "auto",
+              block: "start",
+            });
+            window.setTimeout(
+              function () {
+                root.style.scrollSnapType = previous;
+              },
+              smooth && !reduceMotion ? 700 : 60,
+            );
+          }
+          document.querySelectorAll('a[href="#how"]').forEach(function (link) {
+            link.addEventListener("click", function (e) {
+              if (
+                e.defaultPrevented ||
+                e.button !== 0 ||
+                e.metaKey ||
+                e.ctrlKey ||
+                e.shiftKey ||
+                e.altKey
+              )
+                return;
+              e.preventDefault();
+              if (location.hash !== "#how") {
+                history.pushState(null, "", "#how");
+              }
+              scrollToHow(true);
+            });
+          });
+          window.addEventListener("hashchange", function () {
+            if (location.hash === "#how") scrollToHow(true);
+          });
+          function fromHash() {
+            if (location.hash === "#how") scrollToHow(false);
+          }
+          if (document.readyState === "complete") fromHash();
+          else window.addEventListener("load", fromHash);
+        })();
 
         var glow = document.getElementById("cursorGlow");
         if (glow) {
