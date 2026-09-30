@@ -3194,6 +3194,14 @@
           scroll-snap-align: center;
           scroll-margin-top: 24px;
         }
+        /* The down-arrow links to #how. Without a snap point on the
+           section itself, proximity snapping continues to the first
+           step and the "How it works." title scrolls off the top. */
+        #how {
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
+          scroll-margin-top: 16px;
+        }
       }
       .step:not(:last-child)::before {
         content: "";
