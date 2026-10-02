@@ -378,8 +378,6 @@
         user-select: none;
       }
       .logo-badge-text {
-        position: relative;
-        isolation: isolate;
         display: flex;
         flex-direction: column;
         gap: 3px;
@@ -404,27 +402,6 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
         line-height: 1;
-      }
-      /* Glow via a text-shadow copy behind the name, not filter:
-         drop-shadow — iOS WebKit paints a drop-shadow's layer as a dark
-         rectangle for a frame whenever an ancestor fades in. It lives on
-         the wrapper, not the name, because background-clip: text would
-         clip it too. */
-      .logo-badge-text::before {
-        content: "AfterCare";
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: -1;
-        font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
-        font-weight: 600;
-        letter-spacing: -0.03em;
-        line-height: 1;
-        color: transparent;
-        text-shadow:
-          0 0 10px rgba(125, 71, 224, 0.4),
-          0 0 18px rgba(45, 212, 191, 0.18);
-        pointer-events: none;
       }
       .app-subtitle {
         font-size: 0.9375rem;
