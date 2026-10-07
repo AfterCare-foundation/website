@@ -641,14 +641,13 @@
           flex-basis: 78%;
         }
       }
-      /* Blue-indigo on the text side deepening to plum around the photo, with
-         a faint rose light on the photo's side, so the wine-lit photo reads
-         as set into the card rather than placed on a blue one. */
+      /* Brand-blue card like the others; the only nod to the wine-lit photo
+         is a faint rose light on its side of the card. */
       .why-slide-1 {
         background:
-          radial-gradient(75% 95% at 80% 55%, rgba(224, 82, 122, 0.14), transparent 70%),
-          radial-gradient(130% 90% at 15% -10%, rgba(110, 128, 252, 0.33), transparent 55%),
-          linear-gradient(137deg, #1b1f54 0%, #1d1741 48%, #2c1028 100%);
+          radial-gradient(75% 95% at 80% 55%, rgba(224, 82, 122, 0.24), transparent 70%),
+          radial-gradient(130% 90% at 15% -10%, rgba(96, 165, 250, 0.35), transparent 55%),
+          linear-gradient(160deg, #16224a 0%, #0a0c18 75%);
       }
       .why-slide-2 {
         background:
@@ -668,7 +667,7 @@
           linear-gradient(160deg, #2a6f94 0%, #0b1a28 72%);
       }
       .why-slide-1 .why-slide-icon svg {
-        color: #b7bcff;
+        color: #9cc0ff;
       }
       .why-slide-2 .why-slide-icon svg {
         color: #5eead4;
@@ -748,11 +747,6 @@
           rgba(224, 82, 122, 0.16),
           rgba(0, 0, 0, 0.3) 70%
         );
-        /* hairline plus a faint rose spill below, as if the photo lights the
-           card — kept low so the card doesn't glow more than its neighbours */
-        box-shadow:
-          0 0 0 1px rgba(255, 170, 200, 0.06),
-          0 14px 44px -16px rgba(224, 82, 122, 0.12);
       }
       .why-slide-2 .why-slide-visual {
         isolation: isolate;
