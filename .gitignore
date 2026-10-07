@@ -1,2 +1,6 @@
 .DS_Store
 *.pyc
+
+# Local-only: internal notes and editor settings
+notes/
+.vscode/
