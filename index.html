@@ -641,10 +641,14 @@
           flex-basis: 78%;
         }
       }
+      /* Blue-indigo on the text side deepening to plum around the photo, with
+         a faint rose light on the photo's side, so the wine-lit photo reads
+         as set into the card rather than placed on a blue one. */
       .why-slide-1 {
         background:
-          radial-gradient(130% 90% at 15% -10%, rgba(96, 165, 250, 0.35), transparent 55%),
-          linear-gradient(160deg, #16224a 0%, #0a0a10 70%);
+          radial-gradient(75% 95% at 80% 55%, rgba(224, 82, 122, 0.14), transparent 70%),
+          radial-gradient(130% 90% at 15% -10%, rgba(110, 128, 252, 0.33), transparent 55%),
+          linear-gradient(137deg, #1b1f54 0%, #1d1741 48%, #2c1028 100%);
       }
       .why-slide-2 {
         background:
@@ -664,7 +668,7 @@
           linear-gradient(160deg, #2a6f94 0%, #0b1a28 72%);
       }
       .why-slide-1 .why-slide-icon svg {
-        color: #7fb2ff;
+        color: #b7bcff;
       }
       .why-slide-2 .why-slide-icon svg {
         color: #5eead4;
@@ -674,11 +678,11 @@
       }
       .why-slide-4 {
         background:
-          radial-gradient(130% 90% at 85% -10%, rgba(125, 71, 224, 0.5), transparent 60%),
-          linear-gradient(200deg, #33207a 0%, #120d26 75%);
+          radial-gradient(130% 90% at 85% -10%, rgba(59, 110, 245, 0.42), transparent 60%),
+          linear-gradient(200deg, #15296b 0%, #0a0e22 75%);
       }
       .why-slide-4 .why-slide-icon svg {
-        color: #b79cf5;
+        color: #8fb4ff;
       }
       .why-slide-content {
         flex: 0 0 auto;
@@ -741,9 +745,13 @@
       .why-slide-1 .why-slide-visual {
         background: radial-gradient(
           120% 120% at 50% 30%,
-          rgba(96, 165, 250, 0.16),
+          rgba(224, 82, 122, 0.16),
           rgba(0, 0, 0, 0.3) 70%
         );
+        /* hairline plus a soft rose spill below, as if the photo lights the card */
+        box-shadow:
+          0 0 0 1px rgba(255, 170, 200, 0.09),
+          0 18px 60px -12px rgba(224, 82, 122, 0.28);
       }
       .why-slide-2 .why-slide-visual {
         isolation: isolate;
@@ -781,8 +789,21 @@
       .why-slide-4 .why-slide-visual {
         background: radial-gradient(
           120% 120% at 50% 30%,
-          rgba(125, 71, 224, 0.16),
+          rgba(59, 110, 245, 0.16),
           rgba(0, 0, 0, 0.3) 70%
+        );
+      }
+      /* Soft vignette over the photo (under the chat bubbles, which sit at
+         z-index 2) so the flat studio backdrop gets some depth. */
+      .why-slide-4 .why-slide-visual::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          90% 80% at 55% 45%,
+          transparent 40%,
+          rgba(4, 6, 16, 0.5) 100%
         );
       }
       .why-slide-photo {
@@ -791,6 +812,13 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+      /* The Stay Informed slide wraps its photo in a <picture> so desktop
+         can swap in a wider crop (see the HTML comment there); the wrapper
+         itself must stay transparent to layout for the absolutely-
+         positioned img inside to behave exactly as a bare img would. */
+      .why-slide-visual picture {
+        display: contents;
       }
 
       /* ---- why: floating notification bubble (slide 3) ----
@@ -847,7 +875,7 @@
       /* ---- why: iMessage-style chat bubbles over the fist-bump photo (slide 4) ----
          Hand-placed against why-healthier-scene.webp's specific
          composition (a vertical stack of fist bumps against a plain
-         magenta background) rather than derived generically, so each
+         backdrop, recoloured navy) rather than derived generically, so each
          bubble sits in the open background next to the arm it "speaks"
          for instead of covering a hand. Styled after real iOS Messages
          bubbles (rounded body + a trailing two-dot tail, blue for
@@ -1861,8 +1889,11 @@
         .why-phone {
           --phone-scale: 1.4;
         }
-        /* Scale up the notification widget to match the larger visual panel */
+        /* Scale up the notification widget to match the larger visual panel,
+           and pull it in from the edge so it and the banana read as one
+           centred group (the wide photo leaves matching room on the left). */
         .why-notif {
+          right: 10%;
           padding: 10px 12px;
           gap: 7px;
           border-radius: 16px;
@@ -4008,6 +4039,9 @@
           />
           <span class="logo-badge-name">AfterCare</span>
         </div>
+        <p class="app-subtitle reveal" style="--d: 1">
+          Anonymous STI notification app
+        </p>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3; display: none" aria-hidden="true">
           Stay informed.<br />
@@ -4045,9 +4079,6 @@
         <h2 class="section-title why-title" id="whyTitle">Why AfterCare.</h2>
         <div class="why-carousel" id="whyCarousel">
           <div
-        <p class="app-subtitle reveal" style="--d: 1">
-          Anonymous STI notification app
-        </p>
             class="why-track"
             id="whyTrack"
             tabindex="0"
@@ -4092,7 +4123,7 @@
               <div class="why-slide-visual">
                 <img
                   class="why-slide-photo"
-                  src="visual-assets/why-no-contact.webp"
+                  src="visual-assets/why-no-contact-wine.webp"
                   alt=""
                   loading="lazy"
                   decoding="async"
@@ -4294,16 +4325,29 @@
                 </p>
               </div>
               <div class="why-slide-visual">
-                <img
-                  class="why-slide-photo"
-                  src="visual-assets/why-stay-informed-remap.webp"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  width="900"
-                  height="1350"
-                  style="object-position: 50% 20%"
-                />
+                <picture>
+                  <!-- Desktop panel is landscape; this source is the same
+                       photo with its flat studio-blue backdrop extended to
+                       match (made with tools/extend_backdrop.py — no banana
+                       content added or removed), so cover fills the panel
+                       edge to edge without cropping the banana or needing a
+                       narrower, non-uniform panel. The banana sits left of
+                       centre with room on the right for .why-notif. -->
+                  <source
+                    media="(min-width: 1024px)"
+                    srcset="visual-assets/why-stay-informed-remap-wide.webp"
+                  />
+                  <img
+                    class="why-slide-photo"
+                    src="visual-assets/why-stay-informed-remap.webp"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="900"
+                    height="1350"
+                    style="object-position: 50% 20%"
+                  />
+                </picture>
                 <div class="why-notif" aria-hidden="true">
                   <span class="why-notif-icon">
                     <svg
@@ -4388,7 +4432,7 @@
               <div class="why-slide-visual">
                 <img
                   class="why-slide-photo"
-                  src="visual-assets/why-healthier-scene-remap.webp"
+                  src="visual-assets/why-healthier-scene-navy.webp"
                   alt=""
                   loading="lazy"
                   decoding="async"

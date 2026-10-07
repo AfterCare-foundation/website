@@ -31,8 +31,9 @@ Arguments
 
 Presets used on the site (run from the repo root):
 
-  # Healthier scene: crimson -> purple
-  python tools/recolor.py visual-assets/why-healthier-scene.webp out.webp --from-hue 344 --to-hue 262 --value 0.85 --sat 0.8 --width 30
+  # Healthier scene: crimson -> navy (narrow window and edge: at 30/6 the
+  # mask eats into the reddish shadows between the fingers)
+  python tools/recolor.py visual-assets/why-healthier-scene.webp visual-assets/why-healthier-scene-navy.webp --from-hue 344 --to-hue 224 --value 0.55 --sat 0.85 --width 16 --edge 2
 
 Tip: always zoom into the edges of the result (200-400%) and check for
 leftover fringes before shipping. If a thin line of the old color remains,
@@ -119,11 +120,12 @@ def main():
         wide = smoothstep((a.width * 1.7 - np.abs(dh)) / (fade * 1.2)) * smoothstep((sat - 0.12) / 0.2)
         weight = np.maximum(core, wide * zone)
 
-    new_hue = (hue + (a.to_hue - a.from_hue) * weight) % 360
-    new_sat = np.clip(sat * (1 - weight + weight * a.sat), 0, 1)
-    new_val = val * (1 - weight + weight * a.value)
-
-    out = np.clip(hsv_to_rgb(new_hue, new_sat, new_val), 0, 1)
+    # Recolor fully, then cross-fade in RGB by weight. Fading the hue itself
+    # sent half-matched edge pixels through the hues in between (crimson ->
+    # navy passes through violet), which showed up as a halo around the subject.
+    full = hsv_to_rgb((hue + a.to_hue - a.from_hue) % 360, np.clip(sat * a.sat, 0, 1), val * a.value)
+    w = weight[..., None]
+    out = np.clip(rgb * (1 - w) + full * w, 0, 1)
     Image.fromarray((out * 255 + 0.5).astype(np.uint8)).save(a.dst, quality=a.quality, method=6)
     print("wrote", a.dst)
 
