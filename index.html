@@ -370,24 +370,18 @@
       .logo-badge {
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 3px;
         flex-shrink: 0;
         font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
         user-select: none;
-      }
-      .logo-badge-text {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        text-align: left;
       }
       .logo-badge img {
         width: 1.3em;
         height: 1.3em;
         object-fit: contain;
-        margin-top: -0.28em;
         pointer-events: none;
         flex-shrink: 0;
       }
@@ -406,7 +400,7 @@
       .app-subtitle {
         font-size: 0.9375rem;
         color: rgba(var(--fg-rgb), 0.75);
-        margin: 0;
+        margin: 0 0 20px;
         letter-spacing: 0.01em;
       }
       .eyebrow {
@@ -4006,10 +4000,7 @@
             height="48"
             decoding="async"
           />
-          <div class="logo-badge-text">
-            <span class="logo-badge-name">AfterCare</span>
-            <span class="app-subtitle">Anonymous STI notification app</span>
-          </div>
+          <span class="logo-badge-name">AfterCare</span>
         </div>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3; display: none" aria-hidden="true">
@@ -4048,6 +4039,9 @@
         <h2 class="section-title why-title" id="whyTitle">Why AfterCare.</h2>
         <div class="why-carousel" id="whyCarousel">
           <div
+        <p class="app-subtitle reveal" style="--d: 1">
+          Anonymous STI notification app
+        </p>
             class="why-track"
             id="whyTrack"
             tabindex="0"
