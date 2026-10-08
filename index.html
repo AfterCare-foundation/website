@@ -2751,6 +2751,13 @@
         color: var(--gray);
         line-height: 1.35;
       }
+      /* Mirrors the app's "Private by design" panel under the scanner. */
+      .mp-sub-private b {
+        display: block;
+        margin-bottom: 2px;
+        color: var(--white);
+        font-weight: 600;
+      }
       @media (prefers-reduced-motion: reduce) {
         .mp-connected .mp-label,
         .mp-connected .mp-heart,
@@ -2952,10 +2959,9 @@
       }
       .mp-frame {
         position: relative;
-        width: 56%;
+        width: 46%;
         aspect-ratio: 1;
-        margin: 3% 0;
-        overflow: hidden;
+        margin: 1% 0;
       }
       /* Inset from the corner brackets, not flush with the frame — sits
          behind them and the scanline (first in DOM, so both paint over
@@ -3067,7 +3073,6 @@
         0%,
         100% {
           opacity: 1;
-          transform: scale(1);
           box-shadow: 0 0 0 rgba(45, 212, 191, 0);
         }
         15% {
@@ -3087,12 +3092,10 @@
         }
         80% {
           opacity: 1;
-          transform: scale(1.15);
           box-shadow: 0 0 6px 1px rgba(45, 212, 191, 0.9);
         }
         100% {
           opacity: 1;
-          transform: scale(1);
           box-shadow: 0 0 0 rgba(45, 212, 191, 0);
         }
       }
@@ -4807,6 +4810,10 @@
                     ><span class="mp-corner v br"></span>
                     <span class="mp-scanline"></span>
                   </div>
+                  <span class="mp-sub mp-sub-private"
+                    ><b>Private by design</b>Only a hash of the card leaves this
+                    phone.</span
+                  >
                 </div>
               </div>
             </div>
