@@ -2751,29 +2751,6 @@
         color: var(--gray);
         line-height: 1.35;
       }
-      /* The scan screen stacks label + viewfinder + note in a phone that is
-         only ~130px wide on small screens, so it gets tighter spacing,
-         clears the status bar, and keeps text small enough to stay inside
-         the phone even when the visitor's system text size is enlarged. */
-      .mp-screen-scan {
-        gap: 4%;
-        padding: 15% 7% 7%;
-      }
-      .mp-screen-scan .mp-label {
-        max-width: none;
-      }
-      .mp-screen-scan .mp-frame {
-        width: 38%;
-        margin: 0;
-        flex-shrink: 0;
-      }
-      /* Mirrors the app's "Private by design" panel under the scanner. */
-      .mp-sub-private b {
-        display: block;
-        margin-bottom: 2px;
-        color: var(--white);
-        font-weight: 600;
-      }
       @media (prefers-reduced-motion: reduce) {
         .mp-connected .mp-label,
         .mp-connected .mp-heart,
@@ -2975,9 +2952,9 @@
       }
       .mp-frame {
         position: relative;
-        width: 46%;
+        width: 56%;
         aspect-ratio: 1;
-        margin: 1% 0;
+        margin: 3% 0;
       }
       /* Inset from the corner brackets, not flush with the frame — sits
          behind them and the scanline (first in DOM, so both paint over
@@ -4804,7 +4781,7 @@
             <div class="step-visual">
               <div class="mini-phone" aria-hidden="true">
                 <div class="mp-bar"><span class="mp-island"></span></div>
-                <div class="mp-screen mp-screen-scan">
+                <div class="mp-screen">
                   <span class="mp-label">Scan the code</span>
                   <div class="mp-frame">
                     <img
@@ -4826,10 +4803,7 @@
                     ><span class="mp-corner v br"></span>
                     <span class="mp-scanline"></span>
                   </div>
-                  <span class="mp-sub mp-sub-private"
-                    ><b>Private by design</b>Only a hash of the card leaves this
-                    phone.</span
-                  >
+                  <span class="mp-sub">Only a hash of the card leaves this phone.</span>
                 </div>
               </div>
             </div>
