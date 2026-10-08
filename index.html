@@ -2751,6 +2751,22 @@
         color: var(--gray);
         line-height: 1.35;
       }
+      /* The scan screen stacks label + viewfinder + note in a phone that is
+         only ~130px wide on small screens, so it gets tighter spacing,
+         clears the status bar, and keeps text small enough to stay inside
+         the phone even when the visitor's system text size is enlarged. */
+      .mp-screen-scan {
+        gap: 4%;
+        padding: 15% 7% 7%;
+      }
+      .mp-screen-scan .mp-label {
+        max-width: none;
+      }
+      .mp-screen-scan .mp-frame {
+        width: 38%;
+        margin: 0;
+        flex-shrink: 0;
+      }
       /* Mirrors the app's "Private by design" panel under the scanner. */
       .mp-sub-private b {
         display: block;
@@ -4788,7 +4804,7 @@
             <div class="step-visual">
               <div class="mini-phone" aria-hidden="true">
                 <div class="mp-bar"><span class="mp-island"></span></div>
-                <div class="mp-screen">
+                <div class="mp-screen mp-screen-scan">
                   <span class="mp-label">Scan the code</span>
                   <div class="mp-frame">
                     <img
