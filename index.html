@@ -629,8 +629,8 @@
         display: block;
         width: auto;
         height: auto;
-        max-width: min(300px, 68vw);
-        max-height: 48vh;
+        max-width: min(330px, 78vw);
+        max-height: 58vh;
         animation: float 7s ease-in-out infinite;
       }
       @media (min-width: 1024px) {
@@ -3055,7 +3055,6 @@
         width: 56%;
         aspect-ratio: 1;
         margin: 3% 0;
-        overflow: hidden;
       }
       /* Inset from the corner brackets, not flush with the frame — sits
          behind them and the scanline (first in DOM, so both paint over
@@ -3167,7 +3166,6 @@
         0%,
         100% {
           opacity: 1;
-          transform: scale(1);
           box-shadow: 0 0 0 rgba(45, 212, 191, 0);
         }
         15% {
@@ -3187,12 +3185,10 @@
         }
         80% {
           opacity: 1;
-          transform: scale(1.15);
           box-shadow: 0 0 6px 1px rgba(45, 212, 191, 0.9);
         }
         100% {
           opacity: 1;
-          transform: scale(1);
           box-shadow: 0 0 0 rgba(45, 212, 191, 0);
         }
       }
@@ -4918,7 +4914,7 @@
                     ><span class="mp-corner v br"></span>
                     <span class="mp-scanline"></span>
                   </div>
-                  <span class="mp-sub">Align the QR within the frame</span>
+                  <span class="mp-sub">Only a hash of the card leaves this phone.</span>
                 </div>
               </div>
             </div>
@@ -5645,10 +5641,12 @@
           var activate = function (stepEl) {
             stepEl.classList.add("content-active");
           };
-          document.querySelectorAll(".step").forEach(function (stepEl) {
-            if (!stepEl.querySelector(".mini-phone")) {
-              return;
+          var arm = function (stepEl) {
+            if (stepEl._mpCleanup) {
+              stepEl._mpCleanup();
+              stepEl._mpCleanup = null;
             }
+            stepEl.classList.remove("content-active");
             if (reduceMotion) {
               activate(stepEl);
               return;
@@ -5664,6 +5662,7 @@
             // the more responsive IntersectionObserver path instead, even
             // on mobile snap.
             var isNotifStep = !!stepEl.querySelector(".mp-notif");
+            var isScanStep = !!stepEl.querySelector(".mp-scanline");
             if (isMobileSnap && supportsScrollEnd && !isNotifStep) {
               if (isStepCentered(stepEl)) {
                 activate(stepEl);
@@ -5675,6 +5674,9 @@
                   }
                 };
                 window.addEventListener("scrollend", onScrollEnd);
+                stepEl._mpCleanup = function () {
+                  window.removeEventListener("scrollend", onScrollEnd);
+                };
               }
             } else if ("IntersectionObserver" in window) {
               // Not the .scroll-reveal fade's own 15% threshold — that's
@@ -5690,12 +5692,34 @@
                     }
                   });
                 },
-                { threshold: 0.5 },
+                // The scan step's whole show is the phone itself, so wait
+                // until the phone is (almost) fully on screen rather than
+                // half of the taller step, which can fire while the phone
+                // is still below the fold.
+                { threshold: isScanStep ? 0.9 : 0.5 },
               );
-              stepIo.observe(stepEl);
+              stepIo.observe(
+                isScanStep ? stepEl.querySelector(".mini-phone") : stepEl,
+              );
+              stepEl._mpCleanup = function () {
+                stepIo.disconnect();
+              };
             } else {
               activate(stepEl);
             }
+          };
+          var phoneSteps = Array.prototype.filter.call(
+            document.querySelectorAll(".step"),
+            function (stepEl) {
+              return !!stepEl.querySelector(".mini-phone");
+            },
+          );
+          phoneSteps.forEach(arm);
+          // Switching use case (Club / Sauna / Home) reshuffles which steps
+          // are visible, so each flow's animations start over and wait to
+          // be reached again instead of reusing a play from the other flow.
+          document.addEventListener("usecasechange", function () {
+            phoneSteps.forEach(arm);
           });
         };
         if (document.readyState === "complete") {
@@ -6583,6 +6607,7 @@
             });
             btn.classList.add("is-active");
             applyUc(btn.dataset.uc);
+            document.dispatchEvent(new Event("usecasechange"));
           });
         });
 
