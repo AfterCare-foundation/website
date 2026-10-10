@@ -361,21 +361,27 @@
         font-size: 0.8125rem;
         font-style: italic;
         letter-spacing: 0.01em;
-        color: rgba(var(--fg-rgb), 0.7);
+        color: rgba(var(--fg-rgb), 0.55);
         margin: 0 0 22px;
       }
-      /* The logotype is the page's h1 in practice, so it sits on the same
-         size scale as .section-title ("Why AfterCare." etc.) — keep the
-         two clamps in step if either changes. */
+      /* Logo lockup: the devil icon on the left, wordmark and subtitle as
+         two rows on the right, together exactly as tall as the icon
+         (1.3em). Everything is sized in em off --logo, so the lockup
+         scales as one piece; the subtitle font is tuned so it spans the
+         wordmark's width. Closed off below with a hairline. */
       .logo-badge {
+        --logo: clamp(2.875rem, 1.9rem + 3.4vw, 4rem);
+        position: relative;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        margin-bottom: 3px;
+        gap: 0.14em;
+        padding-bottom: 14px;
+        margin-bottom: 18px;
         flex-shrink: 0;
-        font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
+        font-size: var(--logo);
+        line-height: 1;
         user-select: none;
       }
       .logo-badge img {
@@ -385,23 +391,89 @@
         pointer-events: none;
         flex-shrink: 0;
       }
+      .logo-badge-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 1.3em;
+      }
       .logo-badge-name {
-        display: inline-block;
+        display: block;
         width: fit-content;
-        font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem);
+        font-size: 0.85em;
         font-weight: 600;
         letter-spacing: -0.03em;
         background: linear-gradient(90deg, #7d47e0 0%, #2dd4bf 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        line-height: 1;
+        line-height: 0.92;
       }
       .app-subtitle {
-        font-size: 0.9375rem;
-        color: rgba(var(--fg-rgb), 0.75);
-        margin: 0 0 20px;
+        font-size: 0.252em;
+        line-height: 1.2;
+        color: rgba(var(--fg-rgb), 0.62);
         letter-spacing: 0.01em;
+        white-space: nowrap;
+        margin-top: 0.22em;
+      }
+      /* Hairline under the lockup. ::before is the line itself (brand
+         gradient, fading out at both ends) plus a wide, faint bloom that
+         lifts its centre; ::after is a short soft core on top. No hard
+         edges anywhere — everything fades into the line. */
+      .logo-badge::before,
+      .logo-badge::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .logo-badge::before {
+        width: calc(100% + 40px);
+        height: 15px;
+        bottom: -7px;
+        background:
+          linear-gradient(
+              90deg,
+              rgba(125, 71, 224, 0),
+              rgba(125, 71, 224, 0.6) 22%,
+              rgba(45, 212, 191, 0.6) 78%,
+              rgba(45, 212, 191, 0)
+            )
+            center / 100% 1px no-repeat,
+          linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0),
+              rgba(255, 255, 255, 0.4) 50%,
+              rgba(255, 255, 255, 0)
+            )
+            center / min(300px, 100%) 1px no-repeat,
+          radial-gradient(
+              ellipse 50% 50% at center,
+              rgba(255, 255, 255, 0.09),
+              rgba(255, 255, 255, 0) 70%
+            )
+            center / min(300px, 100%) 100% no-repeat;
+      }
+      /* Overhang past the lockup: generous on phones, tighter on desktop. */
+      @media (min-width: 601px) {
+        .logo-badge::before {
+          width: calc(100% + 16px);
+        }
+      }
+      .logo-badge::after {
+        width: 72px;
+        height: 2px;
+        bottom: -1px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.66) 42%,
+          rgba(255, 255, 255, 0.66) 58%,
+          rgba(255, 255, 255, 0)
+        );
+        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.28));
       }
       .eyebrow {
         display: inline-block;
@@ -414,6 +486,8 @@
         border-radius: 999px;
         padding: 6px 14px;
         margin-bottom: 24px;
+        margin-top: 20px;
+
       }
       h1 {
         font-size: clamp(1.35rem, 0.65rem + 2.5vw, 2.2rem);
@@ -445,6 +519,31 @@
         line-height: 1.55;
         max-width: 520px;
         margin: 0 0 24px;
+        text-wrap: balance;
+      }
+      /* The chart link exists twice: the full phrase for wide screens, and
+         "record highs" alone for phones, where the rest of the phrase drops
+         to line two outside the link. A <button> can't hold a line break
+         across browsers, hence two buttons instead of one. */
+      .sub .link-narrow {
+        display: none;
+      }
+      /* On narrow screens the logotype is ~270px wide; keep the body copy
+         close to that measure so the column reads as one shape. */
+      @media (max-width: 600px) {
+        .sub {
+          max-width: 25em;
+        }
+        .sub .link-wide,
+        .desk-br {
+          display: none;
+        }
+        .sub .link-narrow {
+          display: inline;
+        }
+        .sub button.link-narrow {
+          display: inline-block;
+        }
       }
       :root[data-contrast="high"] .kicker,
       :root[data-contrast="high"] .sub {
@@ -506,8 +605,9 @@
       .mockup {
         position: relative;
         display: inline-block;
-        margin-top: 8px;
+        margin-top:   70px;
       }
+
       .mockup::before {
         content: "";
         position: absolute;
@@ -4032,27 +4132,37 @@
             height="48"
             decoding="async"
           />
-          <span class="logo-badge-name">AfterCare</span>
+          <div class="logo-badge-text">
+            <span class="logo-badge-name">AfterCare</span>
+            <span class="app-subtitle">Anonymous STI notification app</span>
+          </div>
         </div>
-        <p class="app-subtitle reveal" style="--d: 1">
-          Anonymous STI notification app
-        </p>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3; display: none" aria-hidden="true">
           Stay informed.<br />
           <span class="h1-sub">No contact needed,</span><br />
           <span class="h1-sub h1-teal">no message to write.</span>
         </h1>
-        <p class="sub reveal" style="--d: 5">
+        <p class="sub reveal" style="--d: 5; margin-top: 20px">
           Bacterial STIs are at
           <button
-            class="footer-origin-link stats-chart-btn"
+            class="footer-origin-link stats-chart-btn link-wide"
             type="button"
             aria-haspopup="dialog"
             aria-controls="chartOverlay"
           >
             record highs across Europe</button
-          >.<br />Let's fight them together!<br /><br />Close the gaps in STI
+          ><button
+            class="footer-origin-link stats-chart-btn link-narrow"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="chartOverlay"
+          >
+            record highs</button
+          ><span class="link-narrow"><br />across Europe</span>.<br
+            class="desk-br"
+          />
+          Let's fight them together!<br /><br />Close the gaps in STI
           notification with AfterCare.
         </p>
 
@@ -4313,7 +4423,7 @@
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                   </svg>
                 </span>
-                <h3 class="why-slide-title">Stay<br>informed</h3>
+                <h3 class="why-slide-title">Stay<br />informed</h3>
                 <p class="why-slide-desc">
                   Follow your STI exposure to take care of your health without
                   delays.
@@ -4359,7 +4469,8 @@
                     </svg>
                   </span>
                   <span class="why-notif-text"
-                    ><b>AfterCare</b>New exposure alert —<br />tap to check in.</span
+                    ><b>AfterCare</b>New exposure alert —<br />tap to check
+                    in.</span
                   >
                 </div>
               </div>
@@ -4919,7 +5030,7 @@
         </ol>
         <p
           class="share-tagline scroll-reveal space"
-          style="--sd: 6; margin: 10px; margin-top:20px"
+          style="--sd: 6; margin: 10px; margin-top: 20px"
         >
           Take care with AfterCare 💜
         </p>
@@ -4992,9 +5103,7 @@
               </svg>
             </span>
             <span class="trust-title">Free</span>
-            <span class="trust-desc"
-              >Pick up a card pair at a venue</span
-            >
+            <span class="trust-desc">Pick up a card pair at a venue</span>
           </li>
           <li>
             <span class="trust-icon-badge">
@@ -5893,7 +6002,6 @@
               restartTimer();
             }
           });
-
         })();
 
         // ---- why: compact "before/after" compose animation (slide 2) ----
@@ -6376,7 +6484,8 @@
     <script>
       (function () {
         var overlay = document.getElementById("chartOverlay");
-        var btn = document.querySelector(".stats-chart-btn");
+        var btns = document.querySelectorAll(".stats-chart-btn");
+        var lastBtn = btns[0];
         var closeBtn = overlay.querySelector(".chart-overlay-close");
 
         function openOverlay() {
@@ -6396,10 +6505,15 @@
             overlay.setAttribute("hidden", "");
             overlay.removeEventListener("transitionend", handler);
           });
-          btn.focus({ preventScroll: true });
+          lastBtn.focus({ preventScroll: true });
         }
 
-        btn.addEventListener("click", openOverlay);
+        btns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            lastBtn = b;
+            openOverlay();
+          });
+        });
         closeBtn.addEventListener("click", closeOverlay);
 
         overlay.addEventListener("click", function (e) {
