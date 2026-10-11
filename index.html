@@ -113,6 +113,12 @@
         --white: #f4f4f6;
         --gray: #9ca3af;
         --fg-rgb: 244, 244, 246;
+        /* Hazard colours for epidemic data only - never for UI or brand
+           surfaces. Neon on near-black, kept well clear of the purple/teal
+           gradient so the epidemic can never be mistaken for the brand. */
+        --alarm: #ff2d95;
+        --alarm-bright: #ff6fb5;
+        --caution: #ccff00;
         --control-border-alpha: 0.4;
         --mesh-blend: screen;
       }
@@ -370,7 +376,7 @@
          scales as one piece; the subtitle font is tuned so it spans the
          wordmark's width. Closed off below with a hairline. */
       .logo-badge {
-        --logo: clamp(2.875rem, 1.9rem + 3.4vw, 4rem);
+        --logo: clamp(3.2rem, 2.2rem + 3vw, 4rem);
         position: relative;
         display: flex;
         flex-direction: row;
@@ -410,12 +416,13 @@
         line-height: 0.92;
       }
       .app-subtitle {
-        font-size: 0.252em;
+        font-size: 0.17em;
         line-height: 1.2;
         color: rgba(var(--fg-rgb), 0.62);
-        letter-spacing: 0.01em;
+        letter-spacing: 0.205em;
+        text-transform: uppercase;
         white-space: nowrap;
-        margin-top: 0.22em;
+        margin-top: 0.3em;
       }
       /* Hairline under the lockup. ::before is the line itself (brand
          gradient, fading out at both ends) plus a wide, faint bloom that
@@ -474,6 +481,31 @@
           rgba(255, 255, 255, 0)
         );
         filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.28));
+        will-change: opacity, transform;
+        animation: hairlineBreathe 12s cubic-bezier(0.37, 0, 0.63, 1) 1.5s
+          infinite;
+      }
+      /* Deliberately near-subliminal: the core only widens and narrows a
+         touch on a slow sine-eased 12s cycle (soft in and out at both
+         ends, so there is no moment where it visibly "turns around").
+         Brightness never changes — the light itself stays steady. Only
+         transform moves, so it stays on the compositor and can't jank. */
+      @keyframes hairlineBreathe {
+        0%,
+        100% {
+          transform: translate3d(-50%, 0, 0) scaleX(0.94);
+        }
+        50% {
+          transform: translate3d(-50%, 0, 0) scaleX(1.14);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .logo-badge::after {
+          animation: none;
+        }
+      }
+      :root[data-motion="reduced"] .logo-badge::after {
+        animation: none;
       }
       .eyebrow {
         display: inline-block;
@@ -490,33 +522,27 @@
 
       }
       h1 {
-        font-size: clamp(1.35rem, 0.65rem + 2.5vw, 2.2rem);
+        /* The 1.2rem floor is set by fit, not taste: it is the largest size
+           that keeps "Close the gaps in STI notification." on one line down
+           to 360px wide (the narrowest phone still in common use). Below
+           that it wraps to two balanced lines. */
+        font-size: clamp(1.2rem, 0.65rem + 2.5vw, 2.2rem);
         line-height: 1.1;
         font-weight: 600;
         letter-spacing: -0.02em;
         max-width: 720px;
         margin: 0 0 18px;
       }
-      h1 .h1-sub {
-        font-size: 1em;
-        opacity: 1;
-      }
-      h1 span {
-        background: linear-gradient(120deg, var(--purple-light), var(--teal));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-      h1 .h1-teal {
-        background: none;
-        -webkit-background-clip: unset;
-        background-clip: unset;
-        color: var(--teal);
-      }
+      /* The h1 carries the promise on its own, in plain --white: the logo
+         lockup directly above it is already a gradient, and a second
+         gradient 40px below it turns two accents into noise. */
       .sub {
-        color: rgba(var(--fg-rgb), 0.75);
+        color: rgba(var(--fg-rgb), 0.6);
         font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
-        line-height: 1.55;
+        /* Airier than body copy on purpose: the +248% pill is nearly as tall
+           as a 1.55 line box, so when the sentence wraps the pill collides
+           with the underline on the line above. */
+        line-height: 1.85;
         max-width: 520px;
         margin: 0 0 24px;
         text-wrap: balance;
@@ -528,15 +554,223 @@
       .sub .link-narrow {
         display: none;
       }
+      /* ---- inline trend: sparkline + the panel it expands ---- */
+      .stats-trend-btn {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+      /* The rule lives on the phrase, not the button, so the sparkline that
+         follows it is not underlined along with the words. */
+      .stat-phrase {
+        border-bottom: 1px solid rgba(96, 165, 250, 0.42);
+        transition: border-color 0.2s ease;
+      }
+      .stats-trend-btn:hover,
+      .stats-trend-btn:focus-visible {
+        color: var(--white);
+      }
+      .stats-trend-btn:hover .stat-phrase,
+      .stats-trend-btn:focus-visible .stat-phrase {
+        border-color: var(--purple-light);
+      }
+      .stat-spark {
+        display: inline-block;
+      }
+      .stat-spark svg {
+        display: block;
+        overflow: visible;
+      }
+      /* The inline sparkline stays monochrome: at 15px tall inside a
+         sentence it is punctuation, not a chart, and a neon line there
+         competes with the wordmark right above it. Colour is held back for
+         the panel it opens - the hazard palette arrives as the payoff for
+         expanding, not as a decoration on the hero. */
+      .stat-spark path {
+        fill: none;
+        stroke: rgba(var(--fg-rgb), 0.55);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke 0.2s ease;
+      }
+      .stat-spark circle {
+        fill: rgba(var(--fg-rgb), 0.8);
+        transition: fill 0.2s ease;
+      }
+      .sub:hover .stat-spark path {
+        stroke: var(--white);
+      }
+      .sub:hover .stat-spark circle {
+        fill: var(--white);
+      }
+      /* One pill holding the shape and the figure: the sparkline is this
+         number made visible, so grouping them stops "+248%" reading as a
+         claim about the whole sentence. It is gonorrhoea's figure -
+         chlamydia rose 27% over the same period - and the panel this opens
+         names all three with their own numbers.
+         The pill is aria-hidden: a screen reader would otherwise hear
+         "record highs across Europe +248%" with no series attached. The
+         panel's summary line carries the figures properly instead. */
+      .stat-delta {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45em;
+        margin-left: 0.5em;
+        padding: 0.1em 0.6em 0.1em 0.5em;
+        border-radius: 999px;
+        /* No outline: the illusion the user spotted is two thin horizontal
+           rules sitting near each other, so the pill is a filled chip rather
+           than a bordered one. Nothing competes with the link underline. */
+        border: 0;
+        background: rgba(var(--fg-rgb), 0.09);
+        font-size: 0.8em;
+        line-height: 1.4;
+        color: rgba(var(--fg-rgb), 0.85);
+        white-space: nowrap;
+        vertical-align: 0.04em;
+        transition:
+          border-color 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+      .sub:hover .stat-delta {
+        background: rgba(var(--fg-rgb), 0.15);
+        color: var(--white);
+      }
+      .stat-delta.stat-delta-narrow {
+        display: none;
+      }
+
+      .stat-trend {
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        width: 100%;
+        max-width: 440px;
+        margin: 0 auto;
+        transition:
+          height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 0s linear 0.42s;
+      }
+      .stat-trend.is-open {
+        visibility: visible;
+        transition:
+          height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+          visibility 0s;
+      }
+      .stat-trend-inner {
+        padding: 4px 0 20px;
+      }
+      .stat-trend-caption {
+        font-size: 0.75rem;
+        line-height: 1.5;
+        color: rgba(var(--fg-rgb), 0.5);
+        margin: 0 0 12px;
+      }
+      .stat-trend-summary {
+        display: block;
+        color: rgba(var(--fg-rgb), 0.68);
+      }
+      .stat-trend-chart svg {
+        display: block;
+        width: 100%;
+        height: 108px;
+        overflow: visible;
+      }
+      .stat-trend-chart .grid line {
+        stroke: rgba(var(--fg-rgb), 0.07);
+        stroke-width: 1;
+      }
+      .stat-trend-chart .axis {
+        font-size: 9.5px;
+        fill: rgba(var(--fg-rgb), 0.35);
+      }
+      .stat-trend-chart .trend-line {
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .stat-trend-legend {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 16px;
+        margin: 12px 0 0;
+        padding: 0;
+        font-size: 0.6875rem;
+        color: rgba(var(--fg-rgb), 0.6);
+      }
+      .stat-trend-legend li {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .stat-trend-legend i {
+        width: 10px;
+        height: 2px;
+        border-radius: 2px;
+      }
+      .stat-trend-legend b {
+        font-weight: 600;
+      }
+      .stat-trend-more {
+        margin-top: 14px;
+        font-size: 0.75rem;
+        color: rgba(var(--fg-rgb), 0.6);
+      }
+      .stat-trend-more:hover {
+        color: var(--white);
+      }
+      /* Draw-on: the dash length is measured in JS and set as --len. */
+      .stat-trend.is-open .trend-line {
+        stroke-dasharray: var(--len);
+        stroke-dashoffset: var(--len);
+        animation: trendDraw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: var(--sd, 0ms);
+      }
+      @keyframes trendDraw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stat-trend {
+          transition: none;
+        }
+        .stat-trend.is-open .trend-line {
+          animation: none;
+          stroke-dasharray: none;
+          stroke-dashoffset: 0;
+        }
+      }
+      :root[data-motion="reduced"] .stat-trend {
+        transition: none;
+      }
+      :root[data-motion="reduced"] .stat-trend.is-open .trend-line {
+        animation: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+
       /* On narrow screens the logotype is ~270px wide; keep the body copy
          close to that measure so the column reads as one shape. */
       @media (max-width: 600px) {
         .sub {
           max-width: 25em;
         }
-        .sub .link-wide,
-        .desk-br {
+        .sub .link-wide {
           display: none;
+        }
+        .stat-delta.stat-delta-narrow {
+          display: inline-flex;
         }
         .sub .link-narrow {
           display: inline;
@@ -649,10 +883,21 @@
         }
       }
 
+      /* Closing beat under the mockup: the rally line and the status read as
+         one group, so the gap between them is tighter than the gap above. */
+      .hero-rally {
+        font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
+        line-height: 1.55;
+        color: rgba(var(--fg-rgb), 0.75);
+        margin: 30px 0 0;
+      }
       .microcopy {
         font-size: 0.8125rem;
         color: rgba(var(--fg-rgb), 0.55);
         margin: 28px 0 0;
+      }
+      .hero-rally + .microcopy {
+        margin-top: 8px;
       }
 
       .scrollcue-wrap {
@@ -935,7 +1180,7 @@
         background: rgba(18, 18, 26, 0.85);
         border: 1px solid rgba(var(--fg-rgb), 0.14);
         border-radius: 12px;
-        padding: 8px 9px;
+        padding: 9px;
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
         box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
@@ -1115,6 +1360,9 @@
         position: absolute;
         left: 50%;
         bottom: -14px;
+        /* Slightly under-scaled so the caption above it has its own band
+           rather than crowding the bezel. */
+        --phone-scale: 0.93;
         width: 150px;
         height: 300px;
         transform-origin: 50% 100%;
@@ -1197,23 +1445,50 @@
           0 0 0 1px rgba(0, 0, 0, 0.7),
           0 0 18px rgba(0, 0, 0, 0.5) inset;
       }
+      /* The before/after caption sits above the phone, not inside its
+         screen: in-screen it competed with the app's own chrome for the
+         same few square millimetres and read as part of the UI. Out here
+         it labels the device, and the app mock stays uncluttered. */
+      .why-stage-caption {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        z-index: 2;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        transition: color 0.45s ease, border-color 0.45s ease;
+      }
       .why-ba-banner {
-        font-size: 9px;
+        /* Sentence case, not uppercase: at this size the word shapes are
+           what make the two states tellable apart at a glance, and caps
+           plus letter-spacing flattens them. */
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
+        letter-spacing: 0.01em;
         text-align: center;
-        padding: 4px 7px;
-        border-radius: 6px;
-        margin-bottom: 8px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        /* Near-opaque chip rather than a tint of the state colour: the
+           panel behind is mid-teal, so a tinted pill left the label at
+           2.7:1. On this chip both states clear WCAG AAA (7:1). */
+        background: rgba(5, 14, 17, 0.94);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
       .why-ba-before {
-        background: rgba(248, 113, 113, 0.15);
-        color: #f87171;
+        border: 1px solid rgba(252, 165, 165, 0.42);
+        color: #fca5a5;
       }
       .why-ba-after {
-        background: rgba(45, 212, 191, 0.15);
+        border: 1px solid rgba(45, 212, 191, 0.45);
         color: var(--teal);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-stage-caption {
+          transition: none;
+        }
+      }
+      :root[data-motion="reduced"] .why-stage-caption {
+        transition: none;
       }
       .why-compose-label {
         font-size: 8.5px;
@@ -1363,8 +1638,11 @@
       .why-tap-panel {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        min-height: 274px;
+        gap: 5px;
+        /* Fills the screen instead of a fixed height, so .why-app-tabs can
+           sit on the real bottom edge the way the mockup's tab bar does. */
+        flex: 1;
+        min-height: 0;
         padding: 2px 2px 0;
         opacity: 0;
         transform: translateY(8px) scale(0.98);
@@ -1626,39 +1904,130 @@
       :root[data-motion="reduced"] .why-app-handoff,
       :root[data-motion="reduced"] .why-app-handoff.show,
       :root[data-motion="reduced"] .why-app-handoff.show.launching { transition: none; }
-      .why-tap-panel .why-ba-banner {
-        margin: 0 2px 8px;
-        padding: 6px 7px;
-        border: 1px solid rgba(45, 212, 191, 0.16);
-        background: rgba(45, 212, 191, 0.1);
-        box-shadow: inset 0 1px rgba(255, 255, 255, 0.05);
+      /* The in-app screen mirrors the real AfterCare mockup
+         (visual-assets/mockup-alert.webp): wordmark header, one dark
+         card with a circled icon, a bold centred line and a
+         purple-to-teal CTA, then the four-tab bar pinned to the bottom.
+         Everything is sized for the 150x300 screen and scales with the
+         phone, so sizes here are deliberately sub-pixel-ish. */
+      .why-app-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
       }
-      .why-pill {
-        position: relative;
-        background: linear-gradient(145deg, rgba(38, 40, 52, 0.92), rgba(24, 25, 34, 0.96));
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 11px;
-        padding: 11px 11px 11px 19px;
-        color: #d1d5db;
-        font-size: 9.5px;
-        line-height: 1.45;
+      .why-app-brand img {
+        width: 13px;
+        height: 13px;
+      }
+      .why-app-brand span {
+        font-size: 11.5px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        background: linear-gradient(90deg, #8b5cf6 10%, var(--teal) 95%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .why-app-card {
+        background: linear-gradient(
+          160deg,
+          rgba(44, 46, 68, 0.72),
+          rgba(18, 19, 28, 0.92)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 12px;
+        padding: 8px 9px;
+        text-align: center;
         box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.04),
-          0 7px 16px rgba(0, 0, 0, 0.16);
+          inset 0 1px rgba(255, 255, 255, 0.05),
+          0 8px 18px rgba(0, 0, 0, 0.22);
       }
-      .why-tap-panel > .why-pill:first-of-type::before {
-        content: "";
-        position: absolute;
-        top: 14px;
-        left: 9px;
-        width: 4px;
-        height: 4px;
+      .why-app-card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        margin: 0 auto 7px;
         border-radius: 50%;
-        background: var(--teal);
-        box-shadow: 0 0 7px rgba(45, 212, 191, 0.55);
+        border: 1px solid rgba(167, 139, 250, 0.45);
+        background: rgba(139, 92, 246, 0.12);
       }
-      .why-pill-purple {
-        border-left: 1px solid rgba(167, 139, 250, 0.7);
+      .why-app-card-icon svg {
+        width: 11px;
+        height: 11px;
+        fill: none;
+        stroke: #a78bfa;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .why-app-card-title {
+        margin: 0 0 9px;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1.35;
+        /* The screen is a 150px-wide simulation, so this headline wraps
+           far sooner than it does on a real phone; balanced wrapping
+           keeps it to even lines instead of a one-word orphan. */
+        text-wrap: balance;
+        color: #fff;
+      }
+      .why-app-card-thanks {
+        margin: 8px 0 0;
+        font-size: 8px;
+        line-height: 1.4;
+        text-wrap: balance;
+        font-weight: 600;
+        color: rgba(45, 212, 191, 0.92);
+        text-align: center;
+      }
+      .why-app-tabs {
+        display: flex;
+        margin-top: auto;
+        padding-top: 5px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .why-app-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        color: #6b7280;
+      }
+      .why-app-tab i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 11px;
+      }
+      .why-app-tab svg {
+        width: 9px;
+        height: 9px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .why-app-tab b {
+        font-size: 5px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .why-app-tab-active {
+        color: #a78bfa;
+      }
+      .why-app-tab-chip {
+        border-radius: 5px;
+        background: rgba(139, 92, 246, 0.18);
+      }
+      .why-app-tab-active svg {
+        fill: currentColor;
+        stroke: none;
       }
       .why-thank-you-heart {
         display: inline-block;
@@ -1682,20 +2051,21 @@
         opacity: 1;
         transform: none;
       }
+      /* CTA matches the mockup's OK button: full-width, purple-to-teal,
+         bold white label, no icon. */
       .why-btn {
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 6px;
-        background: linear-gradient(145deg, #8b5cf6, #6d28d9);
+        background: linear-gradient(95deg, #8b5cf6 0%, #7c6ef0 45%, var(--teal) 100%);
         color: #fff;
         text-align: center;
-        padding: 10px 8px;
-        border: 1px solid rgba(255, 255, 255, 0.13);
-        border-radius: 10px;
-        font-size: 10px;
-        font-weight: 700;
+        padding: 11px 8px;
+        border-radius: 8px;
+        font-size: 9.5px;
+        white-space: nowrap;
+        font-weight: 800;
         letter-spacing: 0.01em;
         cursor: pointer;
         user-select: none;
@@ -1706,25 +2076,18 @@
           transform 0.2s ease,
           opacity 0.25s;
         box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.16),
-          0 7px 15px rgba(109, 40, 217, 0.24);
+          inset 0 1px rgba(255, 255, 255, 0.22),
+          0 7px 15px rgba(109, 40, 217, 0.22);
       }
       .why-btn:active {
         opacity: 0.86;
         transform: scale(0.98);
       }
       .why-btn.sent {
-        background: linear-gradient(145deg, #20b486, #138a72);
+        background: linear-gradient(95deg, #14b8a6, #2dd4bf);
         box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.16),
+          inset 0 1px rgba(255, 255, 255, 0.2),
           0 7px 15px rgba(19, 138, 114, 0.22);
-      }
-      .why-btn svg {
-        width: 12px;
-        height: 12px;
-        stroke: currentColor;
-        stroke-width: 1.8;
-        fill: none;
       }
       /* ---- why: simulated "ghost tap" on Notify Partners (slide 2) ----
          An iOS-style translucent tap highlight that fires on its own a
@@ -1982,7 +2345,12 @@
         /* 1.4 x 300px = 420px: fills the panel at the smallest desktop
            card height (500px card - 80px padding) without poking above it. */
         .why-phone {
-          --phone-scale: 1.4;
+          --phone-scale: 1.3;
+        }
+        .why-stage-caption {
+          top: 14px;
+          font-size: 13px;
+          padding: 6px 15px;
         }
         /* Scale up the notification widget to match the larger visual panel,
            and pull it in from the edge so it and the banana read as one
@@ -2061,6 +2429,236 @@
       .mission .section-title {
         text-align: center;
       }
+      /* "Two futures": the measured ECDC rise, then two hand-drawn dashed
+         paths. The falling one is the only place the brand gradient touches
+         this data - hazard colours draw the epidemic, purple-to-teal draws
+         the outcome AfterCare is for. Everything past "today" is a goal, not
+         a projection, which is why it is dashed, unlabelled by value, and
+         captioned as illustrative. Keep those properties if this changes. */
+      /* Its own section between the hero and "Why AfterCare": the hero
+         states the problem, this states the stakes, Why explains the
+         product, and the vision funnel closes the chain. */
+      .futures-section {
+        width: 100%;
+        max-width: clamp(320px, 92vw, 640px);
+        margin: 0 auto;
+        padding: clamp(40px, 6vw, 72px) 20px 0;
+        text-align: center;
+      }
+      .futures {
+        --gap: clamp(48px, 7vw, 76px);
+        --half-gap: calc(var(--gap) / 2);
+        position: relative;
+        margin: 0 auto var(--gap);
+        max-width: 420px;
+      }
+      /* Hairline between the chart and the funnel below it, built from the
+         same shape
+         as the one under the logo lockup (.logo-badge::before/::after) so the
+         page keeps one divider idiom: a 1px line fading out at both ends,
+         a faint bloom lifting its centre, and a short soft core on top.
+         Neutral rather than brand-gradient - this one separates sections, it
+         does not signal AfterCare. */
+      .futures::before,
+      .futures::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .futures::before {
+        bottom: calc(-1 * var(--half-gap) - 7px);
+        width: min(300px, 86%);
+        height: 15px;
+        background:
+          linear-gradient(
+              90deg,
+              rgba(var(--fg-rgb), 0),
+              rgba(var(--fg-rgb), 0.4) 50%,
+              rgba(var(--fg-rgb), 0)
+            )
+            center / 100% 1px no-repeat,
+          radial-gradient(
+              ellipse 50% 50% at center,
+              rgba(var(--fg-rgb), 0.09),
+              rgba(var(--fg-rgb), 0) 70%
+            )
+            center / 100% 100% no-repeat;
+      }
+      .futures::after {
+        bottom: calc(-1 * var(--half-gap) - 1px);
+        width: 72px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          rgba(var(--fg-rgb), 0),
+          rgba(var(--fg-rgb), 0.66) 42%,
+          rgba(var(--fg-rgb), 0.66) 58%,
+          rgba(var(--fg-rgb), 0)
+        );
+        filter: drop-shadow(0 0 3px rgba(var(--fg-rgb), 0.28));
+      }
+      /* An h2 for the document outline, but deliberately not at
+         .section-title size - it introduces a chart, it does not open a
+         headline section. */
+      .futures-title {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        color: var(--white);
+        margin: 0 0 4px;
+        text-align: center;
+      }
+      .futures-lede {
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        color: rgba(var(--fg-rgb), 0.55);
+        margin: 0 0 16px;
+      }
+      /* No text inside the SVG: it is stretched horizontally to fill the
+         column, which would squash any glyphs. Labels are HTML. */
+      .futures-chart svg {
+        display: block;
+        width: 100%;
+        height: 150px;
+        overflow: visible;
+      }
+      .futures-chart .fg-grid line {
+        stroke: rgba(var(--fg-rgb), 0.07);
+      }
+      .futures-chart .fg-today {
+        stroke: rgba(var(--fg-rgb), 0.24);
+        stroke-dasharray: 3 4;
+      }
+      .futures-chart path {
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .futures-chart .fg-proj {
+        stroke-dasharray: 5 5;
+      }
+      .futures-axis {
+        position: relative;
+        height: 1.2em;
+        margin-top: 7px;
+        font-size: 0.6875rem;
+        color: rgba(var(--fg-rgb), 0.38);
+      }
+      .futures-axis span {
+        position: absolute;
+        top: 0;
+      }
+      .futures-axis .fa-start {
+        left: 2.6%;
+      }
+      .futures-axis .fa-today {
+        left: 47.4%;
+        transform: translateX(-50%);
+        color: rgba(var(--fg-rgb), 0.55);
+      }
+      .futures-axis .fa-end {
+        right: 2.6%;
+      }
+      /* Rows span the full column and align left: shrink-to-fit rows inherit
+         the section's centred text-align and wrap into a ragged mess. */
+      .futures-key {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin: 16px 0 0;
+        padding: 0;
+        text-align: left;
+        font-size: 0.75rem;
+        color: rgba(var(--fg-rgb), 0.62);
+      }
+      .futures-key li {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .futures-key i {
+        flex: 0 0 18px;
+        height: 0;
+        border-top-width: 2px;
+        border-top-style: solid;
+        border-radius: 2px;
+      }
+      .futures-key .fk-real {
+        border-top-color: var(--alarm);
+      }
+      .futures-key .fk-rise {
+        border-top-color: rgba(var(--fg-rgb), 0.38);
+        border-top-style: dashed;
+      }
+      .futures-key .fk-fall {
+        border-top-color: var(--teal);
+        border-top-style: dashed;
+      }
+      .futures-note {
+        font-size: 0.6875rem;
+        line-height: 1.5;
+        color: rgba(var(--fg-rgb), 0.4);
+        margin: 12px 0 0;
+      }
+      /* Draw-on runs off the existing .scroll-reveal observer. */
+      .futures .fg-line {
+        stroke-dasharray: var(--len);
+        stroke-dashoffset: var(--len);
+      }
+      .futures.in-view .fg-line {
+        animation: futuresDraw 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        animation-delay: var(--ld, 0ms);
+      }
+      .futures .fg-proj {
+        stroke-dasharray: 5 5;
+      }
+      .futures.in-view .fg-proj {
+        animation: futuresFade 0.7s ease forwards;
+        animation-delay: var(--ld, 0ms);
+        opacity: 0;
+      }
+      @keyframes futuresDraw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes futuresFade {
+        to {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .futures .fg-line {
+          stroke-dasharray: none;
+          stroke-dashoffset: 0;
+        }
+        .futures .fg-proj,
+        .futures.in-view .fg-proj {
+          animation: none;
+          opacity: 1;
+        }
+        .futures.in-view .fg-line {
+          animation: none;
+        }
+      }
+      :root[data-motion="reduced"] .futures .fg-line {
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+      :root[data-motion="reduced"] .futures .fg-proj,
+      :root[data-motion="reduced"] .futures.in-view .fg-proj {
+        animation: none;
+        opacity: 1;
+      }
+      :root[data-motion="reduced"] .futures.in-view .fg-line {
+        animation: none;
+      }
+
       .funnel {
         display: flex;
         flex-direction: column;
@@ -4134,33 +4732,53 @@
           </div>
         </div>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
-        <h1 class="reveal" style="--d: 3; display: none" aria-hidden="true">
-          Stay informed.<br />
-          <span class="h1-sub">No contact needed,</span><br />
-          <span class="h1-sub h1-teal">no message to write.</span>
+        <h1 class="reveal" style="--d: 3">
+          Close the gaps in STI notification.
         </h1>
-        <p class="sub reveal" style="--d: 5; margin-top: 20px">
+        <p class="sub reveal" style="--d: 4">
           Bacterial STIs are at
           <button
-            class="footer-origin-link stats-chart-btn link-wide"
+            class="stats-trend-btn link-wide"
             type="button"
-            aria-haspopup="dialog"
-            aria-controls="chartOverlay"
+            aria-expanded="false"
+            aria-controls="statTrend"
           >
-            record highs across Europe</button
+            <span class="stat-phrase">record highs across Europe</span
+            ><span class="stat-delta" aria-hidden="true"
+              ><span class="stat-spark"></span>+248%</span
+            ></button
           ><button
-            class="footer-origin-link stats-chart-btn link-narrow"
+            class="stats-trend-btn link-narrow"
             type="button"
-            aria-haspopup="dialog"
-            aria-controls="chartOverlay"
+            aria-expanded="false"
+            aria-controls="statTrend"
           >
-            record highs</button
-          ><span class="link-narrow"><br />across Europe</span>.<br
-            class="desk-br"
-          />
-          Let's fight them together!<br /><br />Close the gaps in STI
-          notification with AfterCare.
+            <span class="stat-phrase">record highs</span></button
+          ><span class="link-narrow"><br />across Europe</span
+          ><span class="stat-delta stat-delta-narrow" aria-hidden="true"
+            ><span class="stat-spark"></span>+248%</span
+          >.
         </p>
+        <div class="stat-trend reveal" id="statTrend" style="--d: 4">
+          <div class="stat-trend-inner">
+            <p class="stat-trend-caption">
+              How fast each infection has grown since 2015, EU/EEA.
+              <span class="stat-trend-summary"
+                >Gonorrhoea is up 248%, syphilis 111% and chlamydia 27%.</span
+              >
+            </p>
+            <div class="stat-trend-chart" aria-hidden="true"></div>
+            <ul class="stat-trend-legend" aria-hidden="true"></ul>
+            <button
+              class="stats-chart-btn stat-trend-more"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="chartOverlay"
+            >
+              See the full ECDC charts
+            </button>
+          </div>
+        </div>
 
         <div class="mockup reveal" style="--d: 5">
           <img
@@ -4173,8 +4791,38 @@
           />
         </div>
 
-        <p class="microcopy reveal" style="--d: 6">Coming soon.</p>
+        <p class="hero-rally reveal" style="--d: 6">
+          Let's fight STIs together!
+        </p>
+        <p class="microcopy reveal" style="--d: 7">Coming soon.</p>
       </div>
+
+      <section class="futures-section" aria-labelledby="futuresTitle">
+        <div class="futures scroll-reveal" style="--sd: 1">
+          <h2 class="futures-title" id="futuresTitle">
+            Where this goes next is not fixed.
+          </h2>
+          <p class="futures-lede">
+            The solid line is what happened. The dashed lines are two ways the
+            next ten years could go.
+          </p>
+          <div class="futures-chart"></div>
+          <div class="futures-axis" aria-hidden="true">
+            <span class="fa-start">2015</span>
+            <span class="fa-today">today</span>
+            <span class="fa-end">2034</span>
+          </div>
+          <ul class="futures-key">
+            <li><i class="fk-real"></i>What happened, 2015&ndash;2024</li>
+            <li><i class="fk-rise"></i>If nothing changes</li>
+            <li><i class="fk-fall"></i>With better notification and testing</li>
+          </ul>
+          <p class="futures-note">
+            The dashed lines show what we are aiming for, not what we predict.
+            Solid line: confirmed gonorrhoea cases in the EU/EEA, from the ECDC.
+          </p>
+        </div>
+      </section>
 
       <section class="why scroll-reveal" aria-labelledby="whyTitle">
         <h2 class="section-title why-title" id="whyTitle">Why AfterCare.</h2>
@@ -4264,14 +4912,17 @@
                 </p>
               </div>
               <div class="why-slide-visual" aria-hidden="true">
+                <div
+                  class="why-stage-caption why-ba-banner why-ba-before"
+                  id="whyStageCaption"
+                >
+                  Without AfterCare
+                </div>
                 <div class="why-phone">
                   <div class="why-phone-notch"></div>
                   <div class="why-phone-screen">
                     <div class="why-app-window" id="whyMessagesWindow">
                       <div class="why-compose-mock" id="whyComposeMock">
-                        <div class="why-ba-banner why-ba-before">
-                          Before AfterCare
-                        </div>
                         <div class="why-compose-stage">
                           <div class="why-compose-label">Messages</div>
                           <div class="why-compose-bubble" id="whyComposeBubble">
@@ -4367,35 +5018,84 @@
                       <img src="visual-assets/aftercare-logo.svg" alt="" />
                     </div>
                     <div class="why-tap-panel" id="whyTapPanel">
-                      <div class="why-ba-banner why-ba-after">
-                        With AfterCare
+                      <div class="why-app-brand">
+                        <img src="visual-assets/aftercare-logo.svg" alt="" />
+                        <span>AfterCare</span>
                       </div>
-                      <div class="why-pill">
-                        Let the people you've connected with know.
-                      </div>
-                      <div class="why-btn" id="whyNotifyBtn">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path d="M4 12h15" />
-                          <path d="m13 6 6 6-6 6" />
-                        </svg>
-                        <span id="whyNotifyLabel">Notify Partners</span>
-                        <span class="why-tap-ghost" id="whyTapGhost"></span>
-                      </div>
-                      <div
-                        class="why-pill why-pill-purple"
-                        id="whyThankYouPill"
-                        style="display: none"
-                      >
-                        Thanks for taking care of your partners
-                        <svg
-                          class="why-thank-you-heart"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
+                      <div class="why-app-card">
+                        <span class="why-app-card-icon">
+                          <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M21.5 2.5 11 13" />
+                            <path d="M21.5 2.5 15 21l-4-8-8-4Z" />
+                          </svg>
+                        </span>
+                        <p class="why-app-card-title">
+                          Let the people you&#8217;ve connected with know.
+                        </p>
+                        <div class="why-btn" id="whyNotifyBtn">
+                          <span id="whyNotifyLabel">Notify Partners</span>
+                          <span class="why-tap-ghost" id="whyTapGhost"></span>
+                        </div>
+                        <p
+                          class="why-app-card-thanks"
+                          id="whyThankYouPill"
+                          style="display: none"
                         >
-                          <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
-                          />
-                        </svg>
+                          Thanks for taking care of your partners&#160;<svg
+                            class="why-thank-you-heart"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                            />
+                          </svg>
+                        </p>
+                      </div>
+                      <div class="why-app-tabs">
+                        <span class="why-app-tab why-app-tab-active">
+                          <i class="why-app-tab-chip">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                              />
+                            </svg>
+                          </i>
+                          <b>Home</b>
+                        </span>
+                        <span class="why-app-tab">
+                          <i>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <circle cx="12" cy="12" r="9" />
+                              <path d="M12 7v5l3 2" />
+                            </svg>
+                          </i>
+                          <b>History</b>
+                        </span>
+                        <span class="why-app-tab">
+                          <i>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <circle cx="12" cy="12" r="9" />
+                              <path d="M12 11v5" />
+                              <path d="M12 7.6v.4" />
+                            </svg>
+                          </i>
+                          <b>Info</b>
+                        </span>
+                        <span class="why-app-tab">
+                          <i>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <circle cx="12" cy="12" r="3.2" />
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="7.6"
+                                stroke-dasharray="2.6 2.1"
+                              />
+                            </svg>
+                          </i>
+                          <b>Settings</b>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -4668,7 +5368,7 @@
         class="scrollcue-wrap reveal"
         href="#how"
         style="--d: 7"
-        aria-label="See how it works"
+        aria-label="See how AfterCare works"
       >
         <span class="scrollcue">
           <svg
@@ -4914,7 +5614,9 @@
                     ><span class="mp-corner v br"></span>
                     <span class="mp-scanline"></span>
                   </div>
-                  <span class="mp-sub">Only a hash of the card leaves this phone.</span>
+                  <span class="mp-sub"
+                    >Only a hash of the card leaves this phone.</span
+                  >
                 </div>
               </div>
             </div>
@@ -6050,6 +6752,7 @@
           var notifyLabel = document.getElementById("whyNotifyLabel");
           var tapGhost = document.getElementById("whyTapGhost");
           var thankYouPill = document.getElementById("whyThankYouPill");
+          var stageCaption = document.getElementById("whyStageCaption");
           if (
             !wrap ||
             !textEl ||
@@ -6154,6 +6857,11 @@
             appHandoff.classList.remove("show", "launching");
             appHandoffButton.classList.remove("pressed");
             tapPanel.classList.remove("show");
+            if (stageCaption) {
+              stageCaption.textContent = "Without AfterCare";
+              stageCaption.classList.remove("why-ba-after");
+              stageCaption.classList.add("why-ba-before");
+            }
             notifyBtn.classList.remove("sent");
             notifyLabel.textContent = "Notify Partners";
             if (tapGhost) tapGhost.classList.remove("tap");
@@ -6257,6 +6965,11 @@
 
           function showAftercare() {
             appHandoff.classList.remove("show", "launching");
+            if (stageCaption) {
+              stageCaption.textContent = "With AfterCare";
+              stageCaption.classList.remove("why-ba-before");
+              stageCaption.classList.add("why-ba-after");
+            }
             tapPanel.classList.add("show");
             addTimeout(playGhostTap, 1200);
           }
@@ -6504,6 +7217,404 @@
         </div>
       </div>
     </div>
+
+    <script>
+      /* "Two futures" chart in the vision section. Solid stretch is the real
+         ECDC gonorrhoea series (same numbers as the hero panel); the two
+         dashed branches after 2024 are drawn by hand and are deliberately
+         unlabelled by value - they are a goal, not a model. */
+      (function () {
+        var REAL = [
+          30564, 37046, 41944, 40224, 41792, 40051, 50777, 75065, 99270, 106331,
+        ];
+        // Hand-drawn multipliers on the 2024 value. No numbers derived from
+        // these are ever shown.
+        var FALL = [1, 1.01, 0.97, 0.88, 0.76, 0.63, 0.52, 0.44, 0.39, 0.36];
+        var RISE = [1, 1.06, 1.12, 1.19, 1.25, 1.31, 1.37, 1.42, 1.47, 1.51];
+
+        var host = document.querySelector(".futures-chart");
+        if (!host) return;
+
+        var NS = "http://www.w3.org/2000/svg";
+        var W = 620,
+          H = 150,
+          PAD = 16,
+          BOTTOM = 8,
+          TOTAL = 20,
+          HI = 170000;
+        function node(n, a) {
+          var e = document.createElementNS(NS, n);
+          for (var k in a) e.setAttribute(k, a[k]);
+          return e;
+        }
+        function X(i) {
+          return PAD + (i * (W - PAD * 2)) / (TOTAL - 1);
+        }
+        function Y(v) {
+          return H - BOTTOM - (v / HI) * (H - BOTTOM - PAD);
+        }
+        function d(pts) {
+          return pts
+            .map(function (pt, i) {
+              return (
+                (i ? "L" : "M") + pt[0].toFixed(2) + " " + pt[1].toFixed(2)
+              );
+            })
+            .join(" ");
+        }
+        function branch(mult) {
+          var last = REAL[REAL.length - 1];
+          return mult.map(function (f, i) {
+            return [X(9 + i), Y(last * f)];
+          });
+        }
+
+        var svg = node("svg", {
+          viewBox: "0 0 " + W + " " + H,
+          preserveAspectRatio: "none",
+          role: "img",
+          "aria-label":
+            "Confirmed gonorrhoea cases in the EU/EEA rose steeply from 2015 " +
+            "to 2024. Two dashed paths illustrate possible futures: one " +
+            "continuing upward if nothing changes, one falling with better " +
+            "notification and testing. Both dashed paths are illustrative, " +
+            "not forecasts.",
+        });
+
+        var grid = node("g", { class: "fg-grid" });
+        for (var i = 0; i <= 3; i++) {
+          var y = PAD + (i * (H - BOTTOM - PAD)) / 3;
+          grid.appendChild(node("line", { x1: 0, y1: y, x2: W, y2: y }));
+        }
+        svg.appendChild(grid);
+        svg.appendChild(
+          node("line", {
+            x1: X(9),
+            y1: PAD - 6,
+            x2: X(9),
+            y2: H - BOTTOM,
+            class: "fg-today",
+            vectorEffect: "non-scaling-stroke",
+          }),
+        );
+
+        var defs = node("defs");
+        var lg = node("linearGradient", {
+          id: "futuresFall",
+          x1: "0",
+          y1: "0",
+          x2: "1",
+          y2: "0",
+        });
+        lg.appendChild(node("stop", { offset: "0", "stop-color": "#7d47e0" }));
+        lg.appendChild(node("stop", { offset: "1", "stop-color": "#2dd4bf" }));
+        defs.appendChild(lg);
+        svg.appendChild(defs);
+
+        var real = node("path", {
+          d: d(
+            REAL.map(function (v, i) {
+              return [X(i), Y(v)];
+            }),
+          ),
+          class: "fg-line",
+          stroke: "var(--alarm)",
+          vectorEffect: "non-scaling-stroke",
+        });
+        svg.appendChild(real);
+        real.style.setProperty("--len", real.getTotalLength());
+
+        var rise = node("path", {
+          d: d(branch(RISE)),
+          class: "fg-proj",
+          stroke: "rgba(244,244,246,.3)",
+          vectorEffect: "non-scaling-stroke",
+        });
+        var fall = node("path", {
+          d: d(branch(FALL)),
+          class: "fg-proj",
+          stroke: "url(#futuresFall)",
+          vectorEffect: "non-scaling-stroke",
+        });
+        rise.style.setProperty("--ld", "1100ms");
+        fall.style.setProperty("--ld", "1300ms");
+        svg.appendChild(rise);
+        svg.appendChild(fall);
+
+        host.appendChild(svg);
+      })();
+    </script>
+
+    <script>
+      /* Inline STI trend: a sparkline in the hero sentence that expands an
+         indexed chart on hover, click or tap.
+
+         The numbers below are the ECDC confirmed-case series already in
+         data/ecdc-sti/*.csv (EU/EEA, region EUEEA30_21) - the same source
+         data/generate-charts.py uses for the overlay PNGs. If those CSVs are
+         refreshed, re-run that script AND update these arrays; nothing keeps
+         them in step automatically.
+
+         The chart is indexed to 2015 = 100 rather than plotted as raw counts:
+         on a shared count scale chlamydia's volume flattens the other two and
+         hides the rise entirely. The axis label says so. */
+      (function () {
+        var YEARS = [
+          2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+        ];
+        var DATA = {
+          chlamydia: [
+            168239, 174979, 179951, 164523, 175777, 161969, 188521, 219978,
+            230788, 213443,
+          ],
+          gonorrhoea: [
+            30564, 37046, 41944, 40224, 41792, 40051, 50777, 75065, 99270,
+            106331,
+          ],
+          syphilis: [
+            21585, 23032, 25379, 25078, 26075, 23290, 26882, 35707, 42033,
+            45577,
+          ],
+        };
+        var ORDER = ["chlamydia", "gonorrhoea", "syphilis"];
+        var LABEL = {
+          chlamydia: "Chlamydia",
+          gonorrhoea: "Gonorrhoea",
+          syphilis: "Syphilis",
+        };
+        /* Deliberately outside the brand palette. Purple and teal are
+           AfterCare; the epidemic does not get to wear them. Neon magenta
+           takes the steepest series, lime the next, flat grey the one that
+           is not the story - far apart in lightness as well as hue, so the
+           three stay distinguishable in greyscale and to colour-blind
+           readers. */
+        var COLOR = {
+          chlamydia: "#6b7280",
+          gonorrhoea: "#ff2d95",
+          syphilis: "#ccff00",
+        };
+        var NS = "http://www.w3.org/2000/svg";
+
+        var panel = document.getElementById("statTrend");
+        var toggles = document.querySelectorAll(".stats-trend-btn");
+        var sparks = document.querySelectorAll(".stat-spark");
+        // Pills that sit outside a toggle button (the narrow layout puts one
+        // after the wrapped phrase). The wide pill lives inside the button,
+        // which already handles clicks - binding it again would fire
+        // activate() twice and cancel itself out.
+        var loosePills = [].filter.call(
+          document.querySelectorAll(".stat-delta"),
+          function (c) {
+            return !c.closest(".stats-trend-btn");
+          }
+        );
+        if (!panel || !toggles.length) return;
+
+        function node(name, attrs) {
+          var n = document.createElementNS(NS, name);
+          for (var k in attrs) n.setAttribute(k, attrs[k]);
+          return n;
+        }
+        function d(pts) {
+          return pts
+            .map(function (pt, i) {
+              return (
+                (i ? "L" : "M") + pt[0].toFixed(2) + " " + pt[1].toFixed(2)
+              );
+            })
+            .join(" ");
+        }
+
+        // Sparkline uses gonorrhoea alone: it is the steepest series and the
+        // only one whose shape still reads at 15px tall.
+        sparks.forEach(function (host) {
+          var w = 54,
+            h = 15,
+            pad = 2.2;
+          var vals = DATA.gonorrhoea;
+          var lo = Math.min.apply(null, vals),
+            hi = Math.max.apply(null, vals);
+          var pts = vals.map(function (v, i) {
+            return [
+              pad + (i * (w - pad * 2)) / (vals.length - 1),
+              h - pad - ((v - lo) / (hi - lo)) * (h - pad * 2),
+            ];
+          });
+          var svg = node("svg", {
+            width: w,
+            height: h,
+            viewBox: "0 0 " + w + " " + h,
+            "aria-hidden": "true",
+            focusable: "false",
+          });
+          svg.appendChild(node("path", { d: d(pts) }));
+          svg.appendChild(
+            node("circle", {
+              cx: pts[pts.length - 1][0],
+              cy: pts[pts.length - 1][1],
+              r: 1.9,
+            }),
+          );
+          host.appendChild(svg);
+        });
+
+        var built = false;
+        function build() {
+          if (built) return;
+          built = true;
+          var w = 420,
+            h = 108,
+            pad = 10;
+          var series = {};
+          ORDER.forEach(function (k) {
+            series[k] = DATA[k].map(function (v) {
+              return (v / DATA[k][0]) * 100;
+            });
+          });
+          var all = series.chlamydia.concat(series.gonorrhoea, series.syphilis);
+          var hi = Math.max.apply(null, all),
+            lo = Math.min.apply(null, all);
+
+          var svg = node("svg", {
+            viewBox: "0 0 " + w + " " + h,
+            preserveAspectRatio: "none",
+            "aria-hidden": "true",
+            focusable: "false",
+          });
+          var grid = node("g", { class: "grid" });
+          for (var i = 0; i <= 3; i++) {
+            var y = pad + (i * (h - pad * 2)) / 3;
+            grid.appendChild(node("line", { x1: 0, y1: y, x2: w, y2: y }));
+          }
+          svg.appendChild(grid);
+
+          ORDER.forEach(function (k, idx) {
+            var pts = series[k].map(function (v, i) {
+              return [
+                pad + (i * (w - pad * 2)) / (YEARS.length - 1),
+                h - pad - ((v - lo) / (hi - lo)) * (h - pad * 2),
+              ];
+            });
+            var path = node("path", {
+              d: d(pts),
+              class: "trend-line",
+              stroke: COLOR[k],
+              vectorEffect: "non-scaling-stroke",
+            });
+            svg.appendChild(path);
+            path.style.setProperty("--len", path.getTotalLength());
+            path.style.setProperty("--sd", idx * 140 + "ms");
+          });
+
+          var a1 = node("text", { x: pad, y: h - 1, class: "axis" });
+          a1.textContent = "2015 = 100";
+          var a2 = node("text", {
+            x: w - pad,
+            y: h - 1,
+            class: "axis",
+            "text-anchor": "end",
+          });
+          a2.textContent = "2024";
+          svg.appendChild(a1);
+          svg.appendChild(a2);
+          panel.querySelector(".stat-trend-chart").appendChild(svg);
+
+          panel.querySelector(".stat-trend-legend").innerHTML = ORDER.map(
+            function (k) {
+              var end = Math.round(series[k][series[k].length - 1]);
+              return (
+                '<li><i style="background:' +
+                COLOR[k] +
+                '"></i>' +
+                LABEL[k] +
+                ' <b style="color:' +
+                COLOR[k] +
+                '">' +
+                end +
+                "</b></li>"
+              );
+            },
+          ).join("");
+        }
+
+        var open = false;
+        var pinned = false;
+        var timer;
+
+        function setOpen(next) {
+          if (next === open) return;
+          open = next;
+          if (open) build();
+          panel.classList.toggle("is-open", open);
+          panel.style.height = open
+            ? panel.firstElementChild.offsetHeight + "px"
+            : "0px";
+          toggles.forEach(function (b) {
+            b.setAttribute("aria-expanded", String(open));
+          });
+        }
+        function later(fn, ms) {
+          clearTimeout(timer);
+          timer = setTimeout(fn, ms);
+        }
+        function activate() {
+          clearTimeout(timer);
+          pinned = !open || !pinned;
+          setOpen(pinned);
+        }
+
+        toggles.forEach(function (b) {
+          b.addEventListener("click", activate);
+        });
+        // The pill is aria-hidden, so it is a pointer affordance only -
+        // keyboard and screen-reader users drive the button beside it.
+        loosePills.forEach(function (c) {
+          c.addEventListener("click", activate);
+        });
+
+        // Hover only where there is a real pointer; on touch, tap handles it.
+        if (window.matchMedia("(hover: hover)").matches) {
+          var zone = [panel];
+          toggles.forEach(function (b) {
+            zone.push(b);
+          });
+          loosePills.forEach(function (c) {
+            zone.push(c);
+          });
+          zone.forEach(function (n) {
+            n.addEventListener("mouseenter", function () {
+              later(function () {
+                setOpen(true);
+              }, 110);
+            });
+            n.addEventListener("mouseleave", function () {
+              if (pinned) return;
+              later(function () {
+                setOpen(false);
+              }, 280);
+            });
+          });
+        }
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape" || !open) return;
+          // Leave Escape to the modal when that is the thing on screen.
+          var ov = document.getElementById("chartOverlay");
+          if (ov && ov.classList.contains("is-open")) return;
+          pinned = false;
+          setOpen(false);
+          var here = [].filter.call(toggles, function (b) {
+            return b.offsetParent !== null;
+          })[0];
+          if (here) here.focus({ preventScroll: true });
+        });
+
+        window.addEventListener("resize", function () {
+          if (open)
+            panel.style.height = panel.firstElementChild.offsetHeight + "px";
+        });
+      })();
+    </script>
 
     <script>
       (function () {
