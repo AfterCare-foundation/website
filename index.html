@@ -509,7 +509,7 @@
         margin-bottom: 7px;
       }
       .stat-strip-top b {
-        color: #ff2d95;
+        color: var(--alarm);
         font-weight: 600;
         letter-spacing: 0.04em;
         text-transform: none;
@@ -591,9 +591,20 @@
 
       /* On narrow screens the logotype is ~270px wide; keep the body copy
          close to that measure so the column reads as one shape. */
+      /* From tablet up the strip is as wide as the "Close the gaps" sentence
+         under it (23.9em of that sentence's font size, same clamp as .sub),
+         so chart and sentence share left and right edges. On phones it stays
+         the logo's width and the sentence wraps to fit it instead. */
+      @media (min-width: 601px) {
+        .stats-chart-btn.stat-strip {
+          max-width: calc(clamp(0.875rem, 0.75rem + 0.5vw, 1rem) * 23.9);
+        }
+      }
       @media (max-width: 600px) {
+        /* Never wider than the chart strip above it (= the logo lockup):
+           the sentence wraps to two balanced lines instead. */
         .sub {
-          max-width: 25em;
+          max-width: calc(clamp(3.2rem, 2.2rem + 3vw, 4rem) * 5.22);
         }
       }
       :root[data-contrast="high"] .kicker,
@@ -1337,17 +1348,33 @@
         border-radius: 999px;
         /* Near-opaque chip rather than a tint of the state colour: the
            panel behind is mid-teal, so a tinted pill left the label at
-           2.7:1. On this chip both states clear WCAG AAA (7:1). */
+           2.7:1. On this chip the "after" state clears WCAG AAA (7:1). */
         background: rgba(5, 14, 17, 0.94);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
       .why-ba-before {
-        border: 1px solid rgba(252, 165, 165, 0.42);
-        color: #fca5a5;
+        /* Neon pink, matching the +248% in the hero. Contrast on the chip is
+           about 5.6:1 - AA, not the AAA the "after" state clears. */
+        border: 1px solid rgba(255, 45, 149, 0.45);
+        color: var(--alarm);
       }
       .why-ba-after {
         border: 1px solid rgba(45, 212, 191, 0.45);
         color: var(--teal);
+      }
+      /* Below the desktop breakpoint the caption sat right on the phone's
+         bezel. A smaller pill, and a taller panel (the phone is anchored to
+         the bottom, so extra height moves its top down), leave a clear band
+         between them. */
+      @media (max-width: 1023px) {
+        .why-slide-2 .why-slide-visual {
+          min-height: 316px;
+        }
+        .why-stage-caption {
+          top: 9px;
+          font-size: 11px;
+          padding: 3px 10px;
+        }
       }
       @media (prefers-reduced-motion: reduce) {
         .why-stage-caption {
