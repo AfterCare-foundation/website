@@ -374,7 +374,7 @@
          two rows on the right, together exactly as tall as the icon
          (1.3em). Everything is sized in em off --logo, so the lockup
          scales as one piece; the subtitle font is tuned so it spans the
-         wordmark's width. Closed off below with a hairline. */
+         wordmark's width. A hairline separates the two rows. */
       .logo-badge {
         --logo: clamp(3.2rem, 2.2rem + 3vw, 4rem);
         position: relative;
@@ -383,8 +383,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.14em;
-        padding-bottom: 14px;
-        margin-bottom: 18px;
+        margin-bottom: 32px;
         flex-shrink: 0;
         font-size: var(--logo);
         line-height: 1;
@@ -406,7 +405,7 @@
       .logo-badge-name {
         display: block;
         width: fit-content;
-        font-size: 0.85em;
+        font-size: 0.8em;
         font-weight: 600;
         letter-spacing: -0.03em;
         background: linear-gradient(90deg, #7d47e0 0%, #2dd4bf 100%);
@@ -416,96 +415,31 @@
         line-height: 0.92;
       }
       .app-subtitle {
-        font-size: 0.17em;
+        font-size: 0.185em;
         line-height: 1.2;
         color: rgba(var(--fg-rgb), 0.62);
-        letter-spacing: 0.205em;
+        letter-spacing: 0.11em;
         text-transform: uppercase;
         white-space: nowrap;
-        margin-top: 0.3em;
+        position: relative;
+        margin-top: 0.5em;
       }
-      /* Hairline under the lockup. ::before is the line itself (brand
-         gradient, fading out at both ends) plus a wide, faint bloom that
-         lifts its centre; ::after is a short soft core on top. No hard
-         edges anywhere — everything fades into the line. */
-      .logo-badge::before,
-      .logo-badge::after {
+      /* Hairline between wordmark and subtitle: one straight brand-gradient
+         line that fades out at both ends, no bright core or bloom. */
+      .app-subtitle::before {
         content: "";
         position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        pointer-events: none;
-      }
-      .logo-badge::before {
-        width: calc(100% + 40px);
-        height: 15px;
-        bottom: -7px;
-        background:
-          linear-gradient(
-              90deg,
-              rgba(125, 71, 224, 0),
-              rgba(125, 71, 224, 0.6) 22%,
-              rgba(45, 212, 191, 0.6) 78%,
-              rgba(45, 212, 191, 0)
-            )
-            center / 100% 1px no-repeat,
-          linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0),
-              rgba(255, 255, 255, 0.4) 50%,
-              rgba(255, 255, 255, 0)
-            )
-            center / min(300px, 100%) 1px no-repeat,
-          radial-gradient(
-              ellipse 50% 50% at center,
-              rgba(255, 255, 255, 0.09),
-              rgba(255, 255, 255, 0) 70%
-            )
-            center / min(300px, 100%) 100% no-repeat;
-      }
-      /* Overhang past the lockup: generous on phones, tighter on desktop. */
-      @media (min-width: 601px) {
-        .logo-badge::before {
-          width: calc(100% + 16px);
-        }
-      }
-      .logo-badge::after {
-        width: 72px;
-        height: 2px;
-        bottom: -1px;
+        left: 0;
+        right: 0;
+        top: -0.32em;
+        height: 1px;
         background: linear-gradient(
           90deg,
-          rgba(255, 255, 255, 0),
-          rgba(255, 255, 255, 0.66) 42%,
-          rgba(255, 255, 255, 0.66) 58%,
-          rgba(255, 255, 255, 0)
+          rgba(125, 71, 224, 0),
+          rgba(125, 71, 224, 0.5) 20%,
+          rgba(45, 212, 191, 0.5) 80%,
+          rgba(45, 212, 191, 0)
         );
-        filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.28));
-        will-change: opacity, transform;
-        animation: hairlineBreathe 12s cubic-bezier(0.37, 0, 0.63, 1) 1.5s
-          infinite;
-      }
-      /* Deliberately near-subliminal: the core only widens and narrows a
-         touch on a slow sine-eased 12s cycle (soft in and out at both
-         ends, so there is no moment where it visibly "turns around").
-         Brightness never changes — the light itself stays steady. Only
-         transform moves, so it stays on the compositor and can't jank. */
-      @keyframes hairlineBreathe {
-        0%,
-        100% {
-          transform: translate3d(-50%, 0, 0) scaleX(0.94);
-        }
-        50% {
-          transform: translate3d(-50%, 0, 0) scaleX(1.14);
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .logo-badge::after {
-          animation: none;
-        }
-      }
-      :root[data-motion="reduced"] .logo-badge::after {
-        animation: none;
       }
       .eyebrow {
         display: inline-block;
@@ -522,242 +456,137 @@
 
       }
       h1 {
-        /* The 1.2rem floor is set by fit, not taste: it is the largest size
-           that keeps "Close the gaps in STI notification." on one line down
-           to 360px wide (the narrowest phone still in common use). Below
-           that it wraps to two balanced lines. */
+        /* The headline is the 49-character ECDC claim, so it wraps: two
+           balanced lines on desktop, three on the narrowest phones. The 1.2rem
+           floor keeps it from shrinking past readable on those. */
         font-size: clamp(1.2rem, 0.65rem + 2.5vw, 2.2rem);
+        text-wrap: balance;
         line-height: 1.1;
         font-weight: 600;
         letter-spacing: -0.02em;
         max-width: 720px;
         margin: 0 0 18px;
       }
-      /* The h1 carries the promise on its own, in plain --white: the logo
+      /* The h1 carries the claim on its own, in plain --white: the logo
          lockup directly above it is already a gradient, and a second
          gradient 40px below it turns two accents into noise. */
       .sub {
         color: rgba(var(--fg-rgb), 0.6);
         font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
-        /* Airier than body copy on purpose: the +248% pill is nearly as tall
-           as a 1.55 line box, so when the sentence wraps the pill collides
-           with the underline on the line above. */
-        line-height: 1.85;
+        line-height: 1.55;
         max-width: 520px;
-        margin: 0 0 24px;
+        margin: 0;
         text-wrap: balance;
       }
-      /* The chart link exists twice: the full phrase for wide screens, and
-         "record highs" alone for phones, where the rest of the phrase drops
-         to line two outside the link. A <button> can't hold a line break
-         across browsers, hence two buttons instead of one. */
-      .sub .link-narrow {
-        display: none;
-      }
-      /* ---- inline trend: sparkline + the panel it expands ---- */
-      .stats-trend-btn {
-        font: inherit;
+      /* ---- the rise, as a strip under the headline ----
+         Gonorrhoea alone: the steepest series, and the one whose shape and
+         size of rise read at a glance. It is the headline's evidence and the
+         way into the full chart overlay. Its plot is drawn by JS at
+         the button's real pixel width, so the line and end dot are never
+         stretched. */
+      .stats-chart-btn.stat-strip {
+        display: block;
+        width: 100%;
+        /* Exactly the logo lockup's width (5.22em of its font size, same
+           clamp as .logo-badge --logo) so the two share left and right edges. */
+        max-width: calc(clamp(3.2rem, 2.2rem + 3vw, 4rem) * 5.22);
+        margin: 0 auto 28px;
+        border-bottom: 0;
         color: inherit;
-        background: none;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-        transition: color 0.2s ease;
+        text-align: left;
       }
-      /* The rule lives on the phrase, not the button, so the sparkline that
-         follows it is not underlined along with the words. */
-      .stat-phrase {
-        border-bottom: 1px solid rgba(96, 165, 250, 0.42);
-        transition: border-color 0.2s ease;
+      .stat-strip-top,
+      .stat-strip-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
       }
-      .stats-trend-btn:hover,
-      .stats-trend-btn:focus-visible {
-        color: var(--white);
+      .stat-strip-top {
+        font-size: 0.6875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), 0.45);
+        margin-bottom: 7px;
       }
-      .stats-trend-btn:hover .stat-phrase,
-      .stats-trend-btn:focus-visible .stat-phrase {
-        border-color: var(--purple-light);
+      .stat-strip-top b {
+        color: #ff2d95;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: none;
+        font-size: 0.8125rem;
       }
-      .stat-spark {
-        display: inline-block;
+      .stat-strip-plot {
+        display: block;
+        height: 44px;
       }
-      .stat-spark svg {
+      .stat-strip-plot svg {
         display: block;
         overflow: visible;
       }
-      /* The inline sparkline stays monochrome: at 15px tall inside a
-         sentence it is punctuation, not a chart, and a neon line there
-         competes with the wordmark right above it. Colour is held back for
-         the panel it opens - the hazard palette arrives as the payoff for
-         expanding, not as a decoration on the hero. */
-      .stat-spark path {
+      .stat-strip-plot .area {
+        fill: url(#statStripGrad);
+        stroke: none;
+      }
+      .stat-strip-plot .line {
         fill: none;
-        stroke: rgba(var(--fg-rgb), 0.55);
-        stroke-width: 1.6;
+        stroke: var(--purple-light);
+        stroke-width: 1.8;
         stroke-linecap: round;
         stroke-linejoin: round;
         transition: stroke 0.2s ease;
       }
-      .stat-spark circle {
-        fill: rgba(var(--fg-rgb), 0.8);
-        transition: fill 0.2s ease;
+      .stat-strip-plot .cap {
+        fill: var(--teal);
+        stroke: none;
       }
-      .sub:hover .stat-spark path {
-        stroke: var(--white);
+      .stat-strip:hover .line,
+      .stat-strip:focus-visible .line {
+        stroke: var(--teal);
       }
-      .sub:hover .stat-spark circle {
-        fill: var(--white);
-      }
-      /* One pill holding the shape and the figure: the sparkline is this
-         number made visible, so grouping them stops "+248%" reading as a
-         claim about the whole sentence. It is gonorrhoea's figure -
-         chlamydia rose 27% over the same period - and the panel this opens
-         names all three with their own numbers.
-         The pill is aria-hidden: a screen reader would otherwise hear
-         "record highs across Europe +248%" with no series attached. The
-         panel's summary line carries the figures properly instead. */
-      .stat-delta {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45em;
-        margin-left: 0.5em;
-        padding: 0.1em 0.6em 0.1em 0.5em;
-        border-radius: 999px;
-        /* No outline: the illusion the user spotted is two thin horizontal
-           rules sitting near each other, so the pill is a filled chip rather
-           than a bordered one. Nothing competes with the link underline. */
-        border: 0;
-        background: rgba(var(--fg-rgb), 0.09);
-        font-size: 0.8em;
-        line-height: 1.4;
-        color: rgba(var(--fg-rgb), 0.85);
-        white-space: nowrap;
-        vertical-align: 0.04em;
-        transition:
-          border-color 0.2s ease,
-          background 0.2s ease,
-          color 0.2s ease;
-      }
-      .sub:hover .stat-delta {
-        background: rgba(var(--fg-rgb), 0.15);
-        color: var(--white);
-      }
-      .stat-delta.stat-delta-narrow {
-        display: none;
-      }
-
-      .stat-trend {
-        height: 0;
-        overflow: hidden;
-        visibility: hidden;
-        width: 100%;
-        max-width: 440px;
-        margin: 0 auto;
-        transition:
-          height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-          visibility 0s linear 0.42s;
-      }
-      .stat-trend.is-open {
-        visibility: visible;
-        transition:
-          height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-          visibility 0s;
-      }
-      .stat-trend-inner {
-        padding: 4px 0 20px;
-      }
-      .stat-trend-caption {
-        font-size: 0.75rem;
-        line-height: 1.5;
-        color: rgba(var(--fg-rgb), 0.5);
-        margin: 0 0 12px;
-      }
-      .stat-trend-summary {
-        display: block;
-        color: rgba(var(--fg-rgb), 0.68);
-      }
-      .stat-trend-chart svg {
-        display: block;
-        width: 100%;
-        height: 108px;
-        overflow: visible;
-      }
-      .stat-trend-chart .grid line {
-        stroke: rgba(var(--fg-rgb), 0.07);
-        stroke-width: 1;
-      }
-      .stat-trend-chart .axis {
-        font-size: 9.5px;
-        fill: rgba(var(--fg-rgb), 0.35);
-      }
-      .stat-trend-chart .trend-line {
-        fill: none;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-      .stat-trend-legend {
-        list-style: none;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 6px 16px;
-        margin: 12px 0 0;
-        padding: 0;
-        font-size: 0.6875rem;
-        color: rgba(var(--fg-rgb), 0.6);
-      }
-      .stat-trend-legend li {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .stat-trend-legend i {
-        width: 10px;
-        height: 2px;
-        border-radius: 2px;
-      }
-      .stat-trend-legend b {
-        font-weight: 600;
-      }
-      .stat-trend-more {
-        margin-top: 14px;
-        font-size: 0.75rem;
-        color: rgba(var(--fg-rgb), 0.6);
-      }
-      .stat-trend-more:hover {
-        color: var(--white);
+      .stat-strip-foot {
+        font-size: 0.65625rem;
+        letter-spacing: 0.06em;
+        color: rgba(var(--fg-rgb), 0.38);
+        margin-top: 6px;
       }
       /* Draw-on: the dash length is measured in JS and set as --len. */
-      .stat-trend.is-open .trend-line {
+      .stat-strip.is-drawing .line {
         stroke-dasharray: var(--len);
         stroke-dashoffset: var(--len);
-        animation: trendDraw 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        animation-delay: var(--sd, 0ms);
+        animation: stripDraw 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;
       }
-      @keyframes trendDraw {
+      .stat-strip.is-drawing .cap {
+        opacity: 0;
+        animation: stripPop 0.35s ease 1.85s forwards;
+      }
+      @keyframes stripDraw {
         to {
           stroke-dashoffset: 0;
         }
       }
-      @media (prefers-reduced-motion: reduce) {
-        .stat-trend {
-          transition: none;
+      @keyframes stripPop {
+        from {
+          opacity: 0;
         }
-        .stat-trend.is-open .trend-line {
+        to {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stat-strip.is-drawing .line,
+        .stat-strip.is-drawing .cap {
           animation: none;
           stroke-dasharray: none;
           stroke-dashoffset: 0;
+          opacity: 1;
         }
       }
-      :root[data-motion="reduced"] .stat-trend {
-        transition: none;
-      }
-      :root[data-motion="reduced"] .stat-trend.is-open .trend-line {
+      :root[data-motion="reduced"] .stat-strip.is-drawing .line,
+      :root[data-motion="reduced"] .stat-strip.is-drawing .cap {
         animation: none;
         stroke-dasharray: none;
         stroke-dashoffset: 0;
+        opacity: 1;
       }
 
       /* On narrow screens the logotype is ~270px wide; keep the body copy
@@ -765,18 +594,6 @@
       @media (max-width: 600px) {
         .sub {
           max-width: 25em;
-        }
-        .sub .link-wide {
-          display: none;
-        }
-        .stat-delta.stat-delta-narrow {
-          display: inline-flex;
-        }
-        .sub .link-narrow {
-          display: inline;
-        }
-        .sub button.link-narrow {
-          display: inline-block;
         }
       }
       :root[data-contrast="high"] .kicker,
@@ -4555,52 +4372,28 @@
         </div>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3">
-          Close the gaps in STI notification.
+          Bacterial STIs are at record highs across Europe.
         </h1>
-        <p class="sub reveal" style="--d: 4">
-          Bacterial STIs are at
-          <button
-            class="stats-trend-btn link-wide"
-            type="button"
-            aria-expanded="false"
-            aria-controls="statTrend"
-          >
-            <span class="stat-phrase">record highs across Europe</span
-            ><span class="stat-delta" aria-hidden="true"
-              ><span class="stat-spark"></span>+248%</span
-            ></button
-          ><button
-            class="stats-trend-btn link-narrow"
-            type="button"
-            aria-expanded="false"
-            aria-controls="statTrend"
-          >
-            <span class="stat-phrase">record highs</span></button
-          ><span class="link-narrow"><br />across Europe</span
-          ><span class="stat-delta stat-delta-narrow" aria-hidden="true"
-            ><span class="stat-spark"></span>+248%</span
-          >.
+        <button
+          class="stats-chart-btn stat-strip reveal"
+          type="button"
+          style="--d: 4"
+          aria-haspopup="dialog"
+          aria-controls="chartOverlay"
+          aria-label="Gonorrhoea cases in the EU/EEA are up 248% since 2015. Open the full ECDC charts."
+        >
+          <span class="stat-strip-top" aria-hidden="true">
+            <span>Gonorrhoea, EU/EEA</span><b>+248%</b>
+          </span>
+          <span class="stat-strip-plot" aria-hidden="true"></span>
+          <span class="stat-strip-foot" aria-hidden="true">
+            <span>2015</span><span>2024</span>
+          </span>
+        </button>
+
+        <p class="sub reveal" style="--d: 5">
+          Close the gaps in STI notification with AfterCare!
         </p>
-        <div class="stat-trend reveal" id="statTrend" style="--d: 4">
-          <div class="stat-trend-inner">
-            <p class="stat-trend-caption">
-              How fast each infection has grown since 2015, EU/EEA.
-              <span class="stat-trend-summary"
-                >Gonorrhoea is up 248%, syphilis 111% and chlamydia 27%.</span
-              >
-            </p>
-            <div class="stat-trend-chart" aria-hidden="true"></div>
-            <ul class="stat-trend-legend" aria-hidden="true"></ul>
-            <button
-              class="stats-chart-btn stat-trend-more"
-              type="button"
-              aria-haspopup="dialog"
-              aria-controls="chartOverlay"
-            >
-              See the full ECDC charts
-            </button>
-          </div>
-        </div>
 
         <div class="mockup reveal" style="--d: 5">
           <img
@@ -7019,69 +6812,23 @@
     </div>
 
     <script>
-      /* Inline STI trend: a sparkline in the hero sentence that expands an
-         indexed chart on hover, click or tap.
+      /* The strip under the hero sentence: gonorrhoea's EU/EEA confirmed
+         cases, 2015-2024, drawn at the strip's real pixel width.
 
-         The numbers below are the ECDC confirmed-case series already in
-         data/ecdc-sti/*.csv (EU/EEA, region EUEEA30_21) - the same source
-         data/generate-charts.py uses for the overlay PNGs. If those CSVs are
-         refreshed, re-run that script AND update these arrays; nothing keeps
-         them in step automatically.
-
-         The chart is indexed to 2015 = 100 rather than plotted as raw counts:
-         on a shared count scale chlamydia's volume flattens the other two and
-         hides the rise entirely. The axis label says so. */
+         The numbers are the ECDC series already in data/ecdc-sti/*.csv
+         (region EUEEA30_21) - the same source data/generate-charts.py uses
+         for the overlay PNGs. If those CSVs are refreshed, re-run that script
+         AND update this array and the "+248%" in the markup; nothing keeps
+         them in step automatically. */
       (function () {
-        var YEARS = [
-          2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+        var GONORRHOEA = [
+          30564, 37046, 41944, 40224, 41792, 40051, 50777, 75065, 99270,
+          106331,
         ];
-        var DATA = {
-          chlamydia: [
-            168239, 174979, 179951, 164523, 175777, 161969, 188521, 219978,
-            230788, 213443,
-          ],
-          gonorrhoea: [
-            30564, 37046, 41944, 40224, 41792, 40051, 50777, 75065, 99270,
-            106331,
-          ],
-          syphilis: [
-            21585, 23032, 25379, 25078, 26075, 23290, 26882, 35707, 42033,
-            45577,
-          ],
-        };
-        var ORDER = ["chlamydia", "gonorrhoea", "syphilis"];
-        var LABEL = {
-          chlamydia: "Chlamydia",
-          gonorrhoea: "Gonorrhoea",
-          syphilis: "Syphilis",
-        };
-        /* Deliberately outside the brand palette. Purple and teal are
-           AfterCare; the epidemic does not get to wear them. Neon magenta
-           takes the steepest series, lime the next, flat grey the one that
-           is not the story - far apart in lightness as well as hue, so the
-           three stay distinguishable in greyscale and to colour-blind
-           readers. */
-        var COLOR = {
-          chlamydia: "#6b7280",
-          gonorrhoea: "#ff2d95",
-          syphilis: "#ccff00",
-        };
         var NS = "http://www.w3.org/2000/svg";
-
-        var panel = document.getElementById("statTrend");
-        var toggles = document.querySelectorAll(".stats-trend-btn");
-        var sparks = document.querySelectorAll(".stat-spark");
-        // Pills that sit outside a toggle button (the narrow layout puts one
-        // after the wrapped phrase). The wide pill lives inside the button,
-        // which already handles clicks - binding it again would fire
-        // activate() twice and cancel itself out.
-        var loosePills = [].filter.call(
-          document.querySelectorAll(".stat-delta"),
-          function (c) {
-            return !c.closest(".stats-trend-btn");
-          },
-        );
-        if (!panel || !toggles.length) return;
+        var strip = document.querySelector(".stat-strip");
+        var host = strip && strip.querySelector(".stat-strip-plot");
+        if (!host) return;
 
         function node(name, attrs) {
           var n = document.createElementNS(NS, name);
@@ -7098,21 +6845,20 @@
             .join(" ");
         }
 
-        // Sparkline uses gonorrhoea alone: it is the steepest series and the
-        // only one whose shape still reads at 15px tall.
-        sparks.forEach(function (host) {
-          var w = 54,
-            h = 15,
-            pad = 2.2;
-          var vals = DATA.gonorrhoea;
-          var lo = Math.min.apply(null, vals),
-            hi = Math.max.apply(null, vals);
-          var pts = vals.map(function (v, i) {
+        function draw() {
+          var w = host.clientWidth,
+            h = host.clientHeight,
+            pad = 3;
+          if (!w) return;
+          var lo = Math.min.apply(null, GONORRHOEA),
+            hi = Math.max.apply(null, GONORRHOEA);
+          var pts = GONORRHOEA.map(function (v, i) {
             return [
-              pad + (i * (w - pad * 2)) / (vals.length - 1),
+              pad + (i * (w - pad * 2)) / (GONORRHOEA.length - 1),
               h - pad - ((v - lo) / (hi - lo)) * (h - pad * 2),
             ];
           });
+          var last = pts[pts.length - 1];
           var svg = node("svg", {
             width: w,
             height: h,
@@ -7120,171 +6866,58 @@
             "aria-hidden": "true",
             focusable: "false",
           });
-          svg.appendChild(node("path", { d: d(pts) }));
-          svg.appendChild(
-            node("circle", {
-              cx: pts[pts.length - 1][0],
-              cy: pts[pts.length - 1][1],
-              r: 1.9,
+          var grad = node("linearGradient", {
+            id: "statStripGrad",
+            x1: "0",
+            y1: "0",
+            x2: "0",
+            y2: "1",
+          });
+          grad.appendChild(
+            node("stop", {
+              offset: "0",
+              "stop-color": "#60a5fa",
+              "stop-opacity": ".38",
             }),
           );
+          grad.appendChild(
+            node("stop", {
+              offset: "1",
+              "stop-color": "#60a5fa",
+              "stop-opacity": "0",
+            }),
+          );
+          var defs = node("defs", {});
+          defs.appendChild(grad);
+          svg.appendChild(defs);
+          svg.appendChild(
+            node("path", {
+              d: d(pts) + " L" + last[0] + " " + h + " L" + pad + " " + h + " Z",
+              class: "area",
+            }),
+          );
+          var line = node("path", { d: d(pts), class: "line" });
+          svg.appendChild(line);
+          svg.appendChild(
+            node("circle", { cx: last[0], cy: last[1], r: 2.6, class: "cap" }),
+          );
+          host.textContent = "";
           host.appendChild(svg);
-        });
-
-        var built = false;
-        function build() {
-          if (built) return;
-          built = true;
-          var w = 420,
-            h = 108,
-            pad = 10;
-          var series = {};
-          ORDER.forEach(function (k) {
-            series[k] = DATA[k].map(function (v) {
-              return (v / DATA[k][0]) * 100;
-            });
-          });
-          var all = series.chlamydia.concat(series.gonorrhoea, series.syphilis);
-          var hi = Math.max.apply(null, all),
-            lo = Math.min.apply(null, all);
-
-          var svg = node("svg", {
-            viewBox: "0 0 " + w + " " + h,
-            preserveAspectRatio: "none",
-            "aria-hidden": "true",
-            focusable: "false",
-          });
-          var grid = node("g", { class: "grid" });
-          for (var i = 0; i <= 3; i++) {
-            var y = pad + (i * (h - pad * 2)) / 3;
-            grid.appendChild(node("line", { x1: 0, y1: y, x2: w, y2: y }));
-          }
-          svg.appendChild(grid);
-
-          ORDER.forEach(function (k, idx) {
-            var pts = series[k].map(function (v, i) {
-              return [
-                pad + (i * (w - pad * 2)) / (YEARS.length - 1),
-                h - pad - ((v - lo) / (hi - lo)) * (h - pad * 2),
-              ];
-            });
-            var path = node("path", {
-              d: d(pts),
-              class: "trend-line",
-              stroke: COLOR[k],
-              vectorEffect: "non-scaling-stroke",
-            });
-            svg.appendChild(path);
-            path.style.setProperty("--len", path.getTotalLength());
-            path.style.setProperty("--sd", idx * 140 + "ms");
-          });
-
-          var a1 = node("text", { x: pad, y: h - 1, class: "axis" });
-          a1.textContent = "2015 = 100";
-          var a2 = node("text", {
-            x: w - pad,
-            y: h - 1,
-            class: "axis",
-            "text-anchor": "end",
-          });
-          a2.textContent = "2024";
-          svg.appendChild(a1);
-          svg.appendChild(a2);
-          panel.querySelector(".stat-trend-chart").appendChild(svg);
-
-          panel.querySelector(".stat-trend-legend").innerHTML = ORDER.map(
-            function (k) {
-              var end = Math.round(series[k][series[k].length - 1]);
-              return (
-                '<li><i style="background:' +
-                COLOR[k] +
-                '"></i>' +
-                LABEL[k] +
-                ' <b style="color:' +
-                COLOR[k] +
-                '">' +
-                end +
-                "</b></li>"
-              );
-            },
-          ).join("");
+          // Over-measured on purpose: a dash shorter than the path would
+          // leave its last stretch in the gap once drawn.
+          strip.style.setProperty("--len", line.getTotalLength() * 1.1);
         }
 
-        var open = false;
-        var pinned = false;
-        var timer;
-
-        function setOpen(next) {
-          if (next === open) return;
-          open = next;
-          if (open) build();
-          panel.classList.toggle("is-open", open);
-          panel.style.height = open
-            ? panel.firstElementChild.offsetHeight + "px"
-            : "0px";
-          toggles.forEach(function (b) {
-            b.setAttribute("aria-expanded", String(open));
-          });
-        }
-        function later(fn, ms) {
-          clearTimeout(timer);
-          timer = setTimeout(fn, ms);
-        }
-        function activate() {
-          clearTimeout(timer);
-          pinned = !open || !pinned;
-          setOpen(pinned);
-        }
-
-        toggles.forEach(function (b) {
-          b.addEventListener("click", activate);
-        });
-        // The pill is aria-hidden, so it is a pointer affordance only -
-        // keyboard and screen-reader users drive the button beside it.
-        loosePills.forEach(function (c) {
-          c.addEventListener("click", activate);
-        });
-
-        // Hover only where there is a real pointer; on touch, tap handles it.
-        if (window.matchMedia("(hover: hover)").matches) {
-          var zone = [panel];
-          toggles.forEach(function (b) {
-            zone.push(b);
-          });
-          loosePills.forEach(function (c) {
-            zone.push(c);
-          });
-          zone.forEach(function (n) {
-            n.addEventListener("mouseenter", function () {
-              later(function () {
-                setOpen(true);
-              }, 110);
-            });
-            n.addEventListener("mouseleave", function () {
-              if (pinned) return;
-              later(function () {
-                setOpen(false);
-              }, 280);
-            });
-          });
-        }
-
-        document.addEventListener("keydown", function (e) {
-          if (e.key !== "Escape" || !open) return;
-          // Leave Escape to the modal when that is the thing on screen.
-          var ov = document.getElementById("chartOverlay");
-          if (ov && ov.classList.contains("is-open")) return;
-          pinned = false;
-          setOpen(false);
-          var here = [].filter.call(toggles, function (b) {
-            return b.offsetParent !== null;
-          })[0];
-          if (here) here.focus({ preventScroll: true });
-        });
-
+        // Draw-on plays once, on the first build; a resize redraws silently.
+        draw();
+        strip.classList.add("is-drawing");
+        var t;
         window.addEventListener("resize", function () {
-          if (open)
-            panel.style.height = panel.firstElementChild.offsetHeight + "px";
+          clearTimeout(t);
+          t = setTimeout(function () {
+            strip.classList.remove("is-drawing");
+            draw();
+          }, 150);
         });
       })();
     </script>
