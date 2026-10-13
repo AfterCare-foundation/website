@@ -2386,6 +2386,30 @@
         color: #2dd4bf;
       }
 
+      /* Hover: the bar swells a touch on a soft spring and its text lifts
+         to white with a faint halo, the way Apple's highlight tiles do.
+         Waits for .is-settled (the section's fade-in is done). */
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .mission .funnel-step {
+          transition:
+            scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+            color 0.35s ease,
+            text-shadow 0.35s ease,
+            background-color 0.35s ease,
+            box-shadow 0.35s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .mission.is-settled
+          .funnel-step:hover {
+          scale: 1.035;
+          color: #fff;
+          text-shadow:
+            0 0 10px rgba(255, 255, 255, 0.55),
+            0 0 26px rgba(255, 255, 255, 0.28);
+          box-shadow: 0 0 22px rgba(255, 255, 255, 0.08);
+        }
+      }
+
       /* ---- how it works ---- */
       .how {
         position: relative;
@@ -3480,7 +3504,7 @@
           box-shadow: 0 0 0 rgba(45, 212, 191, 0);
         }
       }
-      .step.content-active .mp-scanline {
+      .step.content-active .mp-scanline:not(.mp-scanline-hover) {
         animation: mp-scan-sweep 2.2s ease-in-out both;
       }
       .step.content-active .mp-corner {
@@ -3813,6 +3837,184 @@
         line-height: 1.45;
       }
 
+      /* ---- hover delight ----
+         Only where there is a real hover and motion is welcome (both the OS
+         setting and the page's own Accessibility toggle). The step visuals
+         already carry entrance animations that hold `transform`, so these
+         use the individual `scale` / `rotate` / `translate` properties,
+         which compose with it instead of fighting it. */
+      @keyframes mp-scan-hover {
+        from {
+          top: 6%;
+        }
+        to {
+          top: 88%;
+        }
+      }
+      @keyframes mp-heart-pulse {
+        0%,
+        42%,
+        100% {
+          scale: 1;
+          filter: drop-shadow(0 0 0 rgba(167, 139, 250, 0));
+        }
+        14% {
+          scale: 1.18;
+          filter: drop-shadow(0 0 7px rgba(167, 139, 250, 0.7));
+        }
+        28% {
+          scale: 1.02;
+        }
+        36% {
+          scale: 1.12;
+          filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.5));
+        }
+      }
+      @keyframes trust-pop {
+        0%,
+        100% {
+          scale: 1;
+        }
+        40% {
+          scale: 1.22;
+        }
+        70% {
+          scale: 0.95;
+        }
+      }
+      @keyframes trust-wiggle {
+        0%,
+        100% {
+          rotate: 0deg;
+        }
+        25% {
+          rotate: -14deg;
+        }
+        60% {
+          rotate: 11deg;
+        }
+        85% {
+          rotate: -4deg;
+        }
+      }
+      @keyframes trust-swing {
+        0%,
+        100% {
+          rotate: 0deg;
+        }
+        30% {
+          rotate: -18deg;
+          translate: 0 -1px;
+        }
+        65% {
+          rotate: 10deg;
+        }
+      }
+      @keyframes trust-check-draw {
+        from {
+          stroke-dasharray: 9;
+          stroke-dashoffset: 9;
+        }
+        to {
+          stroke-dasharray: 9;
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes trust-br-out-r {
+        50% {
+          translate: 2.5px 0;
+        }
+      }
+      @keyframes trust-br-out-l {
+        50% {
+          translate: -2.5px 0;
+        }
+      }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        .mp-scanline-hover {
+          opacity: 0;
+        }
+        :root:not([data-motion="reduced"]) .step.is-settled .mp-notif {
+          transition: scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        :root:not([data-motion="reduced"]) .step.is-settled .mp-notified:hover .mp-notif {
+          scale: 1.08;
+          box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+        }
+        :root:not([data-motion="reduced"]) .step.is-settled .mp-frame {
+          transition: scale 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        :root:not([data-motion="reduced"]) .step.is-settled .mini-phone:hover .mp-frame {
+          scale: 1.07;
+        }
+        :root:not([data-motion="reduced"])
+          .step.is-settled
+          .mini-phone:hover
+          .mp-scanline-hover {
+          opacity: 1;
+          animation: mp-scan-hover 0.9s ease-in-out infinite alternate;
+        }
+        :root:not([data-motion="reduced"]) .step[data-step="keep"].is-settled .torn-card {
+          transition:
+            filter 0.15s ease,
+            rotate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+            translate 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        :root:not([data-motion="reduced"])
+          .step[data-step="keep"].is-settled
+          .torn-card:hover {
+          rotate: 3deg;
+          translate: 0 -4px;
+        }
+        :root:not([data-motion="reduced"])
+          .step.is-settled
+          .mp-connected:hover
+          .mp-heart {
+          animation:
+            mp-match-heart-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both,
+            mp-heart-pulse 1.4s ease-in-out infinite;
+        }
+        :root:not([data-motion="reduced"]) .trust.is-settled li:hover .trust-icon {
+          animation: trust-pop 0.55s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(1):hover
+          .trust-check {
+          animation: trust-check-draw 0.55s ease 0.12s both;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(2):hover
+          .trust-icon {
+          animation: trust-wiggle 0.7s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(3):hover
+          .trust-icon {
+          animation: trust-swing 0.75s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(4):hover
+          .trust-icon {
+          animation: none;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(4):hover
+          .trust-br-r {
+          animation: trust-br-out-r 0.6s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .trust.is-settled
+          li:nth-child(4):hover
+          .trust-br-l {
+          animation: trust-br-out-l 0.6s ease;
+        }
+      }
+
       /* enhancement for wide desktop: the section was capped at 640px at
          every viewport, which reads as a narrow, sparse column adrift in a
          lot of empty space on a wide monitor. Give it more room to breathe
@@ -3912,7 +4114,7 @@
         position: relative;
         z-index: 2;
         text-align: center;
-        margin: 16px 0 0;
+        margin: 36px 0 12px;
       }
       /* Vertical rhythm for the closing block: 40px above the heading to
          set it apart from the steps, then 16 / 24 / 20 between heading,
@@ -3944,24 +4146,6 @@
           border-color 0.2s ease,
           transform 0.15s ease;
       }
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 11px 20px;
-        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
-        border-radius: 999px;
-        background: rgba(var(--fg-rgb), 0.04);
-        color: var(--gray);
-        font-family: inherit;
-        font-size: 0.844rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition:
-          background 0.2s ease,
-          color 0.2s ease,
-          border-color 0.2s ease,
-          transform 0.15s ease;
-      }
       .share-btn:hover,
       .share-btn:focus-visible {
         color: var(--white);
@@ -3970,6 +4154,64 @@
       }
       .share-btn:active {
         transform: scale(0.96);
+      }
+      /* Share icon: on hover the whole glyph springs up a touch and the
+         three nodes pop in sequence, like a message being passed along. */
+      .share-btn svg {
+        flex-shrink: 0;
+        overflow: visible;
+      }
+      @keyframes share-spring {
+        0%,
+        100% {
+          scale: 1;
+          rotate: 0deg;
+        }
+        35% {
+          scale: 1.2;
+          rotate: -10deg;
+        }
+        70% {
+          scale: 0.96;
+          rotate: 4deg;
+        }
+      }
+      @keyframes share-node {
+        0%,
+        100% {
+          scale: 1;
+        }
+        40% {
+          scale: 1.45;
+        }
+      }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .share-btn:hover svg {
+          animation: share-spring 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        :root:not([data-motion="reduced"]) .share-btn:hover svg circle {
+          transform-box: fill-box;
+          transform-origin: center;
+          animation: share-node 0.55s ease;
+        }
+        :root:not([data-motion="reduced"])
+          .share-btn:hover
+          svg
+          circle:nth-of-type(1) {
+          animation-delay: 0.05s;
+        }
+        :root:not([data-motion="reduced"])
+          .share-btn:hover
+          svg
+          circle:nth-of-type(2) {
+          animation-delay: 0.15s;
+        }
+        :root:not([data-motion="reduced"])
+          .share-btn:hover
+          svg
+          circle:nth-of-type(3) {
+          animation-delay: 0.25s;
+        }
       }
       .toast {
         position: fixed;
@@ -5272,6 +5514,7 @@
                     <span class="mp-corner h br"></span
                     ><span class="mp-corner v br"></span>
                     <span class="mp-scanline"></span>
+                    <span class="mp-scanline mp-scanline-hover"></span>
                   </div>
                   <span class="mp-sub"
                     >Only a hash of the card leaves this phone.</span
@@ -5405,7 +5648,7 @@
                 <path
                   d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
                 />
-                <path d="m9 12 2 2 4-4" />
+                <path class="trust-check" d="m9 12 2 2 4-4" />
               </svg>
             </span>
             <span class="trust-title">Privacy first</span>
@@ -5470,8 +5713,8 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="m16 18 6-6-6-6" />
-                <path d="m8 6-6 6 6 6" />
+                <path class="trust-br-r" d="m16 18 6-6-6-6" />
+                <path class="trust-br-l" d="m8 6-6 6 6 6" />
               </svg>
             </span>
             <span class="trust-title">Open source</span>
@@ -7092,6 +7335,55 @@
 
         // Init with default (Club)
         applyUc("club");
+      })();
+    </script>
+
+    <script>
+      // Hover flourishes only run once an element is "at rest" — after its
+      // entrance animation has played — so they never fight it. The CSS keys
+      // off .is-settled; this adds it a beat after each entrance starts and
+      // removes it if the step is re-armed.
+      (function () {
+        function watch(el, trigger, isOn, delay, target) {
+          if (!el) return;
+          var t;
+          function check() {
+            clearTimeout(t);
+            if (isOn(trigger)) {
+              if (!target.classList.contains("is-settled"))
+                t = setTimeout(function () {
+                  target.classList.add("is-settled");
+                }, delay);
+            } else if (target.classList.contains("is-settled")) {
+              target.classList.remove("is-settled");
+            }
+          }
+          new MutationObserver(check).observe(trigger, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+          check();
+        }
+        function has(cls) {
+          return function (el) {
+            return el.classList.contains(cls);
+          };
+        }
+        var keep = document.querySelector('.step[data-step="keep"]');
+        if (keep)
+          watch(keep, keep.querySelector(".torn-card"), has("tearing"), 1100, keep);
+        [
+          ["scan", 2600],
+          ["connected", 1500],
+          ["notified", 1400],
+        ].forEach(function (s) {
+          var step = document.querySelector('.step[data-step="' + s[0] + '"]');
+          watch(step, step, has("content-active"), s[1], step);
+        });
+        var mission = document.querySelector(".mission");
+        watch(mission, mission, has("in-view"), 1000, mission);
+        var trust = document.querySelector(".trust");
+        watch(trust, trust, has("in-view"), 1500, trust);
       })();
     </script>
   </body>
