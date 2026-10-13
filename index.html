@@ -478,6 +478,30 @@
         margin: 0;
         text-wrap: balance;
       }
+      /* Second line of the headline: the same way into the chart overlay as
+         the strip below. The rule sits on the inner phrase (text-decoration,
+         not a border) so it follows the text if the line wraps on a phone. */
+      .stats-chart-btn.headline-link {
+        display: block;
+        width: fit-content;
+        margin: 0 auto;
+        color: inherit;
+        text-align: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        border-bottom: 0;
+      }
+      .headline-link .stat-phrase {
+        text-decoration: underline;
+        text-decoration-color: rgba(var(--fg-rgb), 0.45);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 0.14em;
+        transition: text-decoration-color 0.2s ease;
+      }
+      .headline-link:hover .stat-phrase,
+      .headline-link:focus-visible .stat-phrase {
+        text-decoration-color: var(--teal);
+      }
       /* ---- the rise, as a strip under the headline ----
          Gonorrhoea alone: the steepest series, and the one whose shape and
          size of rise read at a glance. It is the headline's evidence and the
@@ -4405,7 +4429,16 @@
         </div>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3">
-          Bacterial STIs are at record highs across Europe.
+          Bacterial STIs are at record
+          <button
+            class="stats-chart-btn headline-link"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="chartOverlay"
+            aria-label="highs across Europe. Open the full ECDC charts."
+          >
+            <span class="stat-phrase">highs across Europe.</span>
+          </button>
         </h1>
         <button
           class="stats-chart-btn stat-strip reveal"
