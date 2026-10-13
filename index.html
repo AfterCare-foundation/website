@@ -1914,16 +1914,36 @@
            a one-word orphan. */
         text-wrap: balance;
         color: #fff;
-        transition: opacity 0.4s ease;
+      }
+      /* Hand-off, not cross-fade: the old line clears fast, then the new one
+         arrives. Two sentences half-visible on top of each other is the one
+         moment in this card nobody can read. */
+      .why-msg-ask {
+        transition: opacity 0.15s ease-out;
       }
       .why-msg-done {
         opacity: 0;
+        transform: translateY(3px);
+        transition:
+          opacity 0.35s ease-out 0.18s,
+          transform 0.35s ease-out 0.18s;
       }
       .why-app-card-msg.is-done .why-msg-ask {
         opacity: 0;
       }
       .why-app-card-msg.is-done .why-msg-done {
         opacity: 1;
+        transform: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .why-msg-ask,
+        .why-msg-done {
+          transition: none;
+        }
+      }
+      :root[data-motion="reduced"] .why-msg-ask,
+      :root[data-motion="reduced"] .why-msg-done {
+        transition: none;
       }
       .why-app-tabs {
         display: flex;
@@ -6856,9 +6876,13 @@
           var READ_PAUSE_MS_1 = 1300;
           var READ_PAUSE_MS_2 = 1500;
           var READ_PAUSE_MS_FINAL = 1700;
-          // How long "Sent ✓" and the thank-you line stay on screen before
-          // autoplay is allowed to move on.
-          var SENT_LINGER_MS = 2000;
+          // Dwell times are set by reading speed (about 4 words/second plus
+          // a beat to orient), not by what looks snappy to whoever built it.
+          // ASK: the 8-word question must be read before the ghost tap
+          // answers it. SENT: the 7-word thank-you must be read after it
+          // has finished arriving (~0.5s), before autoplay moves on.
+          var ASK_READ_MS = 2400;
+          var SENT_LINGER_MS = 3000;
 
           var timers = [];
           function addTimeout(fn, ms) {
@@ -7029,7 +7053,7 @@
               stageCaption.classList.add("why-ba-after");
             }
             tapPanel.classList.add("show");
-            addTimeout(playGhostTap, 1200);
+            addTimeout(playGhostTap, ASK_READ_MS);
           }
 
           function openLaunchWindow() {

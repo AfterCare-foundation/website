@@ -137,6 +137,28 @@ tooling — Chromium is a Google-controlled project; Firefox is not.
   browser, or describe the change precisely) rather than defaulting to
   Chromium to get unblocked.
 
+## Animation is for the viewer, not for us
+
+Every animation must carry meaning (cause → effect, where something came
+from, what changed) and be paced for a first-time reader.
+
+**How to apply:**
+- Time dwell by reading speed (~4 words/second plus ~0.5s to orient, and
+  after the text has finished arriving), never by what feels snappy to the
+  author, who already knows the words.
+- Change one thing at a time, in the order the eye should follow. Never
+  cross-fade text over text — clear the old line fast, then bring in the
+  new one.
+- Keep the layout stable across states (same grid cell, fixed heights) so
+  nothing reflows under the reader's eye.
+- Motion should be physically motivated (a window shrinks into its own
+  icon), short (150–500ms), ease-out for arrivals, and never decorative.
+- Every new animation needs the existing reduced-motion pair
+  (`prefers-reduced-motion` and `:root[data-motion="reduced"]`), and the
+  reduced version must still hold each beat, not skip them.
+- Verify with Playwright by capturing mid-transition frames, not only the
+  end states.
+
 ## Commit and deploy discipline
 
 Treat `main` as production, not a scratchpad — Scalingo deploys straight
