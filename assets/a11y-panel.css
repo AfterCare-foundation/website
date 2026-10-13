@@ -225,3 +225,33 @@
   color: var(--white);
   border-color: var(--teal);
 }
+
+/* High contrast: the panel's own hairlines and the switch track sit well
+   under the control-border token, so lift them to it. */
+:root[data-contrast="high"] .a11y-panel {
+  border-color: rgba(var(--fg-rgb), var(--control-border-alpha));
+}
+:root[data-contrast="high"] .a11y-row,
+:root[data-contrast="high"] .a11y-toggle-row {
+  border-top-color: rgba(var(--fg-rgb), 0.35);
+}
+:root[data-contrast="high"] .a11y-stepper button:not(:last-child) {
+  border-right-color: rgba(var(--fg-rgb), var(--control-border-alpha));
+}
+:root[data-contrast="high"] .a11y-stepper button:disabled {
+  opacity: 0.6;
+}
+
+/* Windows High Contrast / forced colours drop backgrounds, which would
+   erase the switch thumb; draw it in system colours instead. */
+@media (forced-colors: active) {
+  .a11y-toggle-row input[type="checkbox"]::after {
+    background: CanvasText;
+  }
+  .a11y-toggle-row input[type="checkbox"]:checked {
+    border-color: Highlight;
+  }
+  .a11y-toggle-row input[type="checkbox"]:checked::after {
+    background: Highlight;
+  }
+}

@@ -61,6 +61,11 @@
         --gray: #9ca3af;
         --fg-rgb: 244, 244, 246;
         --control-border-alpha: 0.4;
+        /* Same motion curves as the home page: calm decelerates with no
+           overshoot (colour, fades); soft settles slightly (anything
+           that lifts or scales). */
+        --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-soft: cubic-bezier(0.34, 1.4, 0.64, 1);
       }
       :root[data-theme="light"] {
         --bg: #f5f6fa;
@@ -81,11 +86,19 @@
       :root[data-contrast="high"] {
         --gray: var(--white);
         --control-border-alpha: 0.7;
+        /* Added to the alpha of every dimmed text colour, so they all reach
+           full ink strength; 0 (the default) leaves normal mode untouched. */
+        --text-boost: 1;
+      }
+      /* --teal is also used as text; the light-theme value is only 5.1:1. */
+      :root[data-contrast="high"][data-theme="light"] {
+        --teal: #0a5750;
       }
       :root[data-contrast="high"] :focus-visible {
         outline-width: 3px;
         outline-offset: 4px;
       }
+
       :root[data-motion="reduced"] {
         scroll-behavior: auto;
       }
@@ -103,6 +116,7 @@
         }
       }
       body {
+        position: relative;
         background: var(--bg);
         color: var(--white);
         font-family: "Poppins", -apple-system, "Segoe UI", Helvetica, Arial,
@@ -111,6 +125,12 @@
         text-rendering: optimizeLegibility;
         -webkit-tap-highlight-color: transparent;
         line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100svh;
+        overflow-x: hidden;
+        overflow-x: clip;
         /* Set by assets/viewport-inset.js; 0 outside the Chrome on iOS state
            where the page renders behind the browser's own toolbars. */
         padding-top: var(--chrome-top-inset, 0px);
@@ -125,20 +145,56 @@
         border-radius: 4px;
       }
 
-      .wrap {
-        max-width: 640px;
-        margin: 0 auto;
-        padding: 40px 20px calc(64px + env(safe-area-inset-bottom));
+      /* ---- scroll progress + ambient glow (same as the home page) ---- */
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        background: linear-gradient(90deg, var(--purple-light), var(--teal));
+        z-index: 100;
+        transition: width 0.1s linear;
+      }
+      .glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 680px;
+        background: radial-gradient(
+          ellipse at 50% 0%,
+          rgba(29, 78, 216, 0.3),
+          transparent 60%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
+      :root[data-theme="light"] .glow {
+        opacity: 0.5;
       }
 
+      .wrap {
+        position: relative;
+        z-index: 2;
+        flex: 1 0 auto;
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 36px 20px 8px;
+      }
+
+      /* ---- back link: the chevron leans toward where you're going ---- */
       .back {
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        padding: 4px 0;
         font-size: 0.8125rem;
         font-weight: 600;
         color: var(--gray);
         text-decoration: none;
+        transition: color 0.3s var(--ease-calm);
       }
       .back:hover,
       .back:focus-visible {
@@ -146,117 +202,610 @@
       }
       .back svg {
         flex-shrink: 0;
+        transition: translate 0.4s var(--ease-soft);
+      }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .back:hover svg {
+          translate: -3px 0;
+        }
       }
 
-      header {
+      /* ---- hero: the home page's lockup, then eyebrow, headline, dek ---- */
+      .hero {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 22px;
-        margin: 36px 0 44px;
+        align-items: center;
+        text-align: center;
+        padding: clamp(24px, 6vh, 56px) 0 0;
       }
       .logo-badge {
-        width: 44px;
-        height: 44px;
+        --logo: clamp(2.7rem, 2rem + 2.4vw, 3.4rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.14em;
+        margin-bottom: 28px;
+        font-size: var(--logo);
+        line-height: 1;
+        user-select: none;
       }
       .logo-badge img {
-        width: 100%;
-        height: 100%;
+        width: 1.3em;
+        height: 1.3em;
         object-fit: contain;
-        filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.3));
+        pointer-events: none;
+        flex-shrink: 0;
+      }
+      .logo-badge-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 1.3em;
+      }
+      .logo-badge-name {
+        display: block;
+        width: fit-content;
+        font-size: 0.8em;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        background: linear-gradient(90deg, #7d47e0 0%, #2dd4bf 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 0.92;
+      }
+      .app-subtitle {
+        position: relative;
+        margin-top: 0.5em;
+        font-size: 0.185em;
+        line-height: 1.2;
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .app-subtitle::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -0.32em;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          rgba(125, 71, 224, 0),
+          rgba(125, 71, 224, 0.5) 20%,
+          rgba(45, 212, 191, 0.5) 80%,
+          rgba(45, 212, 191, 0)
+        );
+      }
+      .eyebrow {
+        display: inline-block;
+        margin: 0 0 22px;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--gray);
+        background: rgba(var(--fg-rgb), 0.03);
+        border: 1px solid rgba(var(--fg-rgb), 0.14);
+        border-radius: 999px;
       }
       h1 {
-        font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.3rem);
-        line-height: 1.15;
+        max-width: 18em;
+        margin: 0 0 18px;
+        font-size: clamp(1.9rem, 1.1rem + 3.4vw, 3.1rem);
         font-weight: 600;
-        letter-spacing: -0.01em;
-        margin: 0 0 10px;
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
       }
       .dek {
-        color: var(--gray);
-        font-size: 1rem;
-        line-height: 1.6;
-        max-width: 48ch;
+        max-width: 34em;
         margin: 0;
+        font-size: clamp(0.95rem, 0.85rem + 0.45vw, 1.075rem);
+        line-height: 1.6;
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
+        text-wrap: balance;
       }
 
-      h2 {
-        font-size: 1.05rem;
-        font-weight: 600;
-        margin: 44px 0 14px;
+      /* Same hairline-with-bloom divider as the home hero. */
+      .divider {
+        position: relative;
+        width: min(300px, 86%);
+        height: 15px;
+        margin: clamp(40px, 6vw, 60px) auto 0;
+        pointer-events: none;
       }
-      p {
-        color: rgba(var(--fg-rgb), 0.82);
-        font-size: 0.95rem;
-        margin: 0 0 14px;
+      .divider::before,
+      .divider::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .divider::before {
+        top: 0;
+        width: 100%;
+        height: 15px;
+        background:
+          linear-gradient(
+              90deg,
+              rgba(var(--fg-rgb), 0),
+              rgba(var(--fg-rgb), 0.4) 50%,
+              rgba(var(--fg-rgb), 0)
+            )
+            center / 100% 1px no-repeat,
+          radial-gradient(
+              ellipse 50% 50% at center,
+              rgba(var(--fg-rgb), 0.09),
+              rgba(var(--fg-rgb), 0) 70%
+            )
+            center / 100% 100% no-repeat;
+      }
+      .divider::after {
+        top: 6px;
+        width: 72px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          rgba(var(--fg-rgb), 0),
+          rgba(var(--fg-rgb), 0.66) 42%,
+          rgba(var(--fg-rgb), 0.66) 58%,
+          rgba(var(--fg-rgb), 0)
+        );
+        filter: drop-shadow(0 0 3px rgba(var(--fg-rgb), 0.28));
+      }
+
+      /* ---- section headlines: the home page's "Highlights." register ---- */
+      .section-title {
+        margin: 88px 0 28px;
+        font-size: clamp(1.5rem, 0.9rem + 2.2vw, 2.5rem);
+        font-weight: 600;
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        color: var(--white);
+        text-align: center;
+        text-wrap: balance;
+      }
+      @media (min-width: 1024px) {
+        .section-title {
+          margin-top: 120px;
+        }
+      }
+      .prose {
+        max-width: 38em;
+        margin-inline: auto;
+      }
+      .prose p,
+      .lede {
+        margin: 0 0 16px;
+        font-size: 0.975rem;
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
       }
       .lede {
         font-size: 1.05rem;
+        color: rgba(var(--fg-rgb), calc(0.88 + var(--text-boost, 0)));
+        max-width: 38em;
+        margin-inline: auto;
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      /* ---- cards: the "trust" tile language, a corner of brand light on a
+         faint glass fill. The spotlight is the only hover-driven light and
+         follows the pointer, so it says "this is the one you're on". ---- */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 600px) {
+        .grid.two {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid.three {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .card {
+        position: relative;
+        overflow: hidden;
+        padding: 22px 22px 24px;
+        border: 1px solid rgba(var(--fg-rgb), 0.1);
+        border-radius: 22px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+        background:
+          radial-gradient(
+            130% 140% at 15% -20%,
+            rgba(96, 165, 250, 0.26),
+            transparent 55%
+          ),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .card.teal {
+        background:
+          radial-gradient(
+            130% 140% at 85% -20%,
+            rgba(45, 212, 191, 0.22),
+            transparent 55%
+          ),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .card.deep {
+        background:
+          radial-gradient(
+            130% 140% at 15% 120%,
+            rgba(29, 78, 216, 0.28),
+            transparent 55%
+          ),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .card.mix {
+        background:
+          radial-gradient(
+            130% 140% at 85% 120%,
+            rgba(45, 212, 191, 0.2),
+            rgba(96, 165, 250, 0.12) 45%,
+            transparent 65%
+          ),
+          rgba(var(--fg-rgb), 0.03);
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(
+          240px circle at var(--px, 50%) var(--py, 0%),
+          rgba(var(--fg-rgb), 0.07),
+          transparent 70%
+        );
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.45s var(--ease-calm);
+      }
+      .card > * {
+        position: relative;
+        z-index: 1;
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
         color: var(--white);
       }
-
-      .promises {
-        list-style: none;
-        margin: 0 0 4px;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .promises li {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        font-size: 0.95rem;
-        color: rgba(var(--fg-rgb), 0.9);
-      }
-      .promises svg {
-        flex-shrink: 0;
-        margin-top: 2px;
-        color: var(--teal);
-      }
-
-      .callout {
-        margin: 20px 0;
-        padding: 16px 18px;
-        background: rgba(var(--fg-rgb), 0.04);
-        border: 1px solid rgba(var(--fg-rgb), 0.1);
-        border-radius: 14px;
+      .card p {
+        margin: 0 0 12px;
         font-size: 0.9rem;
-        color: var(--gray);
+        line-height: 1.55;
+        color: rgba(var(--fg-rgb), calc(0.72 + var(--text-boost, 0)));
       }
-      .callout p:last-child {
+      .card p:last-child {
         margin-bottom: 0;
       }
-
-      .eu-credit {
+      .badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        color: var(--purple);
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        margin-bottom: 14px;
+        border-radius: 50%;
+        background: rgba(var(--fg-rgb), 0.08);
+        border: 1px solid rgba(var(--fg-rgb), 0.16);
+        color: var(--teal);
+      }
+      .badge svg {
+        width: 19px;
+        height: 19px;
+        overflow: visible;
+      }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .card {
+          transition:
+            translate 0.5s var(--ease-soft),
+            box-shadow 0.5s var(--ease-calm),
+            border-color 0.4s var(--ease-calm);
+        }
+        :root:not([data-motion="reduced"]) .card:hover {
+          translate: 0 -4px;
+          border-color: rgba(var(--fg-rgb), 0.2);
+          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        }
+        :root:not([data-motion="reduced"]) .card:hover::after {
+          opacity: 1;
+        }
+      }
+      :root[data-contrast="high"] .card,
+      :root[data-contrast="high"] .badge,
+      :root[data-contrast="high"] .eyebrow {
+        border-color: rgba(var(--fg-rgb), 0.45);
+      }
+
+      /* ---- check mark / strike-through: drawn in as the card arrives, so the
+         eye is told the thing was ticked (or struck) at that moment ---- */
+      .tick path {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.7s var(--ease-calm);
+        transition-delay: calc(var(--sd, 0) * 90ms + 350ms);
+      }
+      .js .scroll-reveal:not(.in-view) .tick path {
+        stroke-dashoffset: 1;
+      }
+
+      /* ---- buttons ---- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 12px 22px;
+        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+        border-radius: 999px;
+        background: rgba(var(--fg-rgb), 0.04);
+        color: var(--white);
+        font-family: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          background 0.3s var(--ease-calm),
+          border-color 0.3s var(--ease-calm),
+          scale 0.3s var(--ease-soft);
+      }
+      .btn:hover,
+      .btn:focus-visible {
+        background: rgba(var(--fg-rgb), 0.09);
+        border-color: rgba(var(--fg-rgb), 0.3);
+      }
+      .btn:active {
+        scale: 0.97;
+      }
+      .btn svg {
+        flex-shrink: 0;
+        color: var(--teal);
+        transition: translate 0.4s var(--ease-soft);
+      }
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .btn:hover svg {
+          translate: 2px -2px;
+        }
+      }
+      .cta {
+        text-align: center;
+      }
+      .cta p {
+        max-width: 30em;
+        margin: 0 auto 22px;
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
+        font-size: 1rem;
+      }
+      .link-pill {
+        display: inline-block;
+        padding: 3px 12px;
+        border: 1px solid rgba(45, 212, 191, 0.35);
+        border-radius: 999px;
+        color: var(--teal);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+          background 0.3s var(--ease-calm),
+          border-color 0.3s var(--ease-calm);
+      }
+      .link-pill:hover,
+      .link-pill:focus-visible {
+        background: rgba(45, 212, 191, 0.12);
+        border-color: var(--teal);
       }
 
       footer {
-        margin-top: 56px;
-        padding-top: 24px;
-        border-top: 1px solid rgba(var(--fg-rgb), 0.08);
-        font-size: 0.781rem;
-        color: rgba(var(--fg-rgb), 0.4);
+        position: relative;
+        z-index: 2;
+        flex: 0 0 auto;
+        margin-top: 88px;
+        padding: 0 18px calc(24px + env(safe-area-inset-bottom));
+        text-align: center;
+        font-size: 0.75rem;
+        letter-spacing: 0.02em;
+        color: rgba(var(--fg-rgb), calc(0.4 + var(--text-boost, 0)));
+      }
+      footer p {
+        margin: 0 0 8px;
       }
       footer a {
         color: var(--gray);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(96, 165, 250, 0.5);
+        transition:
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      footer a:hover,
+      footer a:focus-visible {
+        color: var(--purple-light);
+        border-color: var(--purple-light);
+      }
+
+      /* ---- page-load stagger, then below-the-fold reveal ---- */
+      .reveal {
+        opacity: 0;
+        animation: revealIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation-delay: calc(150ms + var(--d) * 110ms);
+      }
+      @keyframes revealIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .js .scroll-reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(var(--sd, 0) * 90ms);
+      }
+      .js .scroll-reveal.in-view {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Reduced motion, same balance as the home page: nothing travels,
+         scales or springs, but arrivals are not abrupt either. Content eases
+         in on a short opacity-only fade, and every beat is still held. */
+      @keyframes rm-fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        #progress {
+          transition: none;
+        }
+
+      :root:root .reveal {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: calc(150ms + var(--d, 0) * 70ms) !important;
+      }
+      :root:root.js .scroll-reveal {
+        transform: none !important;
+        transition: opacity 0.45s ease calc(var(--sd, 0) * 60ms) !important;
+      }
+      :root:root .tick path,
+      :root:root .strike::after {
+        transition: none !important;
+        stroke-dashoffset: 0 !important;
+        transform: none !important;
+      }
+      :root:root .card,
+      :root:root .btn,
+      :root:root .back,
+      :root:root .back svg,
+      :root:root .btn svg {
+        transition: none !important;
+      }
+      :root:root .card::after {
+        display: none;
+      }
+      }
+
+      :root[data-motion="reduced"]:root .reveal {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: calc(150ms + var(--d, 0) * 70ms) !important;
+      }
+      :root[data-motion="reduced"]:root.js .scroll-reveal {
+        transform: none !important;
+        transition: opacity 0.45s ease calc(var(--sd, 0) * 60ms) !important;
+      }
+      :root[data-motion="reduced"]:root .tick path,
+      :root[data-motion="reduced"]:root .strike::after {
+        transition: none !important;
+        stroke-dashoffset: 0 !important;
+        transform: none !important;
+      }
+      :root[data-motion="reduced"]:root .card,
+      :root[data-motion="reduced"]:root .btn,
+      :root[data-motion="reduced"]:root .back,
+      :root[data-motion="reduced"]:root .back svg,
+      :root[data-motion="reduced"]:root .btn svg {
+        transition: none !important;
+      }
+      :root[data-motion="reduced"]:root .card::after {
+        display: none;
+      }
+      :root[data-motion="reduced"] #progress {
+        transition: none;
+      }
+
+      /* ---- privacy: the "zero" row ---- */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 8px;
+      }
+      .stat {
+        text-align: center;
+        padding: 22px 8px 20px;
+      }
+      .stat b {
+        display: block;
+        font-size: clamp(2.6rem, 1.6rem + 4vw, 4rem);
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--white);
+      }
+      .stat span {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+      }
+      /* The fifth promise has no partner, so it spans the row. */
+      @media (min-width: 600px) {
+        .promises > .card:last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+        }
+      }
+      .promises {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .eu-ring {
+        display: block;
+        width: 54px;
+        height: 54px;
+        margin-bottom: 14px;
+        color: var(--purple-light);
+      }
+      .site-note {
+        margin-top: 28px;
       }
     </style>
     <script>
       (function () {
         try {
           var root = document.documentElement;
+          // Lets the CSS hide scroll-reveal content only when JS can reveal it.
+          root.classList.add("js");
           // Light mode is temporarily hidden as an option (not yet
           // optimized) — dark stays forced regardless of any stored
           // "ac-theme" preference from before this was disabled.
           var size = localStorage.getItem("ac-text-size");
           if (size === "lg" || size === "xl") root.dataset.textSize = size;
-          if (localStorage.getItem("ac-contrast") === "high")
+          var contrast = localStorage.getItem("ac-contrast");
+          if (
+            contrast === "high" ||
+            (contrast !== "off" &&
+              window.matchMedia("(prefers-contrast: more)").matches)
+          )
             root.dataset.contrast = "high";
           if (localStorage.getItem("ac-motion") === "reduced")
             root.dataset.motion = "reduced";
@@ -361,192 +910,209 @@
         </button>
       </div>
     </div>
+    <div class="glow" aria-hidden="true"></div>
+    <div id="progress" aria-hidden="true"></div>
     <main id="main-content" class="wrap">
-      <a class="back" href="../">
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m15 18-6-6 6-6" />
-        </svg>
+      <a class="back reveal" style="--d: 0" href="../">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
         AfterCare
       </a>
 
-      <header>
-        <div class="logo-badge">
-          <img src="../visual-assets/aftercare-logo.svg" alt="" />
-        </div>
-        <div>
-          <h1>Privacy Policy</h1>
-
-          <p class="dek">
-            The short version: we don't track you. No cookies, no analytics, no
-            ad tech — not because a law made us, but because it's incompatible
-            with what this app is for. Here's the long version, in plain
-            language.
-          </p>
-        </div>
+      <header class="hero">
+          <div class="logo-badge reveal" style="--d: 1">
+            <img src="../visual-assets/aftercare-logo.svg" alt="" width="48" height="48" decoding="async" />
+            <div class="logo-badge-text">
+              <span class="logo-badge-name">AfterCare</span>
+              <span class="app-subtitle">Anonymous STI notification app</span>
+            </div>
+          </div>
+        <div class="eyebrow reveal" style="--d: 2">Privacy policy</div>
+        <h1 class="reveal" style="--d: 3">We don't track you.</h1>
+        <p class="dek reveal" style="--d: 4">
+          No cookies, no analytics, no ad tech — not because a law made us, but
+          because it's incompatible with what this app is for. Here's the long
+          version, in plain language.
+        </p>
+        <div class="divider reveal" style="--d: 5" aria-hidden="true"></div>
       </header>
 
-      <ul class="promises">
-        <li>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-          No cookies — not analytics cookies, not even "necessary" ones.
-        </li>
-        <li>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-          No analytics, no Google Fonts, no Google Analytics or Tag Manager, no
-          Meta Pixel, no third-party scripts of any kind.
-        </li>
-        <li>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-          No ad tech, no data brokers, no selling or renting anything about you
-          to anyone.
-        </li>
-        <li>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-          No accounts, no names, no emails required to use the card system
-          itself.
-        </li>
-        <li>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
-          No user profiling, no behavioral tracking, no fingerprinting.
-        </li>
+      <div class="stats">
+        <div class="card stat scroll-reveal" style="--sd: 0"><b>0</b><span>Cookies</span></div>
+        <div class="card teal stat scroll-reveal" style="--sd: 1"><b>0</b><span>Analytics</span></div>
+        <div class="card deep stat scroll-reveal" style="--sd: 2"><b>0</b><span>Third-party scripts</span></div>
+      </div>
+
+      <h2 class="section-title scroll-reveal">What we promise.</h2>
+      <ul class="grid two promises">
+          <li class="card scroll-reveal" style="--sd: 0">
+            <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
+            <h3>No cookies</h3>
+            <p>Not analytics cookies, not even “necessary” ones.</p>
+          </li>
+          <li class="card teal scroll-reveal" style="--sd: 1">
+            <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
+            <h3>No third parties</h3>
+            <p>No analytics, no Google Fonts, no Google Analytics or Tag Manager, no Meta Pixel, no third-party scripts of any kind.</p>
+          </li>
+          <li class="card deep scroll-reveal" style="--sd: 0">
+            <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
+            <h3>No ad tech</h3>
+            <p>No data brokers, no selling or renting anything about you to anyone.</p>
+          </li>
+          <li class="card mix scroll-reveal" style="--sd: 1">
+            <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
+            <h3>No accounts</h3>
+            <p>No names, no emails required to use the card system itself.</p>
+          </li>
+          <li class="card scroll-reveal" style="--sd: 0">
+            <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
+            <h3>No profiling</h3>
+            <p>No user profiling, no behavioral tracking, no fingerprinting.</p>
+          </li>
       </ul>
 
-      <h2>Why this isn't optional for us</h2>
-      <p>
-        AfterCare exists to make one specific, hard conversation easier: telling
-        someone, anonymously, that they may have been exposed to an STI. That
-        only works if people actually trust it — and trust collapses the moment
-        a health app starts quietly building a profile of who you are, who
-        you've been with, or what you searched for.
-      </p>
-      <p>
-        A lot of consumer health and wellness apps run on an ad-funded or
-        data-broker model: your usage becomes the product, sold on or used to
-        target you. For a sexual-health tool specifically, that's not just a bad
-        look — it's the kind of thing that gets someone outed, stigmatized, or
-        worse. A surveillance-economy business model is simply incompatible with
-        what we're trying to do here, so it's not part of how AfterCare is built
-        or governed. We're not funded by ads or data sales, and we're not going
-        to be — see
-        <a href="../funding/">how we actually fund this</a> instead.
-      </p>
-
-      <h2>What we can't make disappear</h2>
-      <div class="callout">
+      <h2 class="section-title scroll-reveal">Why this isn't optional.</h2>
+      <div class="prose scroll-reveal">
         <p>
-          We want to be precise here rather than make a claim that sounds good
-          but isn't quite true: like any website, this one runs on a server, and
-          a server necessarily sees the IP address of whoever requests a page —
-          that's just how the web works, not something AfterCare adds on top.
-          Our hosting provider may keep standard, short-lived technical access
-          logs for operating and securing the service (the same baseline every
-          legitimate host keeps).
+          AfterCare exists to make one specific, hard conversation easier:
+          telling someone, anonymously, that they may have been exposed to an
+          STI. That only works if people actually trust it — and trust collapses
+          the moment a health app starts quietly building a profile of who you
+          are, who you've been with, or what you searched for.
         </p>
         <p>
-          What we don't do with that: analyze it, build profiles from it,
-          combine it with anything else about you, or hand it to advertisers.
-          It's infrastructure, not analytics.
+          A lot of consumer health and wellness apps run on an ad-funded or
+          data-broker model: your usage becomes the product, sold on or used to
+          target you. For a sexual-health tool specifically, that's not just a
+          bad look — it's the kind of thing that gets someone outed,
+          stigmatized, or worse. A surveillance-economy business model is
+          simply incompatible with what we're trying to do here, so it's not
+          part of how AfterCare is built or governed. We're not funded by ads
+          or data sales, and we're not going to be — see
+          <a class="link-pill" href="../funding/">how we actually fund this</a>
+          instead.
         </p>
       </div>
 
-      <h2>Built and hosted in Europe</h2>
-      <p>
-        AfterCare is hosted on European infrastructure, built by a European
-        team, under European data-protection norms — not routed through US-based
-        ad-tech or cloud analytics platforms. That's a deliberate choice, not a
-        default: it keeps the whole stack, not just the privacy policy, aligned
-        with the promise above.
+      <h2 class="section-title scroll-reveal">What we can't make disappear.</h2>
+      <p class="lede scroll-reveal">
+        We want to be precise here rather than make a claim that sounds good but
+        isn't quite true.
       </p>
+      <div class="grid two site-note">
+        <div class="card teal scroll-reveal" style="--sd: 0">
+          <h3>What a server sees</h3>
+          <p>
+            Like any website, this one runs on a server, and a server
+            necessarily sees the IP address of whoever requests a page — that's
+            just how the web works, not something AfterCare adds on top. Our
+            hosting provider may keep standard, short-lived technical access
+            logs for operating and securing the service (the same baseline
+            every legitimate host keeps).
+          </p>
+        </div>
+        <div class="card deep scroll-reveal" style="--sd: 1">
+          <h3>What we don't do with it</h3>
+          <p>
+            Analyze it, build profiles from it, combine it with anything else
+            about you, or hand it to advertisers.
+          </p>
+          <p>It's infrastructure, not analytics.</p>
+        </div>
+      </div>
 
-      <h2>Open source</h2>
-      <p>
-        You don't have to take our word for any of this — the code behind
-        AfterCare is open source, so anyone can read exactly what it does and
-        doesn't do.
-      </p>
+      <h2 class="section-title scroll-reveal">Built in Europe. Open to inspection.</h2>
+      <div class="grid two">
+        <div class="card scroll-reveal" style="--sd: 0">
+          <svg class="eu-ring" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="4" r="1.3" /><circle cx="16" cy="5.07" r="1.3" /><circle cx="18.93" cy="8" r="1.3" /><circle cx="20" cy="12" r="1.3" /><circle cx="18.93" cy="16" r="1.3" /><circle cx="16" cy="18.93" r="1.3" /><circle cx="12" cy="20" r="1.3" /><circle cx="8" cy="18.93" r="1.3" /><circle cx="5.07" cy="16" r="1.3" /><circle cx="4" cy="12" r="1.3" /><circle cx="5.07" cy="8" r="1.3" /><circle cx="8" cy="5.07" r="1.3" /></svg>
+          <h3>Built and hosted in Europe</h3>
+          <p>
+            AfterCare is hosted on European infrastructure, built by a European
+            team, under European data-protection norms — not routed through
+            US-based ad-tech or cloud analytics platforms. That's a deliberate
+            choice, not a default: it keeps the whole stack, not just the
+            privacy policy, aligned with the promise above.
+          </p>
+        </div>
+        <div class="card mix scroll-reveal" style="--sd: 1">
+          <svg class="eu-ring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5" /><path d="m16 7 5 5-5 5" /><path d="m14 4-4 16" /></svg>
+          <h3>Open source</h3>
+          <p>
+            You don't have to take our word for any of this — the code behind
+            AfterCare is open source, so anyone can read exactly what it does
+            and doesn't do.
+          </p>
+        </div>
+      </div>
 
-      <h2>Questions</h2>
-      <p>
-        If anything here is unclear, or you want to ask us something directly:
-        <a href="mailto:contact@after-care.eu"
-          >contact@after-care.eu</a
-        >.
-      </p>
-
-      <footer>
-        <a href="../">← Back to AfterCare</a>
-      </footer>
+      <h2 class="section-title scroll-reveal">Questions.</h2>
+      <div class="cta scroll-reveal">
+        <p>If anything here is unclear, or you want to ask us something directly:</p>
+        <a class="btn" href="mailto:contact@after-care.eu">
+          contact@after-care.eu
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
+        </a>
+      </div>
     </main>
+
+    <footer class="reveal" style="--d: 8">
+      <p><a href="../">← Back to AfterCare</a> · <a href="../funding/">How we're funded</a></p>
+      <p>AfterCare · privacy-first, always</p>
+    </footer>
     <script src="../assets/a11y-panel.js" defer></script>
+    <script>
+      (function () {
+        var els = document.querySelectorAll(".scroll-reveal");
+        if ("IntersectionObserver" in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("in-view");
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.15 },
+          );
+          els.forEach(function (el) {
+            io.observe(el);
+          });
+        } else {
+          els.forEach(function (el) {
+            el.classList.add("in-view");
+          });
+        }
+
+        var bar = document.getElementById("progress");
+        if (bar) {
+          var update = function () {
+            var h = document.documentElement;
+            var max = h.scrollHeight - h.clientHeight;
+            bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+          };
+          window.addEventListener("scroll", update, { passive: true });
+          window.addEventListener("resize", update);
+          update();
+        }
+
+        // Spotlight follows the pointer across a card. Fine pointers only.
+        try {
+          if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            document.querySelectorAll(".card").forEach(function (card) {
+              card.addEventListener(
+                "pointermove",
+                function (e) {
+                  var r = card.getBoundingClientRect();
+                  card.style.setProperty("--px", e.clientX - r.left + "px");
+                  card.style.setProperty("--py", e.clientY - r.top + "px");
+                },
+                { passive: true },
+              );
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
   </body>
 </html>

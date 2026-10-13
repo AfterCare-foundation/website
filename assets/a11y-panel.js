@@ -71,18 +71,23 @@
     updateMetaColors();
   }
 
-  function setContrast(high) {
-    if (high) {
-      root.dataset.contrast = "high";
-      try {
-        localStorage.setItem("ac-contrast", "high");
-      } catch (e) {}
-    } else {
-      delete root.dataset.contrast;
-      try {
-        localStorage.removeItem("ac-contrast");
-      } catch (e) {}
+  // Tri-state: "high", "off" (an explicit choice that beats the OS), or no
+  // stored value, which follows the OS's prefers-contrast setting.
+  function osWantsContrast() {
+    try {
+      return window.matchMedia("(prefers-contrast: more)").matches;
+    } catch (e) {
+      return false;
     }
+  }
+
+  function setContrast(high, followOs) {
+    if (high) root.dataset.contrast = "high";
+    else delete root.dataset.contrast;
+    try {
+      if (followOs) localStorage.removeItem("ac-contrast");
+      else localStorage.setItem("ac-contrast", high ? "high" : "off");
+    } catch (e) {}
     if (contrastToggle) contrastToggle.checked = high;
   }
 
@@ -140,7 +145,7 @@
     resetAllBtn.addEventListener("click", function () {
       setTheme(false);
       setTextSize("md");
-      setContrast(false);
+      setContrast(osWantsContrast(), true);
       setMotion(false);
     });
 

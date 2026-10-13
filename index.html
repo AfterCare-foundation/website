@@ -157,6 +157,13 @@
       :root[data-contrast="high"] {
         --gray: var(--white);
         --control-border-alpha: 0.7;
+        /* Added to the alpha of every dimmed text colour, so they all reach
+           full ink strength; 0 (the default) leaves normal mode untouched. */
+        --text-boost: 1;
+      }
+      /* --teal is also used as text; the light-theme value is only 5.1:1. */
+      :root[data-contrast="high"][data-theme="light"] {
+        --teal: #0a5750;
       }
       :root[data-contrast="high"] :focus-visible {
         outline-width: 3px;
@@ -377,7 +384,7 @@
         font-size: 0.8125rem;
         font-style: italic;
         letter-spacing: 0.01em;
-        color: rgba(var(--fg-rgb), 0.55);
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
         margin: 0 0 22px;
       }
       /* Logo lockup: the devil icon on the left, wordmark and subtitle as
@@ -427,7 +434,7 @@
       .app-subtitle {
         font-size: 0.185em;
         line-height: 1.2;
-        color: rgba(var(--fg-rgb), 0.62);
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
         letter-spacing: 0.11em;
         text-transform: uppercase;
         white-space: nowrap;
@@ -481,7 +488,7 @@
          lockup directly above it is already a gradient, and a second
          gradient 40px below it turns two accents into noise. */
       .sub {
-        color: rgba(var(--fg-rgb), 0.6);
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
         font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
         line-height: 1.55;
         max-width: 520px;
@@ -539,7 +546,7 @@
         font-size: 0.6875rem;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: rgba(var(--fg-rgb), 0.45);
+        color: rgba(var(--fg-rgb), calc(0.45 + var(--text-boost, 0)));
         margin-bottom: 7px;
       }
       .stat-strip-top b {
@@ -580,7 +587,7 @@
       .stat-strip-foot {
         font-size: 0.65625rem;
         letter-spacing: 0.06em;
-        color: rgba(var(--fg-rgb), 0.38);
+        color: rgba(var(--fg-rgb), calc(0.38 + var(--text-boost, 0)));
         margin-top: 6px;
       }
       /* Draw-on: the dash length is measured in JS and set as --len. */
@@ -750,12 +757,12 @@
       .hero-rally {
         font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
         line-height: 1.55;
-        color: rgba(var(--fg-rgb), 0.75);
+        color: rgba(var(--fg-rgb), calc(0.75 + var(--text-boost, 0)));
         margin: 30px 0 0;
       }
       .microcopy {
         font-size: 0.8125rem;
-        color: rgba(var(--fg-rgb), 0.55);
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
         margin: 28px 0 0;
       }
       .hero-rally + .microcopy {
@@ -971,14 +978,14 @@
         font-size: 1.25rem;
         font-weight: 600;
         letter-spacing: -0.02em;
-        color: rgba(var(--fg-rgb), 0.85);
+        color: rgba(var(--fg-rgb), calc(0.85 + var(--text-boost, 0)));
         margin: 0;
         /* grid row 1, col 2 */
       }
       .why-slide-desc {
         font-size: 0.875rem;
         line-height: 1.55;
-        color: rgba(var(--fg-rgb), 0.78);
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
         margin: 0;
         max-width: 32ch;
         grid-column: 2;
@@ -1115,7 +1122,7 @@
       .why-notif-text {
         font-size: 9px;
         line-height: 1.4;
-        color: rgba(var(--fg-rgb), 0.85);
+        color: rgba(var(--fg-rgb), calc(0.85 + var(--text-boost, 0)));
       }
       .why-notif-text b {
         display: block;
@@ -2188,6 +2195,42 @@
       }
       :root[data-contrast="high"] .why-playpause {
         border-color: rgba(var(--fg-rgb), var(--control-border-alpha));
+      }
+      /* High contrast: colours that are hard-coded rather than tokenised.
+         The phone mock-ups stay dark in every theme, so their text goes
+         light; the funnel and use-case labels follow the theme ink. */
+      :root[data-contrast="high"] .uc-btn,
+      :root[data-contrast="high"] .uc-btn:hover,
+      :root[data-contrast="high"] .funnel-step.fs-1 {
+        color: var(--white);
+      }
+      :root[data-contrast="high"] .funnel-step.fs-2,
+      :root[data-contrast="high"] .funnel-step.fs-3,
+      :root[data-contrast="high"] .funnel-step.fs-4 {
+        color: var(--teal);
+      }
+      /* The alarm pink is 5.6:1 on the dark surfaces (AA); its lighter
+         sibling clears 7:1 and is still unmistakably the hazard colour. */
+      :root[data-contrast="high"] .stat-strip-top b,
+      :root[data-contrast="high"] .why-ba-before {
+        color: var(--alarm-bright);
+      }
+      :root[data-contrast="high"] .mp-notif-time {
+        opacity: 1;
+      }
+      :root[data-contrast="high"] .why-keyboard i,
+      :root[data-contrast="high"] .why-keyboard-space,
+      :root[data-contrast="high"] .why-keyboard-utility,
+      :root[data-contrast="high"] .why-keyboard-shift,
+      :root[data-contrast="high"] .why-keyboard-backspace {
+        color: #fff !important;
+      }
+      :root[data-contrast="high"] .why-compose-label,
+      :root[data-contrast="high"] .why-app-tab {
+        color: #d1d5db;
+      }
+      :root[data-contrast="high"] .why-app-tab-active {
+        color: #e9e5ff;
       }
       .why-playpause .icon-play {
         margin-left: 1px;
@@ -4280,7 +4323,7 @@
         text-align: center;
         font-size: 0.75rem;
         letter-spacing: 0.02em;
-        color: rgba(var(--fg-rgb), 0.4);
+        color: rgba(var(--fg-rgb), calc(0.4 + var(--text-boost, 0)));
         padding: 48px 18px calc(24px + env(safe-area-inset-bottom));
       }
       footer p {
@@ -4292,7 +4335,7 @@
         align-items: center;
         gap: 5px;
         font-size: 0.719rem;
-        color: rgba(var(--fg-rgb), 0.32);
+        color: rgba(var(--fg-rgb), calc(0.32 + var(--text-boost, 0)));
       }
       .footer-eu-icon {
         flex-shrink: 0;
@@ -4798,7 +4841,12 @@
           // "ac-theme" preference from before this was disabled.
           var size = localStorage.getItem("ac-text-size");
           if (size === "lg" || size === "xl") root.dataset.textSize = size;
-          if (localStorage.getItem("ac-contrast") === "high")
+          var contrast = localStorage.getItem("ac-contrast");
+          if (
+            contrast === "high" ||
+            (contrast !== "off" &&
+              window.matchMedia("(prefers-contrast: more)").matches)
+          )
             root.dataset.contrast = "high";
           if (localStorage.getItem("ac-motion") === "reduced")
             root.dataset.motion = "reduced";
