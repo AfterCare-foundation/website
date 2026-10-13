@@ -69,6 +69,13 @@
     <script src="assets/viewport-inset.js" defer></script>
     <link
       rel="preload"
+      href="visual-assets/aftercare-logo.svg"
+      as="image"
+      type="image/svg+xml"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
       href="assets/fonts/poppins-regular.woff2"
       as="font"
       type="font/woff2"
@@ -406,12 +413,37 @@
         line-height: 1;
         user-select: none;
       }
-      .logo-badge img {
+      .logo-badge-icon {
+        position: relative;
         width: 1.3em;
         height: 1.3em;
+        flex-shrink: 0;
+      }
+      /* Template shape in the icon's slot: if the SVG is ever late, the
+         lockup still reads as a lockup instead of a wordmark with a hole. */
+      .logo-badge-icon::before {
+        content: "";
+        position: absolute;
+        inset: 8%;
+        border-radius: 38%;
+        background: linear-gradient(
+          135deg,
+          rgba(125, 71, 224, 0.28),
+          rgba(45, 212, 191, 0.22)
+        );
+      }
+      .logo-badge-icon img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
         pointer-events: none;
-        flex-shrink: 0;
+      }
+      /* The lockup holds its entrance until the icon is decoded (script
+         below, with a timeout fallback), so icon and text arrive together. */
+      .logo-badge.logo-wait {
+        animation-play-state: paused;
       }
       .logo-badge-text {
         display: flex;
@@ -4963,18 +4995,34 @@
       <div class="hero">
         <p class="kicker reveal" style="--d: 0">You found the card.</p>
         <div class="logo-badge reveal" style="--d: 1">
-          <img
-            src="visual-assets/aftercare-logo.svg"
-            alt=""
-            width="48"
-            height="48"
-            decoding="async"
-          />
+          <span class="logo-badge-icon">
+            <img
+              src="visual-assets/aftercare-logo.svg"
+              alt=""
+              width="48"
+              height="48"
+              fetchpriority="high"
+              decoding="sync"
+            />
+          </span>
           <div class="logo-badge-text">
             <span class="logo-badge-name">AfterCare</span>
             <span class="app-subtitle">Anonymous STI notification app</span>
           </div>
         </div>
+        <script>
+          (function () {
+            var b = document.querySelector(".logo-badge");
+            var i = b && b.querySelector("img");
+            if (!i || (i.complete && i.naturalWidth)) return;
+            b.classList.add("logo-wait");
+            var go = function () {
+              b.classList.remove("logo-wait");
+            };
+            (i.decode ? i.decode() : Promise.reject()).then(go, go);
+            setTimeout(go, 1500);
+          })();
+        </script>
         <div class="eyebrow reveal" style="--d: 2">In development</div>
         <h1 class="reveal" style="--d: 3">
           Bacterial STIs are at record
