@@ -117,8 +117,21 @@ no third-party CDNs" above). The same preference extends to our own dev
 tooling — Chromium is a Google-controlled project; Firefox is not.
 
 **How to apply:**
-- `npx playwright install firefox` (not `chromium`) when a headless
-  browser is needed to verify a visual change.
+- Playwright is the standing tool for rendered checks here — use it
+  proactively for any visual/layout change; don't hand back "I haven't
+  rendered it" when it's installable. Drive Playwright's **Firefox**
+  build (`npx playwright install firefox`, not `chromium` or `webkit`);
+  LibreWolf is equally acceptable where it can be driven. Nothing from
+  Google or other big-tech surveillance stacks.
+- Install the `playwright` package in the session scratchpad, not in this
+  repo (there's no `package.json` and none should be added for tooling).
+  Use `--registry https://registry.npmjs.org/` and confirm the browser
+  makes no non-`file:` requests (listen to `page.on('request')`).
+- For text-fit questions (labels in buttons, headline wrapping), measure
+  with `getBoundingClientRect` across a few viewport widths rather than
+  estimating from character counts — the Poppins face is wider than it
+  looks, and every state's label (including transient ones like
+  "Sealing…") must fit with headroom.
 - If Firefox isn't available or installable in the environment either,
   say so and fall back to a manual eyeball check (open the file in a real
   browser, or describe the change precisely) rather than defaulting to

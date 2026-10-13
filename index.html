@@ -707,7 +707,7 @@
           0 24px 60px rgba(96, 165, 250, 0.25),
           0 0 40px rgba(45, 212, 191, 0.15);
         pointer-events: none;
-        animation: float 7s ease-in-out infinite;
+        animation: float 9s ease-in-out infinite;
       }
       .mockup img {
         position: relative;
@@ -717,7 +717,7 @@
         height: auto;
         max-width: min(330px, 78vw);
         max-height: 58vh;
-        animation: float 7s ease-in-out infinite;
+        animation: float 9s ease-in-out infinite;
       }
       @media (min-width: 1024px) {
         .mockup img {
@@ -731,7 +731,7 @@
           transform: translateY(0);
         }
         50% {
-          transform: translateY(-14px);
+          transform: translateY(-8px);
         }
       }
 
@@ -820,7 +820,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        animation: bob 1.8s ease-in-out infinite;
+        animation: bob 2.4s ease-in-out 4;
       }
       @keyframes bob {
         0%,
@@ -828,7 +828,7 @@
           transform: translateY(0);
         }
         50% {
-          transform: translateY(6px);
+          transform: translateY(4px);
         }
       }
 
@@ -1137,8 +1137,8 @@
         font-size: 11.5px;
         font-weight: 600;
         line-height: 1.35;
-        padding: 8px 12px;
-        border-radius: 18px;
+        padding: 0.696em 1.043em;
+        border-radius: 1.565em;
         opacity: 0;
         transform: translateY(10px) scale(0.97);
         filter: blur(4px);
@@ -1168,21 +1168,28 @@
           0 8px 20px rgba(48, 209, 88, 0.32),
           0 2px 6px rgba(0, 0, 0, 0.3);
       }
+      /* Everything above is in em off the bubble's own font-size, so the
+         desktop size-up below scales body, tail and radius together. */
+      @media (min-width: 1024px) {
+        .why-speech {
+          font-size: clamp(16px, 0.9vw + 8px, 21px);
+        }
+      }
       /* Bubbles 1 & 3 sit toward the right of the frame, so their tail
          trails off the bottom-right, sender-style; bubble 2 sits left,
          so its tail trails bottom-left. */
       .why-speech-1,
       .why-speech-3 {
-        border-bottom-right-radius: 5px;
+        border-bottom-right-radius: 0.435em;
       }
       .why-speech-1::before,
       .why-speech-3::before {
         content: "";
         position: absolute;
-        right: 7px;
-        bottom: -3px;
-        width: 8px;
-        height: 8px;
+        right: 0.609em;
+        bottom: -0.261em;
+        width: 0.696em;
+        height: 0.696em;
         background: inherit;
         border-radius: 50%;
       }
@@ -1190,34 +1197,34 @@
       .why-speech-3::after {
         content: "";
         position: absolute;
-        right: 1px;
-        bottom: -7px;
-        width: 4px;
-        height: 4px;
+        right: 0.087em;
+        bottom: -0.609em;
+        width: 0.348em;
+        height: 0.348em;
         background: inherit;
         border-radius: 50%;
         opacity: 0.85;
       }
       .why-speech-2 {
-        border-bottom-left-radius: 5px;
+        border-bottom-left-radius: 0.435em;
       }
       .why-speech-2::before {
         content: "";
         position: absolute;
-        left: 7px;
-        bottom: -3px;
-        width: 8px;
-        height: 8px;
+        left: 0.609em;
+        bottom: -0.261em;
+        width: 0.696em;
+        height: 0.696em;
         background: inherit;
         border-radius: 50%;
       }
       .why-speech-2::after {
         content: "";
         position: absolute;
-        left: 1px;
-        bottom: -7px;
-        width: 4px;
-        height: 4px;
+        left: 0.087em;
+        bottom: -0.609em;
+        width: 0.348em;
+        height: 0.348em;
         background: inherit;
         border-radius: 50%;
         opacity: 0.85;
@@ -1543,7 +1550,7 @@
         background: #fff;
         margin-left: 1px;
         vertical-align: -1px;
-        animation: why-caret-blink 0.8s steps(1) infinite;
+        animation: why-caret-blink 1s steps(1) 8;
       }
       .why-compose-caret.hide {
         display: none;
@@ -1796,7 +1803,7 @@
           0 5px 10px rgba(0, 0, 0, 0.35);
         cursor: pointer;
         transition: transform 0.16s ease, filter 0.16s ease;
-        animation: why-app-handoff-breathe 2.2s ease-in-out infinite;
+        animation: why-app-handoff-breathe 2.6s ease-in-out 3;
       }
       .why-app-handoff-button:active,
       .why-app-handoff-button.pressed {
@@ -1855,7 +1862,11 @@
         );
         border: 1px solid rgba(255, 255, 255, 0.07);
         border-radius: 12px;
-        padding: 8px 9px;
+        /* One card, one job: auto margins (with .why-app-tabs' margin-top)
+           centre it between the wordmark and the tab bar instead of
+           leaving it pinned to the top above a dead zone. */
+        margin: auto 0;
+        padding: 11px 7px 10px;
         text-align: center;
         box-shadow:
           inset 0 1px rgba(255, 255, 255, 0.05),
@@ -1867,7 +1878,7 @@
         justify-content: center;
         width: 20px;
         height: 20px;
-        margin: 0 auto 7px;
+        margin: 0 auto 9px;
         border-radius: 50%;
         border: 1px solid rgba(167, 139, 250, 0.45);
         background: rgba(139, 92, 246, 0.12);
@@ -1881,25 +1892,38 @@
         stroke-linecap: round;
         stroke-linejoin: round;
       }
+      /* The headline slot always holds the one message that matters right
+         now: the ask before the tap, the thank-you after it. Both sit in
+         the same grid cell and crossfade, so the card is as tall as the
+         longer one from the first frame and nothing jumps or reflows
+         under the reader's eye. */
+      .why-app-card-msg {
+        display: grid;
+        margin: 0 0 12px;
+      }
       .why-app-card-title {
-        margin: 0 0 9px;
+        grid-area: 1 / 1;
+        margin: 0;
         font-size: 10px;
         font-weight: 800;
-        line-height: 1.35;
+        line-height: 1.4;
         /* The screen is a 150px-wide simulation, so this headline wraps
            far sooner than it does on a real phone; balanced wrapping
-           keeps it to even lines instead of a one-word orphan. */
+           keeps it to two even lines (about 20 characters each, inside
+           the comfortable 45-75 measure's small-screen floor) instead of
+           a one-word orphan. */
         text-wrap: balance;
         color: #fff;
+        transition: opacity 0.4s ease;
       }
-      .why-app-card-thanks {
-        margin: 8px 0 0;
-        font-size: 8px;
-        line-height: 1.4;
-        text-wrap: balance;
-        font-weight: 600;
-        color: rgba(45, 212, 191, 0.92);
-        text-align: center;
+      .why-msg-done {
+        opacity: 0;
+      }
+      .why-app-card-msg.is-done .why-msg-ask {
+        opacity: 0;
+      }
+      .why-app-card-msg.is-done .why-msg-done {
+        opacity: 1;
       }
       .why-app-tabs {
         display: flex;
@@ -1913,7 +1937,7 @@
         flex-direction: column;
         align-items: center;
         gap: 1px;
-        color: #6b7280;
+        color: #8d94a3;
       }
       .why-app-tab i {
         display: flex;
@@ -1932,12 +1956,12 @@
         stroke-linejoin: round;
       }
       .why-app-tab b {
-        font-size: 5px;
+        font-size: 6px;
         font-weight: 600;
         letter-spacing: 0.02em;
       }
       .why-app-tab-active {
-        color: #a78bfa;
+        color: #c4b5fd;
       }
       .why-app-tab-chip {
         border-radius: 5px;
@@ -1958,17 +1982,6 @@
         stroke-width: 1.1;
         filter: drop-shadow(0 0 3px rgba(45, 212, 191, 0.28));
       }
-      #whyThankYouPill {
-        opacity: 0;
-        transform: translateY(5px);
-        transition:
-          opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1),
-          transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-      }
-      #whyThankYouPill.show {
-        opacity: 1;
-        transform: none;
-      }
       /* CTA matches the mockup's OK button: full-width, purple-to-teal,
          bold white label, no icon. */
       .why-btn {
@@ -1979,12 +1992,12 @@
         background: linear-gradient(95deg, #8b5cf6 0%, #7c6ef0 45%, var(--teal) 100%);
         color: #fff;
         text-align: center;
-        padding: 11px 8px;
+        padding: 11px 4px;
         border-radius: 8px;
-        font-size: 9.5px;
+        font-size: 10px;
         white-space: nowrap;
         font-weight: 800;
-        letter-spacing: 0.01em;
+        letter-spacing: 0;
         cursor: pointer;
         user-select: none;
         overflow: hidden;
@@ -2001,7 +2014,10 @@
         opacity: 0.86;
         transform: scale(0.98);
       }
+      /* Dark ink on the teal: white on #2dd4bf is under 2:1, the weakest
+         text in the card; this is about 10:1. */
       .why-btn.sent {
+        color: #04221e;
         background: linear-gradient(95deg, #14b8a6, #2dd4bf);
         box-shadow:
           inset 0 1px rgba(255, 255, 255, 0.2),
@@ -2146,18 +2162,10 @@
       .why-playpause .icon-play {
         margin-left: 1px;
       }
-      @media (prefers-reduced-motion: reduce) {
-        .why-progress-seg.is-active .why-progress-fill {
-          animation: none;
-          transform: scaleX(1);
-        }
-      }
-      :root[data-motion="reduced"]
-        .why-progress-seg.is-active
-        .why-progress-fill {
-        animation: none;
-        transform: scaleX(1);
-      }
+      /* The fill is a timer, not decoration: it keeps playing under reduced
+         motion (the global reduced-motion backstop below exempts it), so
+         the autoplay countdown stays readable and the Pause button still
+         means something. */
 
       /* ---- why: desktop expansion (Apple "Highlights" at wide widths) ----
          On a phone the card is most of the screen; on desktop Apple lets
@@ -4525,6 +4533,160 @@
       :root[data-motion="reduced"] .scrollcue {
         animation: none;
       }
+      /* Reduced motion, as a backstop for every rule above: whether it comes
+         from the OS or from the page's own Accessibility toggle, nothing
+         animates or transitions, and animated elements land on their final
+         state instead of playing. Per-element rules elsewhere stay for
+         anything that needs a specific resting pose. */
+      @media (prefers-reduced-motion: reduce) {
+        *:not(.why-progress-fill),
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-delay: 0s !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          transition-delay: 0s !important;
+          scroll-behavior: auto !important;
+        }
+      }
+      :root[data-motion="reduced"] *:not(.why-progress-fill),
+      :root[data-motion="reduced"] *::before,
+      :root[data-motion="reduced"] *::after {
+        animation-duration: 0.001ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        transition-delay: 0s !important;
+        scroll-behavior: auto !important;
+      }
+      /* Reduced motion, the balance: nothing travels, scales, tilts, loops
+         or springs, but arrivals are not abrupt either. Content eases in
+         with a short opacity-only fade, which is the one cue that carries
+         no vestibular risk. Timers and the typed story keep running. One
+         level, not several, so there is a single behaviour to maintain. */
+      @keyframes rm-fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+      :root:root .reveal {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: calc(150ms + var(--d, 0) * 70ms) !important;
+      }
+      :root:root .step.content-active .mp-notif {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root:root .step.content-active .mp-connected .mp-label {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root:root .step.content-active .mp-connected .mp-heart {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0.15s !important;
+      }
+      :root:root .step.content-active .mp-connected .mp-sub {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0.3s !important;
+      }
+      :root:root .torn-card.tearing .tc-half.solo {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root:root .scroll-reveal {
+        opacity: 0;
+        transform: none !important;
+        transition: opacity 0.45s ease calc(var(--sd, 0) * 60ms) !important;
+      }
+      :root:root .scroll-reveal.in-view {
+        opacity: 1;
+      }
+      }
+      :root[data-motion="reduced"]:root .reveal {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: calc(150ms + var(--d, 0) * 70ms) !important;
+      }
+      :root[data-motion="reduced"]:root .step.content-active .mp-notif {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root[data-motion="reduced"]:root .step.content-active .mp-connected .mp-label {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root[data-motion="reduced"]:root .step.content-active .mp-connected .mp-heart {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0.15s !important;
+      }
+      :root[data-motion="reduced"]:root .step.content-active .mp-connected .mp-sub {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0.3s !important;
+      }
+      :root[data-motion="reduced"]:root .torn-card.tearing .tc-half.solo {
+        animation-name: rm-fade !important;
+        animation-duration: 0.45s !important;
+        animation-timing-function: ease !important;
+        animation-fill-mode: both !important;
+        animation-iteration-count: 1 !important;
+        animation-delay: 0s !important;
+      }
+      :root[data-motion="reduced"]:root .scroll-reveal {
+        opacity: 0;
+        transform: none !important;
+        transition: opacity 0.45s ease calc(var(--sd, 0) * 60ms) !important;
+      }
+      :root[data-motion="reduced"]:root .scroll-reveal.in-view {
+        opacity: 1;
+      }
     </style>
     <script>
       if ("scrollRestoration" in history) {
@@ -4930,28 +5092,32 @@
                             <path d="M21.5 2.5 15 21l-4-8-8-4Z" />
                           </svg>
                         </span>
-                        <p class="why-app-card-title">
-                          Let the people you&#8217;ve connected with know.
-                        </p>
+                        <div class="why-app-card-msg">
+                          <p
+                            class="why-app-card-title why-msg-ask"
+                            id="whyAskMsg"
+                          >
+                            Let the people you&#8217;ve connected with know.
+                          </p>
+                          <p
+                            class="why-app-card-title why-msg-done"
+                            id="whyThankYouPill"
+                          >
+                            Thanks for taking care of your partners&#160;<svg
+                              class="why-thank-you-heart"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+                              />
+                            </svg>
+                          </p>
+                        </div>
                         <div class="why-btn" id="whyNotifyBtn">
                           <span id="whyNotifyLabel">Notify Partners</span>
                           <span class="why-tap-ghost" id="whyTapGhost"></span>
                         </div>
-                        <p
-                          class="why-app-card-thanks"
-                          id="whyThankYouPill"
-                          style="display: none"
-                        >
-                          Thanks for taking care of your partners&#160;<svg
-                            class="why-thank-you-heart"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
-                            />
-                          </svg>
-                        </p>
                       </div>
                       <div class="why-app-tabs">
                         <span class="why-app-tab why-app-tab-active">
@@ -5799,9 +5965,14 @@
 
     <script>
       (function () {
-        var reduceMotion =
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-          document.documentElement.dataset.motion === "reduced";
+        // A function, not a snapshot: the Accessibility panel can flip motion
+        // off mid-visit, and the timed sequences below should honour it.
+        function reduceMotion() {
+          return (
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+            document.documentElement.dataset.motion === "reduced"
+          );
+        }
 
         // history.scrollRestoration is "manual" (set in <head>), which
         // stops the browser restoring an old scroll position — and, in
@@ -5817,14 +5988,14 @@
             var previous = root.style.scrollSnapType;
             root.style.scrollSnapType = "none";
             title.scrollIntoView({
-              behavior: smooth && !reduceMotion ? "smooth" : "auto",
+              behavior: smooth && !reduceMotion() ? "smooth" : "auto",
               block: "start",
             });
             window.setTimeout(
               function () {
                 root.style.scrollSnapType = previous;
               },
-              smooth && !reduceMotion ? 700 : 60,
+              smooth && !reduceMotion() ? 700 : 60,
             );
           }
           document.querySelectorAll('a[href="#how"]').forEach(function (link) {
@@ -5857,7 +6028,7 @@
 
         var glow = document.getElementById("cursorGlow");
         if (glow) {
-          if (reduceMotion) {
+          if (reduceMotion()) {
             glow.style.display = "none";
           } else {
             var raf = null,
@@ -5882,7 +6053,7 @@
         }
 
         var revealEls = document.querySelectorAll(".scroll-reveal");
-        if ("IntersectionObserver" in window && !reduceMotion) {
+        if ("IntersectionObserver" in window) {
           var io = new IntersectionObserver(
             function (entries) {
               entries.forEach(function (entry) {
@@ -5976,7 +6147,7 @@
             }
           }, 500);
         };
-        if (reduceMotion) {
+        if (reduceMotion()) {
           tornCards.forEach(function (card) {
             card.classList.add("tearing");
           });
@@ -6247,10 +6418,6 @@
               stepEl._mpCleanup = null;
             }
             stepEl.classList.remove("content-active");
-            if (reduceMotion) {
-              activate(stepEl);
-              return;
-            }
             // The "Notified" banner (step 5) is a single self-contained
             // drop-in, not a multi-stage timed sequence like step 1's tear
             // — there's nothing a mid-glide trigger could cut off or
@@ -6477,14 +6644,13 @@
             index = Math.max(0, Math.min(slides.length - 1, index));
             track.scrollTo({
               left: slideScrollLeft(slides[index]),
-              behavior: reduceMotion ? "auto" : "smooth",
+              behavior: reduceMotion() ? "auto" : "smooth",
             });
           }
 
           function restartTimer() {
             clearTimeout(autoplayTimer);
             if (
-              reduceMotion ||
               userPaused ||
               document.hidden ||
               !carouselOnScreen
@@ -6539,7 +6705,7 @@
                 segs[activeIndex].classList.remove("is-active");
                 return;
               }
-              if (userPaused || reduceMotion) return;
+              if (userPaused) return;
               activateSegment(activeIndex);
               restartTimer();
             },
@@ -6649,7 +6815,9 @@
           var notifyBtn = document.getElementById("whyNotifyBtn");
           var notifyLabel = document.getElementById("whyNotifyLabel");
           var tapGhost = document.getElementById("whyTapGhost");
-          var thankYouPill = document.getElementById("whyThankYouPill");
+          var cardMsg = document
+            .getElementById("whyThankYouPill")
+            .closest(".why-app-card-msg");
           var stageCaption = document.getElementById("whyStageCaption");
           if (
             !wrap ||
@@ -6763,24 +6931,16 @@
             notifyBtn.classList.remove("sent");
             notifyLabel.textContent = "Notify Partners";
             if (tapGhost) tapGhost.classList.remove("tap");
-            if (thankYouPill) {
-              thankYouPill.classList.remove("show");
-              thankYouPill.style.display = "none";
-            }
+            if (cardMsg) cardMsg.classList.remove("is-done");
           }
 
           function sendNotification() {
             if (notifyBtn.classList.contains("sent")) return;
-            notifyLabel.textContent = "Sealing message…";
+            notifyLabel.textContent = "Sealing…";
             addTimeout(function () {
               notifyLabel.textContent = "Sent ✓";
               notifyBtn.classList.add("sent");
-              if (thankYouPill) {
-                thankYouPill.style.display = "block";
-                requestAnimationFrame(function () {
-                  thankYouPill.classList.add("show");
-                });
-              }
+              if (cardMsg) cardMsg.classList.add("is-done");
               addTimeout(function () {
                 wrap.dataset.readyToAdvance = "true";
               }, SENT_LINGER_MS);
@@ -6798,7 +6958,7 @@
               void tapGhost.offsetWidth;
               tapGhost.classList.add("tap");
             }
-            addTimeout(sendNotification, reduceMotion ? 0 : 220);
+            addTimeout(sendNotification, reduceMotion() ? 0 : 220);
           }
 
           var MORPH_MS = 520;
@@ -6840,7 +7000,7 @@
 
           function closeMessages() {
             appHandoff.classList.add("show");
-            if (reduceMotion) {
+            if (reduceMotion()) {
               messagesWindow.style.visibility = "hidden";
               return;
             }
@@ -6873,7 +7033,7 @@
           }
 
           function openLaunchWindow() {
-            if (reduceMotion) {
+            if (reduceMotion()) {
               showAftercare();
               return;
             }
@@ -6911,7 +7071,7 @@
                 appHandoffButton.classList.remove("pressed");
                 openLaunchWindow();
               },
-              reduceMotion ? 0 : 160,
+              reduceMotion() ? 0 : 160,
             );
           }
 
@@ -6925,15 +7085,24 @@
               closeMessages();
               addTimeout(
                 launchAftercare,
-                reduceMotion ? 0 : MORPH_MS + HOME_DWELL_MS,
+                reduceMotion() ? 0 : MORPH_MS + HOME_DWELL_MS,
               );
             }, 700);
           }
 
           function runSequence() {
-            if (reduceMotion) {
-              textEl.textContent = DRAFT_FINAL;
-              reveal();
+            if (reduceMotion()) {
+              // No typing or erasing, but the story still needs its beats:
+              // each draft appears whole, is held long enough to read, then
+              // gives way to the next, and finally to the solution.
+              textEl.textContent = DRAFT_1;
+              addTimeout(function () {
+                textEl.textContent = DRAFT_2;
+                addTimeout(function () {
+                  textEl.textContent = DRAFT_FINAL;
+                  addTimeout(reveal, READ_PAUSE_MS_FINAL + 400);
+                }, READ_PAUSE_MS_2 + 400);
+              }, READ_PAUSE_MS_1 + 500);
               return;
             }
             typeText(DRAFT_1, function () {
@@ -7024,7 +7193,7 @@
             });
           };
 
-          if (reduceMotion || !("IntersectionObserver" in window)) {
+          if (reduceMotion() || !("IntersectionObserver" in window)) {
             wrap.classList.add("speech-in");
             return;
           }
