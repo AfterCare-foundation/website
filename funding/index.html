@@ -181,7 +181,7 @@
         width: 100%;
         max-width: 720px;
         margin: 0 auto;
-        padding: 36px 20px 8px;
+        padding: 44px 24px 16px;
       }
 
       /* ---- back link: the chevron leans toward where you're going ---- */
@@ -216,7 +216,7 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: clamp(24px, 6vh, 56px) 0 0;
+        padding: clamp(32px, 8vh, 80px) 0 0;
       }
       .logo-badge {
         --logo: clamp(2.7rem, 2rem + 2.4vw, 3.4rem);
@@ -224,7 +224,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.14em;
-        margin-bottom: 28px;
+        margin-bottom: clamp(36px, 6vw, 52px);
         font-size: var(--logo);
         line-height: 1;
         user-select: none;
@@ -281,7 +281,7 @@
       }
       .eyebrow {
         display: inline-block;
-        margin: 0 0 22px;
+        margin: 0 0 28px;
         padding: 6px 14px;
         font-size: 0.75rem;
         letter-spacing: 0.08em;
@@ -293,7 +293,7 @@
       }
       h1 {
         max-width: 18em;
-        margin: 0 0 18px;
+        margin: 0 0 26px;
         font-size: clamp(1.9rem, 1.1rem + 3.4vw, 3.1rem);
         font-weight: 600;
         line-height: 1.06;
@@ -304,7 +304,7 @@
         max-width: 34em;
         margin: 0;
         font-size: clamp(0.95rem, 0.85rem + 0.45vw, 1.075rem);
-        line-height: 1.6;
+        line-height: 1.7;
         color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
         text-wrap: balance;
       }
@@ -359,7 +359,7 @@
 
       /* ---- section headlines: the home page's "Highlights." register ---- */
       .section-title {
-        margin: 88px 0 28px;
+        margin: 112px 0 40px;
         font-size: clamp(1.5rem, 0.9rem + 2.2vw, 2.5rem);
         font-weight: 600;
         line-height: 1.08;
@@ -370,8 +370,33 @@
       }
       @media (min-width: 1024px) {
         .section-title {
-          margin-top: 120px;
+          margin-top: 144px;
         }
+      }
+
+      /* ---- wayfinding: a small label above each headline names the
+         section's job, so a skimmer builds a map of the page from the labels
+         alone. The label owns the big gap above; the headline sits tight
+         beneath it (proximity = they belong together). ---- */
+      .kicker {
+        margin: 112px 0 14px;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--teal);
+      }
+      .kicker + .section-title {
+        margin-top: 0;
+      }
+      @media (min-width: 1024px) {
+        .kicker {
+          margin-top: 144px;
+        }
+      }
+      .divider + .kicker {
+        margin-top: clamp(56px, 8vw, 80px);
       }
       .prose {
         max-width: 38em;
@@ -379,17 +404,18 @@
       }
       .prose p,
       .lede {
-        margin: 0 0 16px;
+        margin: 0 0 1.4em;
         font-size: 0.975rem;
+        line-height: 1.7;
         color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
+        text-wrap: pretty;
       }
       .lede {
         font-size: 1.05rem;
         color: rgba(var(--fg-rgb), calc(0.88 + var(--text-boost, 0)));
-        max-width: 38em;
+        max-width: 34em;
         margin-inline: auto;
         text-align: center;
-        text-wrap: balance;
       }
 
       /* ---- cards: the "trust" tile language, a corner of brand light on a
@@ -398,7 +424,7 @@
       .grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 20px;
       }
       @media (min-width: 600px) {
         .grid.two {
@@ -411,7 +437,7 @@
       .card {
         position: relative;
         overflow: hidden;
-        padding: 22px 22px 24px;
+        padding: 28px 28px 30px;
         border: 1px solid rgba(var(--fg-rgb), 0.1);
         border-radius: 22px;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
@@ -581,6 +607,7 @@
         margin: 0 auto 22px;
         color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
         font-size: 1rem;
+        text-wrap: balance;
       }
       .link-pill {
         display: inline-block;
@@ -780,13 +807,13 @@
 
       /* ---- the empty "confirmed" slot ---- */
       .funded {
-        margin-bottom: 14px;
+        margin-bottom: 20px;
       }
       .slot {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 16px;
-        padding: 22px;
+        padding: 28px;
         border: 1px dashed rgba(var(--fg-rgb), 0.22);
         border-radius: 22px;
         background: rgba(var(--fg-rgb), 0.02);
@@ -795,6 +822,7 @@
         flex-shrink: 0;
         width: 10px;
         height: 10px;
+        margin-top: 0.45rem;
         border-radius: 50%;
         background: var(--teal);
         box-shadow: 0 0 0 5px rgba(45, 212, 191, 0.14);
@@ -802,6 +830,7 @@
       .slot p {
         margin: 0;
         font-size: 0.9rem;
+        line-height: 1.55;
         color: rgba(var(--fg-rgb), calc(0.72 + var(--text-boost, 0)));
       }
       .slot strong {
@@ -810,6 +839,76 @@
         font-size: 1rem;
         font-weight: 600;
         color: var(--white);
+      }
+
+      /* ---- phones: same treatment as the privacy page. One column makes
+         every card full width, so the funding sources become rows (icon
+         beside the text, like the "More to come" slot) rather than tall
+         tiles with an icon stacked over two short lines. ---- */
+      @media (max-width: 599px) {
+        .section-title {
+          margin: 80px 0 28px;
+        }
+        .kicker {
+          margin-top: 88px;
+        }
+        .kicker + .section-title {
+          margin-top: 0;
+        }
+        .lede {
+          font-size: 0.975rem;
+          text-align: left;
+        }
+        .grid {
+          gap: 14px;
+        }
+        .card {
+          padding: 22px 20px 24px;
+          border-radius: 18px;
+        }
+        .card h3 {
+          margin-bottom: 6px;
+          font-size: 1rem;
+        }
+        .grid.three > .card,
+        .funded {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          column-gap: 14px;
+          align-items: start;
+          padding: 20px 20px;
+        }
+        .grid.three .badge,
+        .funded .badge {
+          grid-row: 1 / span 2;
+          width: 30px;
+          height: 30px;
+          margin: 1px 0 0;
+        }
+        .grid.three .badge svg,
+        .funded .badge svg {
+          width: 15px;
+          height: 15px;
+        }
+        .grid.three h3,
+        .funded h3 {
+          margin-bottom: 3px;
+        }
+        .grid.three p,
+        .funded p {
+          grid-column: 2;
+        }
+        .funded {
+          margin-bottom: 14px;
+        }
+        .slot {
+          padding: 20px 20px;
+          gap: 14px;
+          border-radius: 18px;
+        }
+        .slot-dot {
+          margin: 0.45rem 10px 0;
+        }
       }
     </style>
     <script>
@@ -913,6 +1012,24 @@
           <span class="a11y-row-label">Reduce motion</span>
           <input type="checkbox" role="switch" id="a11yMotionToggle" />
         </label>
+        <div
+          id="a11yMotionNote"
+          class="a11y-note"
+          role="note"
+          hidden
+        >
+          <p class="a11y-note-title">Motion is already reduced</p>
+          <p>
+            Your device is set to reduce motion (less sliding, fading and
+            moving), so this page already is. We follow that setting, so the
+            switch above stays on.
+          </p>
+          <p>
+            <strong>To change it:</strong> on iPhone, open Settings &rsaquo;
+            Accessibility &rsaquo; Motion. On Android, open Settings &rsaquo;
+            Accessibility and look for &ldquo;Remove animations&rdquo;.
+          </p>
+        </div>
 
         <button type="button" id="a11yReset" class="a11y-reset">
           <svg
@@ -958,6 +1075,7 @@
         <div class="divider reveal" style="--d: 5" aria-hidden="true"></div>
       </header>
 
+      <div class="kicker scroll-reveal">Our red lines</div>
       <h2 class="section-title scroll-reveal">Never on the table.</h2>
       <div class="grid two">
         <div class="card never-card scroll-reveal" style="--sd: 0">
@@ -970,6 +1088,7 @@
         </div>
       </div>
 
+      <div class="kicker scroll-reveal">The model</div>
       <h2 class="section-title scroll-reveal">Funded the boring way.</h2>
       <p class="lede scroll-reveal">
         So AfterCare is funded the boring way instead: grants, sponsorship, and
@@ -993,6 +1112,7 @@
         </div>
       </div>
 
+      <div class="kicker scroll-reveal">The status</div>
       <h2 class="section-title scroll-reveal">Confirmed funding.</h2>
       <div class="card teal funded scroll-reveal" style="--sd: 0">
         <span class="badge"><svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M20 6 9 17l-5-5" /></svg></span>
@@ -1010,6 +1130,7 @@
         </p>
       </div>
 
+      <div class="kicker scroll-reveal">Join in</div>
       <h2 class="section-title scroll-reveal">Get involved.</h2>
       <div class="cta scroll-reveal">
         <p>Representing an organization? Get in touch about sponsorship.</p>
