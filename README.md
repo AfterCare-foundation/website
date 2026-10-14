@@ -14,11 +14,12 @@ This repository is the site: the pages, styles, scripts, and images. The product
 | `/` | Marketing page |
 | `/privacy/` | Privacy policy |
 | `/funding/` | How the project is funded |
+| `/partners/` | Corporate-style page for clinicians, researchers and funders: ECDC charts, approach, sources |
 | `/connect/` | Redirects to `/` |
 
 ## Stack
 
-Static HTML, CSS, and vanilla JavaScript. No build step and no shared templates: `index.html`, `privacy/index.html`, and `funding/index.html` each carry their own markup and styles.
+Static HTML, CSS, and vanilla JavaScript. No build step and no shared templates: `index.html`, `privacy/index.html`, `funding/index.html`, and `partners/index.html` each carry their own markup and styles.
 
 Hosted in the EU on [Scalingo](https://scalingo.com/), served by the nginx buildpack. See `Procfile`, `.buildpacks`, and `nginx.conf`. `data/` is not deployed (`.slugignore`).
 

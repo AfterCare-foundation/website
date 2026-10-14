@@ -1,0 +1,1579 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a10" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="AfterCare is an anonymous STI exposure-notification app. We are looking for clinicians, researchers and institutions to review, advise and partner. Official ECDC figures and sources included."
+    />
+    <title>Clinical and research partnerships — AfterCare</title>
+    <link rel="canonical" href="https://www.after-care.eu/partners/" />
+    <link
+      rel="icon"
+      href="../visual-assets/aftercare-logo.svg"
+      type="image/svg+xml"
+    />
+    <link rel="alternate icon" href="../visual-assets/favicon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="../visual-assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="../assets/a11y-panel.css" />
+    <script src="../assets/viewport-inset.js" defer></script>
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="../assets/fonts/poppins-semibold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <style>
+      /* Self-hosted Poppins — see the longer note in the root index.html.
+         Never a font CDN; only 400 and 600 ship. */
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-regular.woff2") format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Poppins";
+        src: url("../assets/fonts/poppins-semibold.woff2") format("woff2");
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+      }
+      :root {
+        --bg: #0a0a10;
+        --bg2: #0f0f17;
+        --purple: #1d4ed8;
+        --purple-light: #60a5fa;
+        --teal: #2dd4bf;
+        --white: #f4f4f6;
+        --gray: #9ca3af;
+        --fg-rgb: 244, 244, 246;
+        --control-border-alpha: 0.4;
+        /* Same motion curves as the home page: calm decelerates with no
+           overshoot (colour, fades); soft settles slightly (anything
+           that lifts or scales). */
+        --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-soft: cubic-bezier(0.34, 1.4, 0.64, 1);
+      }
+      :root[data-theme="light"] {
+        --bg: #f5f6fa;
+        --bg2: #ffffff;
+        --purple-light: #2563eb;
+        --teal: #0f766e;
+        --white: #14141c;
+        --gray: #4b5563;
+        --fg-rgb: 20, 20, 28;
+        --control-border-alpha: 0.5;
+      }
+      :root[data-text-size="lg"] {
+        font-size: 112.5%;
+      }
+      :root[data-text-size="xl"] {
+        font-size: 125%;
+      }
+      :root[data-contrast="high"] {
+        --gray: var(--white);
+        --control-border-alpha: 0.7;
+        /* Added to the alpha of every dimmed text colour, so they all reach
+           full ink strength; 0 (the default) leaves normal mode untouched. */
+        --text-boost: 1;
+      }
+      /* --teal is also used as text; the light-theme value is only 5.1:1. */
+      :root[data-contrast="high"][data-theme="light"] {
+        --teal: #0a5750;
+      }
+      :root[data-contrast="high"] :focus-visible {
+        outline-width: 3px;
+        outline-offset: 4px;
+      }
+
+      :root {
+        /* Disease series: gonorrhoea red, syphilis mauve, chlamydia grey. Never
+           the brand blue/teal, which stay reserved for the response. */
+        --c-gono: #e64b35;
+        --c-syph: #d98ab8;
+        --c-chl: #9ca3af;
+        --hair: rgba(var(--fg-rgb), 0.12);
+      }
+      :root[data-theme="light"] {
+        --c-gono: #b3321f;
+        --c-syph: #a23e7b;
+        --c-chl: #4b5563;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      html {
+        scroll-padding-top: 16px;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        html {
+          scroll-behavior: smooth;
+        }
+      }
+      :root[data-motion="reduced"] {
+        scroll-behavior: auto;
+      }
+      body {
+        background: var(--bg);
+        color: var(--white);
+        font-family: "Poppins", -apple-system, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -webkit-tap-highlight-color: transparent;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding-top: var(--chrome-top-inset, 0px);
+      }
+      a {
+        color: var(--teal);
+        text-underline-offset: 3px;
+        text-decoration-color: rgba(45, 212, 191, 0.4);
+        transition: text-decoration-color 0.2s ease;
+      }
+      a:hover,
+      a:focus-visible {
+        text-decoration-color: currentColor;
+      }
+      :focus-visible {
+        outline: 2px solid var(--purple-light);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+      .sr {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .wrap {
+        flex: 1 0 auto;
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ---- masthead: the discreet mark, not the consumer lockup ---- */
+      .mast {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px 24px;
+        padding: 28px 0 22px;
+        border-bottom: 1px solid var(--hair);
+      }
+      .org {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--white);
+        text-decoration: none;
+      }
+      .org img {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        object-fit: contain;
+      }
+      /* The Foundation builds the app: it leads, and the arrow points at what
+         it makes. The playful consumer mark is quieter. */
+      .lineage {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .parent {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+        font-size: 0.6875rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+      /* Same tile size and corner radius as the Foundation mark, so the
+         two read as siblings; the hairline stops the black tile dissolving
+         into the page. */
+      .parent img,
+      .org img {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        object-fit: contain;
+        outline: 1px solid rgba(var(--fg-rgb), 0.18);
+        outline-offset: -1px;
+      }
+      .parent img {
+        opacity: 0.85;
+      }
+      .parent:hover,
+      .parent:focus-visible {
+        color: var(--white);
+      }
+      .parent:hover img,
+      .parent:focus-visible img {
+        opacity: 1;
+      }
+      .branch {
+        flex: none;
+        color: rgba(var(--fg-rgb), 0.4);
+      }
+      .arm {
+        display: none;
+      }
+      /* Phones: one name leads, a role label differentiates (endorsed
+         brand). The heart mark and arrow return on wider screens. */
+      @media (max-width: 700px) {
+        .parent,
+        .branch {
+          display: none;
+        }
+        .org-name b {
+          font-size: 1.125rem;
+          letter-spacing: -0.02em;
+        }
+        .org-name b i {
+          font-style: normal;
+          font-weight: 400;
+          color: rgba(var(--fg-rgb), calc(0.65 + var(--text-boost, 0)));
+        }
+        .org-name .role {
+          display: none;
+        }
+        .org-name .arm {
+          display: inline-block;
+          width: fit-content;
+          margin-top: 5px;
+          padding: 2px 9px;
+          border: 1px solid var(--hair);
+          border-radius: 99px;
+          font-size: 0.5625rem;
+          letter-spacing: 0.06em;
+          white-space: nowrap;
+          text-transform: uppercase;
+          color: rgba(var(--fg-rgb), calc(0.65 + var(--text-boost, 0)));
+        }
+      }
+      .org-name {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+      }
+      .org-name b {
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .org-name span {
+        font-size: 0.6875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+      .mast nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 22px;
+        font-size: 0.8125rem;
+      }
+      .mast nav a {
+        color: var(--gray);
+        text-decoration: none;
+        padding: 4px 0;
+      }
+      .mast nav a:hover,
+      .mast nav a:focus-visible {
+        color: var(--white);
+      }
+
+      /* ---- hero ---- */
+      .hero {
+        padding: clamp(56px, 9vw, 104px) 0 clamp(40px, 6vw, 64px);
+        max-width: 760px;
+      }
+      .kicker {
+        margin: 0 0 20px;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal);
+        font-weight: 600;
+      }
+      h1 {
+        margin: 0 0 22px;
+        font-size: clamp(2rem, 1.2rem + 3.2vw, 3.2rem);
+        font-weight: 600;
+        line-height: 1.08;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+      .dek {
+        margin: 0 0 30px;
+        max-width: 38em;
+        font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem);
+        color: rgba(var(--fg-rgb), calc(0.7 + var(--text-boost, 0)));
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 22px;
+        border: 1px solid rgba(var(--fg-rgb), var(--control-border-alpha));
+        border-radius: 8px;
+        background: transparent;
+        color: var(--white);
+        font-family: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          background-color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .btn:hover,
+      .btn:focus-visible {
+        background: rgba(var(--fg-rgb), 0.08);
+        border-color: rgba(var(--fg-rgb), 0.5);
+      }
+      .btn.primary {
+        background: var(--white);
+        border-color: var(--white);
+        color: var(--bg);
+      }
+      .btn.primary:hover,
+      .btn.primary:focus-visible {
+        background: rgba(var(--fg-rgb), 0.86);
+      }
+
+      /* ---- key figures ---- */
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr;
+        border: 1px solid var(--hair);
+        border-radius: 10px;
+        background: rgba(var(--fg-rgb), 0.025);
+      }
+      @media (min-width: 700px) {
+        .stats {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .stat + .stat {
+          border-left: 1px solid var(--hair);
+          border-top: 0;
+        }
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 22px 24px;
+      }
+      .stat + .stat {
+        border-top: 1px solid var(--hair);
+      }
+      .stat-name {
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+      }
+      .stat b {
+        font-size: 2.4rem;
+        line-height: 1.1;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+      .stat-range {
+        font-size: 0.8125rem;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+        font-variant-numeric: tabular-nums;
+      }
+      .stats-note {
+        margin: 12px 0 0;
+        font-size: 0.75rem;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+
+      /* ---- sections: a quiet label column and a reading column ---- */
+      .sec {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: clamp(72px, 10vw, 120px);
+        padding-top: 40px;
+        border-top: 1px solid var(--hair);
+        scroll-margin-top: 16px;
+      }
+      @media (min-width: 860px) {
+        .sec {
+          grid-template-columns: 180px 1fr;
+          gap: 64px;
+        }
+      }
+      .sec-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+      .sec-label b {
+        display: block;
+        margin-bottom: 2px;
+        font-weight: 600;
+        color: var(--teal);
+      }
+
+      /* ---- desktop: a floating table of contents in the left margin ----
+         Fixed and vertically centred. The margin beside the 980px column is
+         only ~60px at 1100px wide, so there it shows numbers alone and opens
+         on hover or focus; from 1360px up the labels are always shown. */
+      .toc {
+        display: none;
+      }
+      @media (min-width: 1100px) {
+        .toc {
+          display: block;
+          position: fixed;
+          z-index: 5;
+          top: 50%;
+          left: max(12px, calc(50vw - 490px - 188px));
+          transform: translateY(-50%);
+          font-size: 0.8125rem;
+        }
+        .toc-title,
+        .toc-label,
+        .toc-aside {
+          display: none;
+        }
+        .toc:hover .toc-label,
+        .toc:focus-within .toc-label,
+        .toc:hover .toc-title,
+        .toc:focus-within .toc-title,
+        .toc:hover .toc-aside,
+        .toc:focus-within .toc-aside {
+          display: inline;
+        }
+        .toc:hover .toc-title,
+        .toc:focus-within .toc-title {
+          display: block;
+        }
+        .toc:hover,
+        .toc:focus-within {
+          padding: 14px 16px 14px 14px;
+          margin: -14px 0 0 -14px;
+          background: var(--bg);
+          border: 1px solid var(--hair);
+          border-radius: 10px;
+        }
+      }
+      @media (min-width: 1360px) {
+        .toc-label,
+        .toc-title,
+        .toc-aside {
+          display: inline;
+        }
+        .toc-title {
+          display: block;
+        }
+        .toc,
+        .toc:hover,
+        .toc:focus-within {
+          padding: 0;
+          margin: 0;
+          background: none;
+          border: 0;
+        }
+      }
+      /* ---- phones and tablets: a "you are here" strip, pinned to the thumb
+         zone. Five segments = five sections; done dim, current bright. ---- */
+      .here {
+        display: none;
+      }
+      @media (max-width: 1099px) {
+        .here {
+          position: fixed;
+          z-index: 5;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          padding: 10px 16px calc(8px + env(safe-area-inset-bottom));
+          background: var(--bg);
+          border-top: 1px solid var(--hair);
+        }
+        .here[hidden] {
+          display: none;
+        }
+        .here:not([hidden]) {
+          display: block;
+        }
+      }
+      .here-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 6px;
+        font-size: 0.75rem;
+        line-height: 1.3;
+        color: rgba(var(--fg-rgb), calc(0.7 + var(--text-boost, 0)));
+      }
+      .here-label b {
+        color: var(--white);
+        font-weight: 600;
+      }
+      .here-label span:last-child {
+        font-variant-numeric: tabular-nums;
+      }
+      .here-segs {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .here-segs a {
+        display: block;
+        padding: 10px 0;
+      }
+      .here-segs a::before {
+        content: "";
+        display: block;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(var(--fg-rgb), 0.18);
+      }
+      .here-segs a.done::before {
+        background: rgba(45, 212, 191, 0.4);
+      }
+      .here-segs a[aria-current="true"]::before {
+        background: var(--teal);
+      }
+      :root[data-contrast="high"] .here-segs a::before {
+        background: rgba(var(--fg-rgb), 0.45);
+      }
+      :root[data-contrast="high"] .here-segs a.done::before {
+        background: var(--teal);
+        opacity: 0.6;
+      }
+      .toc-title {
+        margin: 0 0 12px;
+        font-size: 0.6875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+      .toc ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-left: 1px solid var(--hair);
+      }
+      .toc a {
+        display: block;
+        padding: 6px 0 6px 14px;
+        margin-left: -1px;
+        border-left: 2px solid transparent;
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
+        text-decoration: none;
+        line-height: 1.4;
+      }
+      .toc a:hover,
+      .toc a:focus-visible {
+        color: var(--white);
+      }
+      .toc a[aria-current="true"] {
+        color: var(--white);
+        font-weight: 600;
+        border-left-color: var(--teal);
+      }
+      .toc-n {
+        display: inline-block;
+        width: 1.7em;
+        color: rgba(var(--fg-rgb), calc(0.45 + var(--text-boost, 0)));
+        font-variant-numeric: tabular-nums;
+      }
+      .toc-aside {
+        margin: 16px 0 0;
+        padding-left: 15px;
+      }
+      .toc-aside a {
+        display: inline;
+        padding: 0;
+        border: 0;
+        margin: 0;
+        color: var(--teal);
+      }
+      h2 {
+        margin: 0 0 24px;
+        max-width: 22em;
+        font-size: clamp(1.4rem, 1rem + 1.6vw, 2rem);
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+      }
+      h3 {
+        margin: 0 0 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .sec p {
+        margin: 0 0 1.25em;
+        max-width: 34em;
+        font-size: 1rem;
+        line-height: 1.75;
+        color: rgba(var(--fg-rgb), calc(0.82 + var(--text-boost, 0)));
+      }
+      .sec p.small {
+        font-size: 0.8125rem;
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
+      }
+
+      /* ---- figures ---- */
+      figure {
+        margin: 40px 0 0;
+        padding: 28px 28px 24px;
+        border: 1px solid var(--hair);
+        border-radius: 10px;
+        background: rgba(var(--fg-rgb), 0.025);
+      }
+      figcaption {
+        margin: 0 0 20px;
+        max-width: 38em;
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: rgba(var(--fg-rgb), calc(0.75 + var(--text-boost, 0)));
+      }
+      figcaption b {
+        color: var(--white);
+        font-weight: 600;
+      }
+      /* Finding first, method second (front-loading). */
+      figcaption .find {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 1.0625rem;
+        line-height: 1.35;
+        font-weight: 600;
+        color: var(--white);
+      }
+      figcaption .fig-n {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.6875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+      .base {
+        stroke: rgba(var(--fg-rgb), 0.4);
+        stroke-dasharray: 2 4;
+      }
+      .series.lead {
+        stroke-width: 3.4;
+      }
+      .series.quiet {
+        stroke-width: 1.8;
+      }
+      figure svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-width: 720px;
+        overflow: visible;
+      }
+      .grid {
+        stroke: rgba(var(--fg-rgb), 0.1);
+        stroke-width: 1;
+      }
+      .ax {
+        font-size: 16px;
+        fill: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+      }
+      .endlab {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .series {
+        fill: none;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .series.msm {
+        stroke-width: 1.8;
+        stroke-dasharray: 5 4;
+        opacity: 0.75;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 18px;
+        margin: 0 0 12px;
+        padding: 0;
+        list-style: none;
+        font-size: 0.78rem;
+        color: rgba(var(--fg-rgb), calc(0.75 + var(--text-boost, 0)));
+      }
+      .legend li {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .legend i {
+        display: inline-block;
+        width: 18px;
+        height: 0;
+        border-top: 3px solid currentColor;
+        border-radius: 2px;
+      }
+      .legend i.dash {
+        border-top: 2px dashed currentColor;
+      }
+      .panels {
+        display: grid;
+        gap: 32px;
+      }
+      .panel h3 {
+        margin-bottom: 4px;
+        font-size: 0.875rem;
+      }
+      .panel h3 span {
+        font-weight: 400;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+      }
+      details {
+        margin-top: 28px;
+        font-size: 0.8125rem;
+      }
+      summary {
+        cursor: pointer;
+        color: var(--teal);
+        width: fit-content;
+      }
+      .tablewrap {
+        margin-top: 12px;
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 620px;
+        font-size: 0.78rem;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        padding: 6px 10px;
+        text-align: right;
+        border-bottom: 1px solid var(--hair);
+        white-space: nowrap;
+      }
+      thead th {
+        font-weight: 600;
+        color: var(--white);
+      }
+      tbody th {
+        text-align: left;
+        font-weight: 600;
+      }
+      td {
+        color: rgba(var(--fg-rgb), calc(0.8 + var(--text-boost, 0)));
+      }
+
+      /* ---- approach, asks, sources ---- */
+      .flow {
+        display: grid;
+        gap: 0;
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        border: 1px solid var(--hair);
+        border-radius: 10px;
+        counter-reset: s;
+      }
+      .flow li {
+        counter-increment: s;
+        display: grid;
+        grid-template-columns: 28px 110px 1fr;
+        gap: 4px 14px;
+        align-items: baseline;
+        padding: 14px 18px;
+        font-size: 0.875rem;
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
+      }
+      .flow li + li {
+        border-top: 1px solid var(--hair);
+      }
+      .flow li::before {
+        content: counter(s);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .flow b {
+        color: var(--white);
+        font-weight: 600;
+      }
+      @media (max-width: 560px) {
+        .flow li {
+          grid-template-columns: 24px 1fr;
+        }
+        .flow li span {
+          grid-column: 2;
+        }
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin-top: 32px;
+      }
+      @media (min-width: 700px) {
+        .cards {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .pcard {
+        padding: 24px;
+        border: 1px solid var(--hair);
+        border-radius: 10px;
+        background: rgba(var(--fg-rgb), 0.025);
+      }
+      .pcard p {
+        margin: 0 0 10px;
+        font-size: 0.85rem;
+      }
+      .pcard p:last-child {
+        margin-bottom: 0;
+      }
+      .methods {
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        max-width: 38em;
+        border-top: 1px solid var(--hair);
+      }
+      .methods li {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--hair);
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
+      }
+      .methods b {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 0.95rem;
+        color: var(--white);
+        font-weight: 600;
+      }
+      .methods .cost {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.8125rem;
+        color: rgba(var(--fg-rgb), calc(0.62 + var(--text-boost, 0)));
+      }
+      .methods .cost::before {
+        content: "Limit: ";
+        font-weight: 600;
+      }
+      .status {
+        display: inline-block;
+        margin: 0 0 16px;
+        padding: 2px 10px;
+        border: 1px solid var(--hair);
+        border-radius: 99px;
+        font-size: 0.6875rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(var(--fg-rgb), calc(0.7 + var(--text-boost, 0)));
+      }
+      .asks {
+        margin: 0 0 24px;
+        padding-left: 1.4em;
+        max-width: 34em;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: rgba(var(--fg-rgb), calc(0.78 + var(--text-boost, 0)));
+      }
+      .asks li {
+        margin-bottom: 16px;
+        padding-left: 4px;
+      }
+      .asks li b {
+        display: block;
+        color: var(--white);
+        font-weight: 600;
+      }
+      .limits {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        max-width: 34em;
+        font-size: 0.875rem;
+        line-height: 1.65;
+        color: rgba(var(--fg-rgb), calc(0.72 + var(--text-boost, 0)));
+      }
+      .limits li {
+        padding: 10px 0 10px 18px;
+        border-left: 2px solid var(--hair);
+      }
+      .limits li b {
+        color: var(--white);
+        font-weight: 600;
+      }
+      .sources {
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid var(--hair);
+      }
+      .sources li {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--hair);
+      }
+      .sources .src-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .sources .src-meta {
+        display: block;
+        margin: 2px 0 6px;
+        font-size: 0.75rem;
+        color: rgba(var(--fg-rgb), calc(0.6 + var(--text-boost, 0)));
+      }
+      .sources p {
+        margin: 0;
+        font-size: 0.85rem;
+      }
+
+      footer {
+        flex: 0 0 auto;
+        margin-top: clamp(64px, 9vw, 104px);
+        border-top: 1px solid var(--hair);
+        padding: 24px 0 calc(28px + env(safe-area-inset-bottom));
+        font-size: 0.75rem;
+        color: rgba(var(--fg-rgb), calc(0.55 + var(--text-boost, 0)));
+      }
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px 24px;
+      }
+      footer a {
+        color: var(--gray);
+      }
+      :root[data-contrast="high"] figure,
+      :root[data-contrast="high"] .stats,
+      :root[data-contrast="high"] .pcard,
+      :root[data-contrast="high"] .flow {
+        border-color: rgba(var(--fg-rgb), 0.5);
+      }
+      /* Researchers print and save pages: ink on paper, no chrome. */
+      @media print {
+        :root {
+          --bg: #fff;
+          --white: #000;
+          --gray: #333;
+          --teal: #00564f;
+          --fg-rgb: 0, 0, 0;
+          --c-gono: #b3321f;
+          --c-syph: #a23e7b;
+          --c-chl: #444;
+          --hair: #bbb;
+        }
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .a11y-widget,
+        .skip-link,
+        .mast nav,
+        .actions {
+          display: none !important;
+        }
+        .toc,
+        .here {
+          display: none !important;
+        }
+        .doc {
+          display: block !important;
+        }
+        figure,
+        .stats,
+        .flow,
+        .pcard,
+        .sources li {
+          break-inside: avoid;
+        }
+        details:not([open]) > :not(summary) {
+          display: block;
+        }
+        a {
+          color: #000;
+        }
+      }
+
+      /* Deliberately static: no entrance, scroll or hover motion on this page.
+         Only colour changes on links and buttons, removed for reduced motion. */
+      @media (prefers-reduced-motion: reduce) {
+        a,
+        .btn {
+          transition: none;
+        }
+      }
+      :root[data-motion="reduced"] a,
+      :root[data-motion="reduced"] .btn {
+        transition: none;
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          var root = document.documentElement;
+          // Lets the CSS hide scroll-reveal content only when JS can reveal it.
+          root.classList.add("js");
+          // Light mode is temporarily hidden as an option (not yet
+          // optimized) — dark stays forced regardless of any stored
+          // "ac-theme" preference from before this was disabled.
+          var size = localStorage.getItem("ac-text-size");
+          if (size === "lg" || size === "xl") root.dataset.textSize = size;
+          var contrast = localStorage.getItem("ac-contrast");
+          if (
+            contrast === "high" ||
+            (contrast !== "off" &&
+              window.matchMedia("(prefers-contrast: more)").matches)
+          )
+            root.dataset.contrast = "high";
+          if (localStorage.getItem("ac-motion") === "reduced")
+            root.dataset.motion = "reduced";
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="a11y-widget" id="a11yWidget">
+      <button
+        type="button"
+        id="a11yToggle"
+        class="a11y-toggle"
+        aria-expanded="false"
+        aria-controls="a11yPanel"
+        aria-label="Accessibility settings"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <circle cx="9" cy="6" r="2" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <circle cx="15" cy="12" r="2" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+          <circle cx="9" cy="18" r="2" />
+        </svg>
+        <span class="a11y-toggle-label">Accessibility</span>
+      </button>
+
+      <div
+        id="a11yPanel"
+        class="a11y-panel"
+        role="group"
+        aria-label="Accessibility settings"
+      >
+        <p class="a11y-panel-heading">Accessibility settings</p>
+
+        <div class="a11y-row">
+          <span class="a11y-row-label">Text size</span>
+          <div class="a11y-stepper" role="group" aria-label="Text size">
+            <button
+              type="button"
+              id="a11yTextDecrease"
+              aria-label="Decrease text size"
+            >
+              A−
+            </button>
+            <button
+              type="button"
+              id="a11yTextReset"
+              aria-label="Reset text size"
+              aria-pressed="true"
+            >
+              A
+            </button>
+            <button
+              type="button"
+              id="a11yTextIncrease"
+              aria-label="Increase text size"
+            >
+              A+
+            </button>
+          </div>
+        </div>
+
+        <label class="a11y-toggle-row">
+          <span class="a11y-row-label">High contrast</span>
+          <input type="checkbox" role="switch" id="a11yContrastToggle" />
+        </label>
+
+        <label class="a11y-toggle-row">
+          <span class="a11y-row-label">Reduce motion</span>
+          <input type="checkbox" role="switch" id="a11yMotionToggle" />
+        </label>
+        <div
+          id="a11yMotionNote"
+          class="a11y-note"
+          role="note"
+          hidden
+        >
+          <p class="a11y-note-title">Motion is already reduced</p>
+          <p>
+            Your device is set to reduce motion (less sliding, fading and
+            moving), so this page already is. We follow that setting, so the
+            switch above stays on.
+          </p>
+          <p>
+            <strong>To change it:</strong> on iPhone, open Settings &rsaquo;
+            Accessibility &rsaquo; Motion. On Android, open Settings &rsaquo;
+            Accessibility and look for &ldquo;Remove animations&rdquo;.
+          </p>
+        </div>
+
+        <button type="button" id="a11yReset" class="a11y-reset">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+          Reset to defaults
+        </button>
+      </div>
+    </div>
+    <div class="glow" aria-hidden="true"></div>
+    <div id="progress" aria-hidden="true"></div>
+    <div class="wrap">
+      <header class="mast">
+        <div class="lineage">
+          <a class="org" href="./">
+            <img src="../visual-assets/aftercare-icon-halo.png" alt="" width="40" height="40" />
+            <span class="org-name"><b>AfterCare <i>Foundation</i></b><span class="role">Research &amp; clinical arm</span><span class="arm">Research &amp; clinical arm of the app</span></span>
+          </a>
+          <svg class="branch" width="44" height="28" viewBox="0 0 44 28" fill="none" aria-hidden="true">
+            <circle cx="3" cy="14" r="2.5" fill="currentColor" />
+            <path d="M5 14h34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 4" />
+            <path d="M36 9l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <a class="parent" href="../" aria-label="AfterCare, the consumer app the Foundation builds (public site)">
+            <img src="../visual-assets/apple-touch-icon.png" alt="" width="40" height="40" />
+            <span>The app</span>
+          </a>
+        </div>
+        <nav aria-label="On this page">
+          <a href="#problem">Problem</a>
+          <a href="#approach">Approach</a>
+          <a href="#measure">Measurement</a>
+          <a href="#partner">Partner</a>
+          <a href="#evidence">Evidence</a>
+          <a href="../">Public site</a>
+        </nav>
+      </header>
+
+      <main id="main-content">
+        <section class="hero">
+          <p class="kicker">For clinicians, researchers and funders</p>
+          <h1>Closing the gaps in STI partner notification.</h1>
+          <p class="dek">
+            AfterCare is an anonymous exposure-notification app for sexually
+            transmitted infections. We are building it in the open, and we want
+            the people who treat and study these infections to review it, shape
+            it, and tell us where we are wrong.
+          </p>
+          <div class="actions">
+            <a class="btn primary" href="mailto:contact@after-care.eu?subject=Partnership%20enquiry">Partner with us</a>
+            <a class="btn" href="#evidence">Read the evidence</a>
+          </div>
+        </section>
+
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-name">Gonorrhoea</span>
+            <b style="color:var(--c-gono)">+248%</b>
+            <span class="stat-range">30,564 → 106,331</span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Syphilis</span>
+            <b style="color:var(--c-syph)">+111%</b>
+            <span class="stat-range">21,585 → 45,577</span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Chlamydia</span>
+            <b style="color:var(--c-chl)">+27%</b>
+            <span class="stat-range">168,239 → 213,443</span>
+          </div>
+        </div>
+        <p class="stats-note">Change in confirmed cases reported to ECDC, EU/EEA, 2015 → 2024. Source: ECDC Surveillance Atlas of Infectious Diseases.</p>
+
+        <div class="doc">
+        <nav class="toc" aria-label="On this page">
+          <p class="toc-title">On this page</p>
+          <ol>
+            <li><a href="#problem"><span class="toc-n">01</span><span class="toc-label">Problem</span></a></li>
+            <li><a href="#approach"><span class="toc-n">02</span><span class="toc-label">Approach</span></a></li>
+            <li><a href="#measure"><span class="toc-n">03</span><span class="toc-label">Measurement</span></a></li>
+            <li><a href="#partner"><span class="toc-n">04</span><span class="toc-label">Partner</span></a></li>
+            <li><a href="#evidence"><span class="toc-n">05</span><span class="toc-label">Evidence</span></a></li>
+          </ol>
+          <p class="toc-aside"><a href="../">Public site &rarr;</a></p>
+        </nav>
+        <nav class="here" id="here" aria-label="Section progress" hidden>
+          <p class="here-label" aria-hidden="true"><span id="hereName"></span><span id="hereOf"></span></p>
+          <ol class="here-segs">
+            <li><a href="#problem" aria-label="01 Problem"></a></li>
+            <li><a href="#approach" aria-label="02 Approach"></a></li>
+            <li><a href="#measure" aria-label="03 Measurement"></a></li>
+            <li><a href="#partner" aria-label="04 Partner"></a></li>
+            <li><a href="#evidence" aria-label="05 Evidence"></a></li>
+          </ol>
+        </nav>
+        <div class="doc-main">
+        <section class="sec" id="problem" aria-labelledby="h-problem">
+          <div class="sec-label"><b>01</b>The problem</div>
+          <div>
+            <h2 id="h-problem">Bacterial STIs are at record levels across Europe.</h2>
+            <p>
+              ECDC reports that confirmed cases of gonorrhoea, syphilis and
+              chlamydia have all risen over the last decade, and its report for
+              2023 describes the highest gonorrhoea notification rate recorded
+              since European reporting began in 2009.
+            </p>
+            <p>
+              Partner notification is a standard part of STI care, but it
+              depends on a patient being able to name and reach their
+              partners. After an anonymous encounter that is often not
+              possible. That gap is what AfterCare is built for. It is our
+              motivation, not a finding, and Section 04 says where we most
+              need it tested.
+            </p>
+            
+          <figure>
+            <figcaption><span class="fig-n">Figure 1</span><span class="find">Gonorrhoea has more than tripled since 2015; syphilis has doubled; chlamydia is up about a quarter.</span>Confirmed cases, EU/EEA, indexed to 2015 = 100.</figcaption>
+            <svg viewBox="0 0 700 320" role="img" aria-labelledby="f1t f1d"><title id="f1t">Confirmed STI cases in the EU/EEA, indexed to 2015 = 100</title><desc id="f1d">By 2024, gonorrhoea is at 348, syphilis at 211 and chlamydia at 127.</desc><line class="grid" x1="50" x2="544" y1="286.0" y2="286.0" /><text class="ax" x="42" y="290.0" text-anchor="end">0</text><line class="grid base" x1="50" x2="544" y1="218.5" y2="218.5" /><text class="ax" x="42" y="222.5" text-anchor="end">100</text><line class="grid" x1="50" x2="544" y1="151.0" y2="151.0" /><text class="ax" x="42" y="155.0" text-anchor="end">200</text><line class="grid" x1="50" x2="544" y1="83.5" y2="83.5" /><text class="ax" x="42" y="87.5" text-anchor="end">300</text><line class="grid" x1="50" x2="544" y1="16.0" y2="16.0" /><text class="ax" x="42" y="20.0" text-anchor="end">400</text><text class="ax" x="50.0" y="310" text-anchor="middle">2015</text><text class="ax" x="104.9" y="310" text-anchor="middle"></text><text class="ax" x="159.8" y="310" text-anchor="middle"></text><text class="ax" x="214.7" y="310" text-anchor="middle">2018</text><text class="ax" x="269.6" y="310" text-anchor="middle"></text><text class="ax" x="324.4" y="310" text-anchor="middle"></text><text class="ax" x="379.3" y="310" text-anchor="middle">2021</text><text class="ax" x="434.2" y="310" text-anchor="middle"></text><text class="ax" x="489.1" y="310" text-anchor="middle"></text><text class="ax" x="544.0" y="310" text-anchor="middle">2024</text><polyline class="series quiet" style="stroke:var(--c-chl)" points="50.0,218.5 104.9,215.8 159.8,213.8 214.7,220.0 269.6,215.5 324.4,221.0 379.3,210.4 434.2,197.7 489.1,193.4 544.0,200.4" /><circle cx="544.0" cy="200.4" r="3.5" style="fill:var(--c-chl)" /><text class="endlab" x="553.0" y="204.9" style="fill:var(--c-chl)">Chlamydia 127</text><polyline class="series" style="stroke:var(--c-syph)" points="50.0,218.5 104.9,214.0 159.8,206.6 214.7,207.6 269.6,204.5 324.4,213.2 379.3,201.9 434.2,174.3 489.1,154.6 544.0,143.5" /><circle cx="544.0" cy="143.5" r="3.5" style="fill:var(--c-syph)" /><text class="endlab" x="553.0" y="148.0" style="fill:var(--c-syph)">Syphilis 211</text><polyline class="series lead" style="stroke:var(--c-gono)" points="50.0,218.5 104.9,204.2 159.8,193.4 214.7,197.2 269.6,193.7 324.4,197.5 379.3,173.9 434.2,120.2 489.1,66.8 544.0,51.2" /><circle cx="544.0" cy="51.2" r="3.5" style="fill:var(--c-gono)" /><text class="endlab" x="553.0" y="55.7" style="fill:var(--c-gono)">Gonorrhoea 348</text></svg>
+          </figure>
+
+          <figure>
+            <figcaption><span class="fig-n">Figure 2</span><span class="find">Gonorrhoea and syphilis rose both among MSM and in the wider total.</span>Confirmed cases by infection, EU/EEA, 2015–2024, in thousands; each panel has its own scale. Solid: all cases. Dashed: men who have sex with men (MSM), where the atlas reports them.</figcaption>
+            <ul class="legend" aria-hidden="true">
+              <li><i></i>All confirmed cases</li>
+              <li><i class="dash"></i>Men who have sex with men</li>
+            </ul>
+            <div class="panels">
+              <div class="panel"><h3>Gonorrhoea <span>· 30,564 → 106,331</span></h3><svg viewBox="0 0 600 200" role="img" aria-label="Gonorrhoea: confirmed cases in the EU/EEA, 2015 to 2024, all cases and men who have sex with men"><line class="grid" x1="58" x2="576" y1="168.0" y2="168.0" /><text class="ax" x="50" y="173.0" text-anchor="end">0k</text><line class="grid" x1="58" x2="576" y1="116.0" y2="116.0" /><text class="ax" x="50" y="121.0" text-anchor="end">40k</text><line class="grid" x1="58" x2="576" y1="64.0" y2="64.0" /><text class="ax" x="50" y="69.0" text-anchor="end">80k</text><line class="grid" x1="58" x2="576" y1="12.0" y2="12.0" /><text class="ax" x="50" y="17.0" text-anchor="end">120k</text><text class="ax" x="58.0" y="192" text-anchor="middle">2015</text><text class="ax" x="230.7" y="192" text-anchor="middle">2018</text><text class="ax" x="403.3" y="192" text-anchor="middle">2021</text><text class="ax" x="576.0" y="192" text-anchor="middle">2024</text><polyline class="series" style="stroke:var(--c-gono)" points="58.0,128.3 115.6,119.8 173.1,113.5 230.7,115.7 288.2,113.7 345.8,115.9 403.3,102.0 460.9,70.4 518.4,38.9 576.0,29.8" /><circle cx="576.0" cy="29.8" r="3.5" style="fill:var(--c-gono)" /><polyline class="series msm" style="stroke:var(--c-gono)" points="58.0,157.7 115.6,154.8 173.1,152.0 230.7,150.5 288.2,149.4 345.8,149.1 403.3,144.8 460.9,134.7 518.4,126.0 576.0,125.2" /></svg></div>
+              <div class="panel"><h3>Syphilis <span>· 21,585 → 45,577</span></h3><svg viewBox="0 0 600 200" role="img" aria-label="Syphilis: confirmed cases in the EU/EEA, 2015 to 2024, all cases and men who have sex with men"><line class="grid" x1="58" x2="576" y1="168.0" y2="168.0" /><text class="ax" x="50" y="173.0" text-anchor="end">0k</text><line class="grid" x1="58" x2="576" y1="90.0" y2="90.0" /><text class="ax" x="50" y="95.0" text-anchor="end">25k</text><line class="grid" x1="58" x2="576" y1="12.0" y2="12.0" /><text class="ax" x="50" y="17.0" text-anchor="end">50k</text><text class="ax" x="58.0" y="192" text-anchor="middle">2015</text><text class="ax" x="230.7" y="192" text-anchor="middle">2018</text><text class="ax" x="403.3" y="192" text-anchor="middle">2021</text><text class="ax" x="576.0" y="192" text-anchor="middle">2024</text><polyline class="series" style="stroke:var(--c-syph)" points="58.0,100.7 115.6,96.1 173.1,88.8 230.7,89.8 288.2,86.6 345.8,95.3 403.3,84.1 460.9,56.6 518.4,36.9 576.0,25.8" /><circle cx="576.0" cy="25.8" r="3.5" style="fill:var(--c-syph)" /><polyline class="series msm" style="stroke:var(--c-syph)" points="58.0,141.8 115.6,139.3 173.1,137.9 230.7,137.9 288.2,136.6 345.8,138.4 403.3,136.0 460.9,124.6 518.4,120.2 576.0,119.5" /></svg></div>
+              <div class="panel"><h3>Chlamydia <span>· 168,239 → 213,443 · MSM series begins 2020</span></h3><svg viewBox="0 0 600 200" role="img" aria-label="Chlamydia: confirmed cases in the EU/EEA, 2015 to 2024, all cases and men who have sex with men"><line class="grid" x1="58" x2="576" y1="168.0" y2="168.0" /><text class="ax" x="50" y="173.0" text-anchor="end">0k</text><line class="grid" x1="58" x2="576" y1="105.6" y2="105.6" /><text class="ax" x="50" y="110.6" text-anchor="end">100k</text><line class="grid" x1="58" x2="576" y1="43.2" y2="43.2" /><text class="ax" x="50" y="48.2" text-anchor="end">200k</text><text class="ax" x="58.0" y="192" text-anchor="middle">2015</text><text class="ax" x="230.7" y="192" text-anchor="middle">2018</text><text class="ax" x="403.3" y="192" text-anchor="middle">2021</text><text class="ax" x="576.0" y="192" text-anchor="middle">2024</text><polyline class="series" style="stroke:var(--c-chl)" points="58.0,63.0 115.6,58.8 173.1,55.7 230.7,65.3 288.2,58.3 345.8,66.9 403.3,50.4 460.9,30.7 518.4,24.0 576.0,34.8" /><circle cx="576.0" cy="34.8" r="3.5" style="fill:var(--c-chl)" /><polyline class="series msm" style="stroke:var(--c-chl)" points="345.8,163.5 403.3,160.1 460.9,158.6 518.4,158.1 576.0,158.6" /></svg></div>
+            </div>
+            <details>
+              <summary>Show the data as a table</summary>
+              <div class="tablewrap"><table><caption class="sr">Confirmed cases reported to ECDC, EU/EEA, 2015–2024</caption><thead><tr><th scope="col">Year</th><th scope="col">Gonorrhoea</th><th scope="col">Gonorrhoea (MSM)</th><th scope="col">Syphilis</th><th scope="col">Syphilis (MSM)</th><th scope="col">Chlamydia</th><th scope="col">Chlamydia (MSM)</th></tr></thead><tbody><tr><th scope="row">2015</th><td>30,564</td><td>7,892</td><td>21,585</td><td>8,393</td><td>168,239</td><td>—</td></tr><tr><th scope="row">2016</th><td>37,046</td><td>10,184</td><td>23,032</td><td>9,209</td><td>174,979</td><td>—</td></tr><tr><th scope="row">2017</th><td>41,944</td><td>12,325</td><td>25,379</td><td>9,640</td><td>179,951</td><td>—</td></tr><tr><th scope="row">2018</th><td>40,224</td><td>13,450</td><td>25,078</td><td>9,637</td><td>164,523</td><td>—</td></tr><tr><th scope="row">2019</th><td>41,792</td><td>14,279</td><td>26,075</td><td>10,054</td><td>175,777</td><td>—</td></tr><tr><th scope="row">2020</th><td>40,051</td><td>14,569</td><td>23,290</td><td>9,501</td><td>161,969</td><td>7,226</td></tr><tr><th scope="row">2021</th><td>50,777</td><td>17,814</td><td>26,882</td><td>10,257</td><td>188,521</td><td>12,705</td></tr><tr><th scope="row">2022</th><td>75,065</td><td>25,588</td><td>35,707</td><td>13,901</td><td>219,978</td><td>15,067</td></tr><tr><th scope="row">2023</th><td>99,270</td><td>32,301</td><td>42,033</td><td>15,310</td><td>230,788</td><td>15,922</td></tr><tr><th scope="row">2024</th><td>106,331</td><td>32,918</td><td>45,577</td><td>15,539</td><td>213,443</td><td>14,998</td></tr></tbody></table></div>
+            </details>
+          </figure>
+            <h3 style="margin-top:40px">Limits of these data</h3>
+            <ul class="limits">
+              <li><b>Notifications, not incidence.</b> Counts are confirmed cases reported by national authorities.</li>
+              <li><b>Testing and reporting move the numbers too.</b> Reporting countries are ECDC's EU/EEA aggregate.</li>
+              <li><b>A signal of scale, not of effect.</b> We read the trend as evidence the problem is large and growing, not as a measure of any intervention.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="sec" id="approach" aria-labelledby="h-approach">
+          <div class="sec-label"><b>02</b>Our approach</div>
+          <div>
+            <h2 id="h-approach">Notification without identification.</h2>
+            <p>
+              Two people who have been in close contact pair their halves of a
+              card, by QR code or wristband. If either later tests positive,
+              one tap tells the other, anonymously. No names, no accounts, no
+              identifying information exchanged. The app is free, open source
+              and built and hosted in Europe.
+            </p>
+            <ol class="flow">
+              <li><b>Keep</b><span>Each person holds one half of a card pair.</span></li>
+              <li><b>Scan</b><span>Scanned in the app whenever they are ready.</span></li>
+              <li><b>Connected</b><span>The halves match once both have scanned.</span></li>
+              <li><b>Notified</b><span>If either tests positive, one tap tells the other. No identifying information is exchanged.</span></li>
+              <li><b>Treated</b><span>Earlier care, only when advised by healthcare professionals.</span></li>
+            </ol>
+            <p class="small" style="margin-top:16px">
+              AfterCare does not diagnose, advise on treatment, or replace
+              clinical care. Status: in development. Code:
+              <a href="https://github.com/AfterCare-foundation/app" target="_blank" rel="noopener noreferrer">app</a> ·
+              <a href="https://github.com/AfterCare-foundation/backend" target="_blank" rel="noopener noreferrer">backend</a>.
+              How we protect users: <a href="../privacy/">privacy policy</a>.
+            </p>
+          </div>
+        </section>
+
+        <section class="sec" id="measure" aria-labelledby="h-measure">
+          <div class="sec-label"><b>03</b>Measurement</div>
+          <div>
+            <h2 id="h-measure">Measuring outcomes without identifying anyone.</h2>
+            <span class="status">Proposed design · open to critique</span>
+            <p>
+              We would measure behaviour after a notice, not confirmed-case
+              counts. Counts rise with testing, so they cannot show whether
+              notification works. Everything below is a proposal for you to
+              challenge, not a method we have already validated.
+            </p>
+
+            <h3 style="margin-top:32px">What we would measure</h3>
+            <ul class="limits">
+              <li><b>Testing after a notice.</b> The share of notified users who test, and the time from notice to test.</li>
+              <li><b>Treatment started.</b> Where a clinic can report it, in aggregate.</li>
+              <li><b>Onward notification.</b> Whether a notified user in turn notifies their own contacts.</li>
+            </ul>
+
+            <h3 style="margin-top:40px">How, with the least data</h3>
+            <p>
+              AfterCare has no accounts, so any measurement has to be opt-in,
+              carry no identifier, and reveal nothing about one device that it
+              does not reveal about all. Four techniques, each with its limit:
+            </p>
+            <ul class="methods">
+              <li>
+                <b>Opt-in, event-level only</b>
+                A device sends a single yes/no event, such as &ldquo;tested within 14 days of a notice&rdquo;, only after explicit consent, and nothing else.
+                <span class="cost">self-selection: people who opt in may differ from those who do not.</span>
+              </li>
+              <li>
+                <b>Local differential privacy</b>
+                Each device adds calibrated noise before sending, so no single report can be trusted, while the aggregate remains estimable.
+                <span class="cost">needs large samples; small countries or subgroups may fall below what is measurable at a privacy level we would accept.</span>
+              </li>
+              <li>
+                <b>Secure aggregation</b>
+                The server receives only the sum across devices, never an individual contribution.
+                <span class="cost">protects against our own server, not against a biased sample.</span>
+              </li>
+              <li>
+                <b>Clinic-side aggregate counts</b>
+                Partner clinics report counts of attendances that cite the app, with small cells suppressed, never linked to app data.
+                <span class="cost">depends on clinics asking the question consistently.</span>
+              </li>
+            </ul>
+            <p class="small" style="margin-top:20px">
+              We have not named federated learning because it trains models,
+              and we have no model to train. Federated analytics, which
+              computes counts and histograms on the device, is the closer fit.
+              Tell us if you disagree.
+            </p>
+
+            <h3 style="margin-top:40px">What we would need to settle first</h3>
+            <ul class="limits">
+              <li><b>A comparison.</b> A staggered rollout by region or clinic, so some areas serve as the comparison. Outcomes registered before launch.</li>
+              <li><b>The privacy budget.</b> The differential-privacy parameter (&epsilon;), set with a statistician and published.</li>
+              <li><b>Consent and policy.</b> Opt-in measurement changes what we tell users. It needs ethics review and an updated privacy policy before any data is collected.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="sec" id="partner" aria-labelledby="h-partner">
+          <div class="sec-label"><b>04</b>Partner with us</div>
+          <div>
+            <h2 id="h-partner">Where we need people who know more than we do.</h2>
+            <p>
+              We are not a research institute, and we do not want to be judged
+              as one. We publish only official figures, from ECDC and similar
+              public health bodies, and no impact projections until clinicians
+              have reviewed the assumptions behind them. We would like help
+              with three things:
+            </p>
+            <ul class="asks">
+              <li><b>Clinical soundness.</b> Is the notification flow and its wording sound, and safe for the person receiving a notice?</li>
+              <li><b>Defensible impact claims.</b> What can be claimed, and is the measurement design above sound? Better notification drives testing, and testing finds cases, so confirmed counts may rise before they fall.</li>
+              <li><b>Country-specific pathways.</b> Which testing and treatment routes should the app point to in each country?</li>
+            </ul>
+            <div class="cards">
+              <div class="pcard">
+                <h3>Clinicians and clinics</h3>
+                <p>Review the notification flow and wording, and advise on testing and treatment guidance.</p>
+                <p><a href="mailto:contact@after-care.eu?subject=Clinical%20partnership">Write to us as a clinician →</a></p>
+              </div>
+              <div class="pcard">
+                <h3>Researchers</h3>
+                <p>Help design how impact can be measured. The code is open, and the data pipeline for the figures above is in the repository.</p>
+                <p><a href="mailto:contact@after-care.eu?subject=Research%20collaboration">Write to us as a researcher →</a></p>
+              </div>
+              <div class="pcard">
+                <h3>Funders and institutions</h3>
+                <p>Fund or co-sponsor the work. See <a href="../funding/">how AfterCare is funded</a>, and what we will never accept.</p>
+                <p><a href="mailto:contact@after-care.eu?subject=Funding%20or%20sponsorship">Write to us about funding →</a></p>
+              </div>
+            </div>
+            <p style="margin-top:24px">
+              <a class="btn primary" href="mailto:contact@after-care.eu?subject=Partnership%20enquiry">contact@after-care.eu</a>
+            </p>
+          </div>
+        </section>
+
+        <section class="sec" id="evidence" aria-labelledby="h-evidence">
+          <div class="sec-label"><b>05</b>Evidence &amp; sources</div>
+          <div>
+            <h2 id="h-evidence">What we are relying on.</h2>
+            <p>
+              Every figure on this page comes from the first source below. The
+              rest is the evidence we have read on partner notification and on
+              the trend. If there is a study we should read, or one that
+              contradicts us, please send it.
+            </p>
+            <ul class="sources">
+              <li>
+                <a class="src-title" href="https://www.ecdc.europa.eu/en/surveillance-atlas-infectious-diseases" target="_blank" rel="noopener noreferrer">ECDC Surveillance Atlas of Infectious Diseases</a>
+                <span class="src-meta">European Centre for Disease Prevention and Control · data accessed September 2026</span>
+                <p>Source of every number and chart above (confirmed cases, EU/EEA, gonorrhoea, syphilis and chlamydia). Reuse follows ECDC's <a href="https://www.ecdc.europa.eu/en/ecdc-intellectual-property-notices" target="_blank" rel="noopener noreferrer">intellectual property notices</a>; the charts are our own drawings of the ECDC totals.</p>
+              </li>
+              <li>
+                <a class="src-title" href="https://www.ecdc.europa.eu/en/news-events/bacterial-stis-reach-record-highs-europe-congenital-syphilis-cases-nearly-double" target="_blank" rel="noopener noreferrer">Bacterial STIs reach record highs in Europe, congenital syphilis cases nearly double</a>
+                <span class="src-meta">ECDC · news release</span>
+                <p>ECDC's own summary of the trend shown in Figures 1 and 2.</p>
+              </li>
+              <li>
+                <a class="src-title" href="https://www.ecdc.europa.eu/sites/default/files/documents/GONO_AER_2023_Report.pdf" target="_blank" rel="noopener noreferrer">Gonorrhoea: Annual Epidemiological Report for 2023</a>
+                <span class="src-meta">ECDC · report (PDF)</span>
+                <p>Country-level notification rates, population breakdown and methods. Its totals use ECDC's annual-report country set and differ slightly from the atlas aggregate used above.</p>
+              </li>
+              <li>
+                <a class="src-title" href="https://www.cochrane.org/evidence/CD002843_strategies-partner-notification-sexually-transmitted-infections-including-hiv" target="_blank" rel="noopener noreferrer">Strategies for partner notification for sexually transmitted infections, including HIV</a>
+                <span class="src-meta">Ferreira, Young, Mathews, Zunza, Low · Cochrane Database of Systematic Reviews, 2013 · DOI 10.1002/14651858.CD002843.pub2</span>
+                <p>Pooled 26 trials of partner-notification strategies. It found no single optimal strategy for any infection, and called for better trials on HIV and syphilis with biological outcomes. A newer version may exist; check the Cochrane Library.</p>
+              </li>
+            </ul>
+          </div>
+        </section>
+        </div>
+        </div>
+      </main>
+    </div>
+
+    <footer>
+      <div class="wrap">
+        <span>AfterCare Foundation · privacy-first, always · data: ECDC, accessed September 2026 · page updated October 2026</span>
+        <span><a href="../">Public site</a> · <a href="../privacy/">Privacy</a> · <a href="../funding/">Funding</a></span>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        var ids = ["problem", "approach", "measure", "partner", "evidence"];
+        var names = {
+          problem: "The problem",
+          approach: "Our approach",
+          measure: "Measurement",
+          partner: "Partner with us",
+          evidence: "Evidence & sources",
+        };
+        var rail = document.querySelectorAll(".toc a[href^='#']");
+        var segs = document.querySelectorAll(".here-segs a");
+        var here = document.getElementById("here");
+        var nameEl = document.getElementById("hereName");
+        var ofEl = document.getElementById("hereOf");
+        var footer = document.querySelector("footer");
+
+        // The section crossing the upper third of the viewport is current.
+        function current() {
+          var line = window.innerHeight * 0.3;
+          var cur = null;
+          ids.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el && el.getBoundingClientRect().top <= line) cur = id;
+          });
+          return cur;
+        }
+        function update() {
+          var id = current();
+          var idx = id ? ids.indexOf(id) : -1;
+          rail.forEach(function (a, i) {
+            if (i === idx) a.setAttribute("aria-current", "true");
+            else a.removeAttribute("aria-current");
+          });
+          segs.forEach(function (a, i) {
+            a.classList.toggle("done", i < idx);
+            if (i === idx) a.setAttribute("aria-current", "true");
+            else a.removeAttribute("aria-current");
+          });
+          if (here) {
+            // Show once the first section is reached; tuck away at the footer.
+            var atFooter =
+              footer && footer.getBoundingClientRect().top < window.innerHeight;
+            here.hidden = idx < 0 || atFooter;
+            if (idx >= 0) {
+              nameEl.innerHTML = "<b>0" + (idx + 1) + "</b> · " + names[id];
+              ofEl.textContent = idx + 1 + " of " + ids.length;
+            }
+          }
+        }
+        var queued = false;
+        function onScroll() {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(function () {
+            queued = false;
+            update();
+          });
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        update();
+      })();
+    </script>
+    <script src="../assets/a11y-panel.js" defer></script>
+  </body>
+</html>
