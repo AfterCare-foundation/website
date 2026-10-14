@@ -419,8 +419,14 @@
         height: 1.3em;
         flex-shrink: 0;
       }
-      /* Template shape in the icon's slot: if the SVG is ever late, the
-         lockup still reads as a lockup instead of a wordmark with a hole. */
+      /* Template shape in the icon's slot while the SVG is still loading, so
+         the lockup reads as a lockup instead of a wordmark with a hole. Only
+         while .logo-wait is set: the SVG has transparent gaps (between the
+         halves, the eye and smile cut-outs), and a permanent fill here shows
+         through them as a ghost behind the heart. */
+      .logo-badge:not(.logo-wait) .logo-badge-icon::before {
+        display: none;
+      }
       .logo-badge-icon::before {
         content: "";
         position: absolute;
