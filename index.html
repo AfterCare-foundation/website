@@ -756,7 +756,7 @@
           0 24px 60px rgba(96, 165, 250, 0.25),
           0 0 40px rgba(45, 212, 191, 0.15);
         pointer-events: none;
-        animation: float 9s ease-in-out infinite;
+        animation: float 7s ease-in-out infinite;
       }
       .mockup img {
         position: relative;
@@ -766,7 +766,7 @@
         height: auto;
         max-width: min(330px, 78vw);
         max-height: 58vh;
-        animation: float 9s ease-in-out infinite;
+        animation: float 7s ease-in-out infinite;
       }
       @media (min-width: 1024px) {
         .mockup img {
@@ -780,7 +780,7 @@
           transform: translateY(0);
         }
         50% {
-          transform: translateY(-8px);
+          transform: translateY(-14px);
         }
       }
 
@@ -2502,7 +2502,7 @@
       /* Hover: the bar swells a touch on a soft spring and its text lifts
          to white with a faint halo, the way Apple's highlight tiles do.
          Waits for .is-settled (the section's fade-in is done). */
-      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      @media (prefers-reduced-motion: no-preference) {
         :root:not([data-motion="reduced"]) .mission .funnel-step {
           transition:
             scale 0.45s var(--ease-soft),
@@ -2513,7 +2513,7 @@
         }
         :root:not([data-motion="reduced"])
           .mission.is-settled
-          .funnel-step:hover {
+          .funnel-step.is-lit {
           scale: 1.028;
           color: #fff;
           text-shadow:
@@ -4039,7 +4039,7 @@
           translate: -2px 0;
         }
       }
-      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      @media (prefers-reduced-motion: no-preference) {
         .mp-scanline-hover {
           opacity: 0;
         }
@@ -4048,19 +4048,19 @@
             scale 0.4s var(--ease-soft),
             box-shadow 0.4s var(--ease-calm);
         }
-        :root:not([data-motion="reduced"]) .step.is-settled .mp-notified:hover .mp-notif {
+        :root:not([data-motion="reduced"]) .step.is-settled .mp-notified.is-lit .mp-notif {
           scale: 1.055;
           box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
         }
         :root:not([data-motion="reduced"]) .step.is-settled .mp-frame {
           transition: scale 0.45s var(--ease-soft);
         }
-        :root:not([data-motion="reduced"]) .step.is-settled .mini-phone:hover .mp-frame {
+        :root:not([data-motion="reduced"]) .step.is-settled .mini-phone.is-lit .mp-frame {
           scale: 1.045;
         }
         :root:not([data-motion="reduced"])
           .step.is-settled
-          .mini-phone:hover
+          .mini-phone.is-lit
           .mp-scanline-hover {
           animation: mp-scan-hover 1.3s ease-in-out 2 both;
         }
@@ -4072,54 +4072,54 @@
         }
         :root:not([data-motion="reduced"])
           .step[data-step="keep"].is-settled
-          .torn-card:hover {
+          .torn-card.is-lit {
           rotate: 2.2deg;
           translate: 0 -3.5px;
         }
         :root:not([data-motion="reduced"])
           .step.is-settled
-          .mp-connected:hover
+          .mp-connected.is-lit
           .mp-heart {
           animation:
             mp-match-heart-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both,
             mp-heart-pulse 1.8s ease-in-out 1.1s 3;
         }
-        :root:not([data-motion="reduced"]) .trust.is-settled li:hover .trust-icon {
+        :root:not([data-motion="reduced"]) .trust.is-settled li.is-lit .trust-icon {
           animation: trust-pop 0.5s var(--ease-soft);
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(1):hover
+          li:nth-child(1).is-lit
           .trust-check {
           animation: trust-check-draw 0.5s var(--ease-calm) 0.1s both;
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(2):hover
+          li:nth-child(2).is-lit
           .trust-icon {
           animation: trust-wiggle 0.65s ease-in-out;
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(3):hover
+          li:nth-child(3).is-lit
           .trust-icon {
           animation: trust-swing 0.7s ease-in-out;
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(4):hover
+          li:nth-child(4).is-lit
           .trust-icon {
           animation: none;
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(4):hover
+          li:nth-child(4).is-lit
           .trust-br-r {
           animation: trust-br-out-r 0.6s var(--ease-calm);
         }
         :root:not([data-motion="reduced"])
           .trust.is-settled
-          li:nth-child(4):hover
+          li:nth-child(4).is-lit
           .trust-br-l {
           animation: trust-br-out-l 0.6s var(--ease-calm);
         }
@@ -4295,29 +4295,29 @@
           scale: 1.32;
         }
       }
-      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-        :root:not([data-motion="reduced"]) .share-btn:hover svg {
+      @media (prefers-reduced-motion: no-preference) {
+        :root:not([data-motion="reduced"]) .share-btn.is-lit svg {
           animation: share-spring 0.6s var(--ease-soft);
         }
-        :root:not([data-motion="reduced"]) .share-btn:hover svg circle {
+        :root:not([data-motion="reduced"]) .share-btn.is-lit svg circle {
           transform-box: fill-box;
           transform-origin: center;
           animation: share-node 0.5s var(--ease-soft);
         }
         :root:not([data-motion="reduced"])
-          .share-btn:hover
+          .share-btn.is-lit
           svg
           circle:nth-of-type(1) {
           animation-delay: 0.04s;
         }
         :root:not([data-motion="reduced"])
-          .share-btn:hover
+          .share-btn.is-lit
           svg
           circle:nth-of-type(2) {
           animation-delay: 0.1s;
         }
         :root:not([data-motion="reduced"])
-          .share-btn:hover
+          .share-btn.is-lit
           svg
           circle:nth-of-type(3) {
           animation-delay: 0.16s;
@@ -7849,6 +7849,67 @@
         watch(mission, mission, has("in-view"), 1000, mission);
         var trust = document.querySelector(".trust");
         watch(trust, trust, has("in-view"), 1500, trust);
+      })();
+    </script>
+    <script>
+      // Touch has no hover, so the hover effects are keyed to .is-lit instead
+      // of :hover. A mouse lights an element while the pointer is over it; a
+      // finger lights it while pressed and for a moment after release, long
+      // enough for the effect to finish its first beat. One set of CSS rules
+      // serves both, and a tap can't leave a sticky :hover behind.
+      (function () {
+        var SEL =
+          ".mini-phone, .torn-card, .trust li, .funnel-step, .share-btn";
+        var HOLD_MS = 1300;
+        var timers = new WeakMap();
+        function light(el) {
+          clearTimeout(timers.get(el));
+          el.classList.add("is-lit");
+        }
+        function unlight(el) {
+          el.classList.remove("is-lit");
+        }
+        document.addEventListener("pointerover", function (e) {
+          if (e.pointerType !== "mouse") return;
+          var el = e.target.closest && e.target.closest(SEL);
+          if (el) light(el);
+        });
+        document.addEventListener("pointerout", function (e) {
+          if (e.pointerType !== "mouse") return;
+          var el = e.target.closest && e.target.closest(SEL);
+          if (el && !(e.relatedTarget && el.contains(e.relatedTarget)))
+            unlight(el);
+        });
+        // A finger that starts a scroll fires pointercancel within a few
+        // frames, so a press only lights after a short delay (a tap lights on
+        // release instead) and the scroll never flashes cards it passes over.
+        var pressed = new Map();
+        document.addEventListener("pointerdown", function (e) {
+          if (e.pointerType === "mouse") return;
+          var el = e.target.closest && e.target.closest(SEL);
+          if (!el) return;
+          var p = { el: el, at: 0 };
+          p.timer = setTimeout(function () {
+            p.at = Date.now();
+            light(el);
+          }, 180);
+          pressed.set(e.pointerId, p);
+        });
+        function release(e) {
+          var p = pressed.get(e.pointerId);
+          if (!p) return;
+          pressed.delete(e.pointerId);
+          clearTimeout(p.timer);
+          if (e.type === "pointercancel" && !p.at) return;
+          if (!p.at) {
+            p.at = Date.now();
+            light(p.el);
+          }
+          var wait = Math.max(0, HOLD_MS - (Date.now() - p.at));
+          timers.set(p.el, setTimeout(function () { unlight(p.el); }, wait));
+        }
+        document.addEventListener("pointerup", release);
+        document.addEventListener("pointercancel", release);
       })();
     </script>
   </body>
