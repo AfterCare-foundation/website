@@ -200,6 +200,35 @@
   background: var(--teal);
 }
 
+.a11y-note {
+  margin: 2px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left: 3px solid var(--teal);
+  background: rgba(var(--fg-rgb), 0.06);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--gray);
+}
+.a11y-note[hidden] {
+  display: none;
+}
+.a11y-note p {
+  margin: 0 0 6px;
+}
+.a11y-note p:last-child {
+  margin-bottom: 0;
+}
+.a11y-note .a11y-note-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+}
+.a11y-note strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
 .a11y-reset {
   margin-top: 12px;
   display: inline-flex;

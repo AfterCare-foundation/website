@@ -103,7 +103,7 @@
         localStorage.removeItem("ac-motion");
       } catch (e) {}
     }
-    if (motionToggle) motionToggle.checked = reduced;
+    if (motionToggle) motionToggle.checked = reduced || osWantsReducedMotion();
   }
 
   // Sync the controls' own visible state to whatever the pre-paint script
@@ -111,7 +111,30 @@
   // plain multi-page site (no client-side router), just once on load.
   if (themeToggle) themeToggle.checked = root.dataset.theme !== "light";
   if (contrastToggle) contrastToggle.checked = root.dataset.contrast === "high";
-  if (motionToggle) motionToggle.checked = root.dataset.motion === "reduced";
+  // The CSS also honors the OS-level prefers-reduced-motion query on its own
+  // (phones: iOS Reduce Motion, Android "Remove animations"), which the
+  // data-motion attribute never reflects. Without this the switch read "off"
+  // while the page was already reduced. The OS setting can't be overridden
+  // from here, so show it on and lock it rather than pretend it's optional.
+  function osWantsReducedMotion() {
+    try {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (e) {
+      return false;
+    }
+  }
+  if (motionToggle) {
+    var osReduced = osWantsReducedMotion();
+    motionToggle.checked = osReduced || root.dataset.motion === "reduced";
+    if (osReduced) {
+      motionToggle.disabled = true;
+      var note = document.getElementById("a11yMotionNote");
+      if (note) {
+        note.hidden = false;
+        motionToggle.setAttribute("aria-describedby", "a11yMotionNote");
+      }
+    }
+  }
   updateStepperState();
 
   if (themeToggle)
